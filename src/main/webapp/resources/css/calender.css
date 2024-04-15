@@ -1,0 +1,29 @@
+@charset "UTF-8";
+/****************************************/
+/* Name:KHCP RPA
+/* Version:1.0 / day:2022-03-15
+/* Author: 김현기
+/****************************************/
+
+/* 기본 스타일 */
+table{border: 1px solid black; padding: 5px; border-spacing: 0px;height: 731px;}
+th{border: 1px solid black;padding: 5px; border-spacing: 0px; text-align: center;}
+
+tr{height : 60px;}
+td{width: 100px; text-align: right; font-size: 15pt;border: 1px solid black; text-align: center;}
+
+/* 타이틀 스타일 */
+th#title{font-size: 35px; font-weight: bold; color: #ffbf00;}
+
+/* 요일 스타일 */
+td.sunday{text-align: center; font-weight: bold; color: red; font-size: 40px;}
+td.saturday{text-align: center; font-weight: bold; color: blue; font-size: 40px;}
+td.etcday{text-align: center; font-weight: bold; color: black; font-size: 40px;}
+
+/* 날짜 스타일 */
+td.sun{text-align: right; font-size: 30pt; color: red; vertical-align: top;}
+td.sat{text-align: right; font-size: 30pt; color: blue; vertical-align: top;}
+td.etc{text-align: right; font-size: 30pt; color: black; vertical-align: top;}
+
+td.redbefore{text-align: right; font-size: 28pt; color: red; vertical-align: top;}
+td.before{text-align: right; font-size: 28pt; color: gray; vertical-align: top;}

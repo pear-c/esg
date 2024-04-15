@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.portal.community.dao.QnaDao">
+
+    <select id="search" parameterType="map" resultType="ParamMap">
+        WITH WW AS
+        (
+            SELECT      
+                    A.ID
+            ,       A.TITLE
+            ,       A.USER_ID
+            ,       FN_USER_NAME(A.USER_ID) USER_NAME
+            ,       FN_DATE_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') CREATE_DATE
+            ,       A.HIT
+            ,       A.WRITE_YMD
+            ,       A.BBS_CATEGORY
+            ,       A.ATTACH_FILE_URL1
+            ,       A.ATTACH_FILE_URL2
+            ,       A.ATTACH_FILE_URL3
+            ,       A.ATTACH_FILE_URL4
+            ,       A.ATTACH_FILE_URL5
+            ,       A.BBS_SHOW_YN
+            ,       FN_CODE_NAME('QNA_CATEGORY',A.BBS_CATEGORY) BBS_CATEGORY_NAME
+            ,		(SELECT COUNT(*) FROM BBS WHERE BBS_TYPE = 'D' AND A.ID = ORG_ID) REPLY_COUNT
+            ,       ROW_NUMBER() OVER (ORDER BY ID) RID
+            ,		A.CMGRP_CD
+            FROM    BBS     A 
+            WHERE   BBS_TYPE    = 'D'
+            AND     WRITE_YMD   > '19900101'
+            AND     ORG_ID IS NULL
+            AND 	REPLY_ID IS NULL
+            AND	   CMGRP_CD	   = #{loginCmgrpCd}
+        )   
+        SELECT                
+                *
+        FROM    WW          
+        WHERE   1    = 1
+        AND	   CMGRP_CD	   = #{loginCmgrpCd}
+        <if test="searchTxt != null">           
+            <choose>
+                <when test='searchCond == "A"'>
+                AND     TITLE     LIKE '%' + #{searchTxt} + '%'
+                </when>
+                <when test='searchCond == "B"'>
+                AND     CONTENTS  LIKE '%' + #{searchTxt} + '%'
+                </when>
+                <when test='searchCond == "C"'>
+                AND     (
+                              TITLE     LIKE '%' + #{searchTxt} + '%'
+                          OR  CONTENTS  LIKE '%' + #{searchTxt} + '%'
+                        )
+                </when>
+                <when test='searchCond == "D"'>
+                AND     WRITE_YMD = #{searchTxt}
+                </when>
+                <when test='searchCond == "E"'>
+                AND     FN_USER_NAME(USER_ID) LIKE '%' +  #{searchTxt} + '%'
+                </when>
+            </choose>
+       </if>
+       <if test="searchGubun != null">
+            AND BBS_CATEGORY =  #{searchGubun}
+       </if>       
+       <if test='loginUserRole != "R999" and loginUserRole != "RDEV"'>
+            AND BBS_SHOW_YN  = 'Y'
+       </if>
+        <if test='dateUse != 0'>
+        AND     WRITE_YMD          BETWEEN REPLACE(#{startDate},'-','') AND REPLACE(#{endDate},'-','')
+        </if>
+        ORDER BY RID DESC
+        OFFSET ${startPage} ROWS FETCH NEXT ${paging} ROWS ONLY
+    </select>
+    
+    <select id="searchCount" parameterType="map" resultType="int">
+        SELECT      
+                count(*) CNT
+        FROM    BBS     A 
+        WHERE   BBS_TYPE    = 'D'
+        AND     WRITE_YMD   > '19900101'
+        AND   1    = 1
+        AND   A.ORG_ID IS NULL
+        AND   A.REPLY_ID IS NULL
+        AND	 A.CMGRP_CD	   = #{loginCmgrpCd}
+        <if test="searchTxt != null">           
+            <choose>
+                <when test='searchCond == "A"'>
+                AND     TITLE     LIKE '%' + #{searchTxt} + '%'
+                </when>
+                <when test='searchCond == "B"'>
+                AND     CONTENTS  LIKE '%' + #{searchTxt} + '%'
+                </when>
+                <when test='searchCond == "C"'>
+                AND     (
+                              TITLE     LIKE '%' + #{searchTxt} + '%'
+                          OR  CONTENTS  LIKE '%' + #{searchTxt} + '%'
+                        )
+                </when>
+                <when test='searchCond == "D"'>
+                AND     WRITE_YMD = #{searchTxt}
+                </when>
+                <when test='searchCond == "E"'>
+                AND     FN_USER_NAME(USER_ID) LIKE '%' +  #{searchTxt} + '%'
+                </when>
+            </choose>
+       </if>
+       <if test="searchGubun != null">
+            AND BBS_CATEGORY =  #{searchGubun}
+       </if>      
+       <if test='loginUserRole != "R999" and loginUserRole != "RDEV"'>
+            AND BBS_SHOW_YN  = 'Y'
+       </if> 
+        <if test='dateUse != 0'>
+        AND     WRITE_YMD          BETWEEN REPLACE(#{startDate},'-','') AND REPLACE(#{endDate},'-','')
+        </if>
+    </select>
+    
+    <select id="searchDetail" parameterType="map" resultType="ParamMap">
+        WITH WW AS
+        (
+            SELECT      
+                    A.ID
+            ,       A.TITLE
+            ,       A.USER_ID
+            ,       FN_USER_NAME(A.USER_ID) USER_NAME
+            ,       FN_DATE_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS') CREATE_DATE
+            ,       A.CONTENTS
+            ,       A.HIT
+            ,       FN_DATE_TO_CHAR(A.DATE_FROM, 'YYYY-MM-DD') DATE_FROM
+            ,       FN_DATE_TO_CHAR(A.DATE_TO, 'YYYY-MM-DD') DATE_TO
+            ,       A.BANNER_REGI_YN
+            ,       A.BANNER_IMG_YN
+            ,       A.BANNER_IMG_PATH
+            ,       A.ATTACH_FILE_URL1
+            ,       A.ATTACH_FILE_URL2
+            ,       A.ATTACH_FILE_URL3
+            ,       A.ATTACH_FILE_URL4
+            ,       A.ATTACH_FILE_URL5
+            ,       A.BBS_CATEGORY
+            ,       A.BBS_SHOW_YN
+            ,       LAG(A.TITLE) OVER (ORDER BY ID) PRE_TITLE
+            ,       LEAD(A.TITLE) OVER (ORDER BY ID) AFT_TITLE
+            ,       ROW_NUMBER() OVER (ORDER BY ID) RID
+            ,		A.CMGRP_CD
+            FROM    BBS     A 
+            WHERE   BBS_TYPE    = 'D'
+            AND     WRITE_YMD   > '19900101'
+            AND     ORG_ID IS NULL
+            AND 	REPLY_ID IS NULL
+            AND	   CMGRP_CD	   = #{loginCmgrpCd}
+        )
+        SELECT  *
+        FROM    WW 
+        WHERE 1 = 1
+        AND	   CMGRP_CD	   = #{loginCmgrpCd}
+        <if test = "rid != null">          
+        AND   RID    = #{rid}
+        </if>
+        <if test = "rid == null and id != null">          
+        AND   ID    = #{id}
+        </if>
+       
+        
+    </select>
+    <select id="searchSub" parameterType="map" resultType="ParamMap">
+       WITH WW AS
+        (
+        SELECT      
+                A.ID
+        ,       A.TITLE
+        ,       A.USER_ID
+        ,       FN_USER_NAME(A.USER_ID) USER_NAME
+        ,       FN_DATE_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS') CREATE_DATE
+        ,       A.CONTENTS
+        ,       A.HIT
+        ,       A.WRITE_YMD
+        ,       BBS_SHOW_YN
+        ,       ROW_NUMBER() OVER (ORDER BY ID) RID
+        ,		A.CMGRP_CD
+        FROM    BBS     A 
+        WHERE   BBS_TYPE    = 'D'
+        AND     WRITE_YMD   > '19900101'
+        AND     ORG_ID IS NULL
+        AND 	REPLY_ID IS NULL
+        AND	   CMGRP_CD	   = #{loginCmgrpCd}
+       <if test='loginUserRole != "R999" and loginUserRole != "RDEV"'>
+            AND BBS_SHOW_YN  = 'Y'
+       </if>
+        )
+        SELECT  *
+        FROM    WW 
+        WHERE   RID BETWEEN #{rid} - 2 AND #{rid} + 2
+        AND	   CMGRP_CD	   = #{loginCmgrpCd}
+        
+        ORDER   BY
+                RID DESC
+    </select>
+    <select id="searchReply" parameterType="map" resultType="ParamMap">
+        WITH CTE 
+        AS
+        (
+            SELECT  
+                    A.ID
+            ,       A.CONTENTS
+            ,       A.USER_ROLE
+            ,       FN_DATE_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS')  CREATE_DATE
+            ,       A.USER_ID
+            ,       FN_USER_NAME(A.USER_ID) USER_NAME
+            ,       A.ORG_ID
+            ,       0   LEVEL
+            ,       A.REPLY_ID
+            ,       ROW_NUMBER() OVER (ORDER BY A.ID) RID
+            ,		A.CMGRP_CD
+            FROM    BBS A 
+            WHERE   ID  = #{id}
+            AND	   	 CMGRP_CD	   = #{loginCmgrpCd}
+            UNION   ALL
+            SELECT  
+                    A.ID
+            ,       A.CONTENTS
+            ,       A.USER_ROLE
+            ,       FN_DATE_TO_CHAR(A.CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS')  CREATE_DATE
+            ,       A.USER_ID
+            ,       FN_USER_NAME(A.USER_ID) USER_NAME
+            ,       A.ORG_ID
+            ,       B.LEVEL + 1 LEVEL
+            ,       A.REPLY_ID
+            ,       ROW_NUMBER() OVER (ORDER BY A.ID) RID
+            ,		A.CMGRP_CD
+            FROM    BBS A 
+                    JOIN
+                    CTE B
+                    ON  A.ORG_ID    = B.ID
+        )
+        SELECT  
+                A.ID
+        ,       A.CONTENTS
+        ,       A.USER_ROLE
+        ,       A.CREATE_DATE
+        ,       A.USER_ID
+        ,       A.USER_NAME
+        ,       A.ORG_ID
+        ,       CASE 
+                    WHEN A.REPLY_ID IS NOT NULL 
+                    THEN 
+                           (SELECT CONCAT(FN_USER_NAME(C.USER_ID),'replySplit',C.USER_ROLE,'replySplit',FN_DATE_TO_CHAR(C.CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS'),'replySplit', 
+                                CASE WHEN LENGTH(C.CONTENTS) > 30 THEN CONCAT(SUBSTRING(CAST(C.CONTENTS AS VARCHAR),0,30),'...') ELSE C.CONTENTS END )
+                            FROM BBS C WHERE C.ID = A.REPLY_ID)
+                    ELSE NULL
+                    END REPLY_ID
+        ,       A.LEVEL
+        ,		A.CMGRP_CD
+        FROM    CTE A
+        WHERE   A.LEVEL != 0
+        AND	   CMGRP_CD	   = #{loginCmgrpCd}
+        ORDER BY RID DESC
+        OFFSET ${startPage} ROWS FETCH NEXT 5 ROWS ONLY
+    </select>
+    <select id="searchReplyDetail" parameterType="map" resultType="ParamMap">
+         SELECT      
+                    A.ID
+            ,       A.TITLE
+            ,       A.USER_ID
+            ,       FN_USER_NAME(A.USER_ID) USER_NAME
+            ,       FN_DATE_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS') CREATE_DATE
+            ,       A.CONTENTS
+            ,		A.CMGRP_CD
+            FROM    BBS     A 
+            WHERE   BBS_TYPE    = 'D'
+            AND     WRITE_YMD   > '19900101'       
+       	    AND   	ID    		= #{id}
+       	    AND	   CMGRP_CD	   = #{loginCmgrpCd}
+        
+    </select>
+    <select id="searchReplyCount" parameterType="map"  resultType="int">
+        WITH CTE 
+        AS
+        (
+            SELECT  
+                    A.ID
+            ,       A.CONTENTS
+            ,       FN_DATE_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS')  CREATE_DATE
+            ,       A.USER_ID
+            ,       FN_USER_NAME(A.USER_ID) USER_NAME
+            ,       A.ORG_ID
+            ,       0   LEVEL
+            ,       ROW_NUMBER() OVER (ORDER BY A.ID) RID
+            ,		A.CMGRP_CD
+            FROM    BBS A 
+            WHERE   ID  = #{id}
+            AND	   CMGRP_CD	   = #{loginCmgrpCd}
+            UNION   ALL
+            SELECT  
+                    A.ID
+            ,       A.CONTENTS
+            ,       FN_DATE_TO_CHAR(A.CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS')  CREATE_DATE
+            ,       A.USER_ID
+            ,       FN_USER_NAME(A.USER_ID) USER_NAME
+            ,       A.ORG_ID
+            ,       B.LEVEL + 1 LEVEL
+            ,       ROW_NUMBER() OVER (ORDER BY A.ID) RID
+            ,		A.CMGRP_CD
+            FROM    BBS A 
+                    JOIN
+                    CTE B
+                    ON  A.ORG_ID    = B.ID
+        )
+        SELECT  
+                Count(*) CNT
+        FROM    CTE A
+        WHERE   A.LEVEL != 0
+        AND	   CMGRP_CD	   = #{loginCmgrpCd}
+    </select>
+    <insert id="save" parameterType="map">
+        MERGE INTO BBS A
+        USING (SELECT 'A' AS A) B
+        ON  A.ID = #{id}
+        WHEN    MATCHED THEN
+                UPDATE
+                SET
+                    TITLE               = #{title}
+                ,   CONTENTS            = #{contents}
+                ,   DATE_FROM           = #{dateFrom}
+                ,   DATE_TO             = #{dateTo}
+                ,   BANNER_REGI_YN      = #{bannerRegiYn}
+                ,   BANNER_IMG_YN       = #{bannerImgYn}
+                ,   BANNER_IMG_PATH     = #{bannerImgPath}
+                <if test = "attachFileUrl1 != null">
+                ,   ATTACH_FILE_URL1     = #{attachFileUrl1}
+                </if>
+                <if test = "attachFileUrl2 != null">
+                ,   ATTACH_FILE_URL2     = #{attachFileUrl2}
+                </if>
+                <if test = "attachFileUrl3 != null">
+                ,   ATTACH_FILE_URL3     = #{attachFileUrl3}
+                </if>
+                <if test = "attachFileUrl4 != null">
+                ,   ATTACH_FILE_URL4     = #{attachFileUrl4}
+                </if>
+                <if test = "attachFileUrl5 != null">
+                ,   ATTACH_FILE_URL5     = #{attachFileUrl5}
+                </if>
+                ,   BBS_SHOW_YN         = #{bbsShowYn}
+                ,   BBS_CATEGORY        = #{bbsCategory}
+                ,   UPDATE_BY           = #{loginUserId}
+                ,   UPDATE_DATE     = NOW()
+		        ,   TRLG_KEY_VAL		= NULL
+		        ,	LT_CHPR_ID		=	#{loginUserId}
+		        ,	LT_CH_DTTI		= FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS') 
+		        ,   CMGRP_CD	   = #{loginCmgrpCd}
+        WHEN    NOT MATCHED THEN
+                INSERT
+                (                 
+                    TITLE               
+                ,   CONTENTS            
+                ,   WRITE_YMD           
+                ,   USER_ID             
+                ,   DATE_FROM           
+                ,   DATE_TO             
+                ,   BANNER_REGI_YN
+                ,   BANNER_IMG_YN 
+                ,   BANNER_IMG_PATH  
+                <if test = "attachFileUrl1 != null">   
+                ,   ATTACH_FILE_URL1   
+                </if>      
+                <if test = "attachFileUrl2 != null">   
+                ,   ATTACH_FILE_URL2   
+                </if>
+                <if test = "attachFileUrl3 != null">   
+                ,   ATTACH_FILE_URL3   
+                </if>
+                <if test = "attachFileUrl4 != null">   
+                ,   ATTACH_FILE_URL4   
+                </if>
+                <if test = "attachFileUrl5 != null">   
+                ,   ATTACH_FILE_URL5   
+                </if>                    
+                ,   BBS_TYPE        
+                ,   BBS_CATEGORY    
+                ,   CREATE_BY           
+                ,   CREATE_DATE     
+                ,	TRLG_KEY_VAL
+		        ,	LT_CHPR_ID
+		        ,	LT_CH_DTTI    
+		        ,	CMGRP_CD
+                )
+                VALUES
+                (
+                    #{title}
+                ,   #{contents}
+                ,   FN_DATE_TO_CHAR(NOW(), 'YYYYMMDD')
+                ,   #{loginUserId}
+                ,   #{dateFrom}
+                ,   #{dateTo}
+                ,   #{bannerRegiYn}
+                ,   #{bannerImgYn}
+                ,   #{bannerImgPath}
+                <if test = "attachFileUrl1 != null">
+                ,   #{attachFileUrl1}
+                </if>
+                <if test = "attachFileUrl2 != null">
+                ,   #{attachFileUrl2}
+                </if>
+                <if test = "attachFileUrl3 != null">
+                ,   #{attachFileUrl3}
+                </if>
+                <if test = "attachFileUrl4 != null">
+                ,   #{attachFileUrl4}
+                </if>
+                <if test = "attachFileUrl5 != null">
+                ,   #{attachFileUrl5}
+                </if>
+                ,   'D'
+                ,   #{bbsCategory}
+                ,   #{loginUserId}
+                ,   NOW()
+                ,	NULL
+		        ,	#{loginUserId}
+		        ,	FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
+		        , 	#{loginCmgrpCd}
+                );
+    </insert>
+    <insert id="saveReply" parameterType="map">
+        INSERT INTO BBS
+        (
+            CONTENTS
+        ,   WRITE_YMD
+        ,   USER_ID
+        ,   USER_ROLE
+        ,   ORG_ID
+        ,   BBS_TYPE
+        ,   CREATE_BY
+        ,   CREATE_DATE
+        ,   CMGRP_CD
+        <if test="replyId">
+        ,	REPLY_ID
+        </if>        
+        )
+        VALUES
+        (
+            #{contents}
+        ,   FN_DATE_TO_CHAR(NOW(), 'YYYYMMDD')
+        ,   #{loginUserId}
+        ,   #{loginUserRole}
+        ,   #{orgId}
+        ,   'D'
+        ,   #{loginUserId}
+        ,   NOW()
+        ,	#{loginCmgrpCd}
+        <if test="replyId">
+        ,	#{replyId}
+        </if>
+        )
+    </insert>
+    <update id="updateReply" parameterType="map">
+        UPDATE BBS
+           SET CONTENTS = #{contents}
+         WHERE ID = #{id}
+         AND	   CMGRP_CD	   = #{loginCmgrpCd}
+    </update>
+    
+    <delete id="deleteReply" parameterType="map">
+        DELETE FROM BBS
+         WHERE ID = #{id}
+         AND	   CMGRP_CD	   = #{loginCmgrpCd}
+    </delete>
+    
+    <update id="updateHit" parameterType="map">
+        WITH WW AS
+        (
+            SELECT      
+                    A.ID
+            ,       A.TITLE
+            ,       A.USER_ID
+            ,       FN_USER_NAME(A.USER_ID) USER_NAME
+            ,       FN_DATE_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS') CREATE_DATE
+            ,       A.CONTENTS
+            ,       A.HIT
+            ,       A.ATTACH_FILE_URL1
+            ,       A.ATTACH_FILE_URL2
+            ,       A.ATTACH_FILE_URL3
+            ,       A.ATTACH_FILE_URL4
+            ,       A.ATTACH_FILE_URL5
+            ,       LAG(A.TITLE) OVER (ORDER BY ID) PRE_TITLE
+            ,       LEAD(A.TITLE) OVER (ORDER BY ID) AFT_TITLE
+            ,       ROW_NUMBER() OVER (ORDER BY ID) RID
+            ,		A.CMGRP_CD
+            FROM    BBS     A 
+            WHERE   BBS_TYPE    = 'D'
+            AND     WRITE_YMD   > '19900101'
+            AND	   CMGRP_CD	   = #{loginCmgrpCd}
+        )
+        UPDATE  WW
+           SET HIT = HIT +1
+        WHERE   RID    = #{rid}
+        AND	   CMGRP_CD	   = #{loginCmgrpCd}
+    </update>
+    
+    <delete id="delete" parameterType="map">
+        WITH CTE 
+        AS
+        (
+            SELECT  
+                    A.ID
+            ,		A.CMGRP_CD
+            FROM    BBS A 
+            WHERE   ID  = #{id}
+            AND	   CMGRP_CD	   = #{loginCmgrpCd}
+            UNION   ALL
+            SELECT  
+                    A.ID
+            ,		A.CMGRP_CD
+            FROM    BBS A 
+                    JOIN
+                    CTE B
+                    ON  A.ORG_ID    = B.ID
+        )
+        DELETE FROM BBS
+        WHERE EXISTS (SELECT 1 FROM CTE WHERE BBS.ID = ID)
+        AND	   CMGRP_CD	   = #{loginCmgrpCd}
+    </delete>
+    
+    <update id="fileDelete" parameterType="map">
+        UPDATE  BBS
+        SET     
+                <if test ="fileUrlDelete1 != null">ATTACH_FILE_URL1 = NULL,</if>
+                <if test ="fileUrlDelete2 != null">ATTACH_FILE_URL2 = NULL,</if>
+                <if test ="fileUrlDelete3 != null">ATTACH_FILE_URL3 = NULL,</if>
+                <if test ="fileUrlDelete4 != null">ATTACH_FILE_URL4 = NULL,</if>
+                <if test ="fileUrlDelete5 != null">ATTACH_FILE_URL5 = NULL,</if>
+                UPDATE_DATE     = NOW()
+		        ,   TRLG_KEY_VAL		= NULL
+		        ,	LT_CHPR_ID		=	#{loginUserId}
+		        ,	LT_CH_DTTI		= FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
+		        ,	CMGRP_CD	   = #{loginCmgrpCd}
+        WHERE   ID = #{id}
+        AND	   CMGRP_CD	   = #{loginCmgrpCd}
+    </update>
+</mapper>

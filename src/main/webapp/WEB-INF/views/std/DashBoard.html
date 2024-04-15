@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>  
+      <div class="row mt20">
+          <div class="timeChart" style="width: 700px;height: 320px;">
+              <h2 class="title_st02 color01">일별 업무 처리건</h2>
+              <div class="legend">
+					<span class="blue">성공건</span>
+					<span class="red">오류건</span>
+				</div>
+              <div>
+              	<canvas id="dayDashBoard" width="690" height ="275"></canvas>
+          	  </div>
+          </div>   
+           <div class="timeChart" style="width: 620px;height: 320px;">
+              <h2 class="title_st02 color01">실시간 ROI 현황</h2>
+              <div class="legend">
+				<span class="green">목표이력</span>
+				<span class="red">손익분기</span>
+				<span class="blue">당월이력</span>
+			</div>
+              <div>
+              	<canvas id="dayDashBoard2" width="610" height ="275"></canvas>
+          	  </div>
+          </div>     
+      </div>  
+      <div class="row mt20">
+      	<div class="timeChart" style="width: 700px;height: 320px;">
+              <h2 class="title_st02 color01">실시간 QUEUES 적재 현황</h2> 
+               <div class="legend">
+					<span class="blue">평균건</span>
+					<span class="red">당일건</span>
+				</div>             
+              <div style="position: absolute;">
+              	<canvas id="dayDashBoard3" width="345" height ="275"></canvas>
+          	  </div>
+          	  <div style="position: absolute;right: 0%;">          	  	
+              	<canvas id="dayDashBoard4" width="345" height ="275"></canvas>
+          	  </div>
+          </div>        	
+      </div>    
+</body>
+<script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/jquery-ui.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/datepicker-ko.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/dashboard/RpaMon.js"></script>
+</html>

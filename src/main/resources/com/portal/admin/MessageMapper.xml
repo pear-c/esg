@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.portal.admin.dao.MessageDao">
+
+    <select id="search" parameterType="map" resultType="ParamMap">
+        SELECT  
+                A.MSG_ID
+        ,       A.MSG_CONTENTS
+        ,       A.USE_YN
+        ,		A.CMGRP_CD
+        FROM    MESSAGE  A 
+        WHERE   1=1
+        <if test="msgNm != null">
+        AND   A.MSG_CONTENTS LIKE '%' + #{msgNm} + '%'
+        </if>
+        <if test="msgId != null">
+        AND   A.MSG_ID LIKE '%' + #{msgId} + '%'
+        </if>
+        <if test="useYn!= null">
+        AND   A.USE_YN = #{useYn}
+        </if>
+        <if test="cmgrpCd != null">
+        AND     A.CMGRP_CD = #{cmgrpCd}
+        </if>
+        ORDER   BY
+                A.MSG_ID
+        
+    </select>
+    <insert id="save"  parameterType="map">
+        MERGE INTO MESSAGE A
+        USING (SELECT 'A' AS A) B
+        ON  A.MSG_ID = #{msgId}
+        <if test="cmgrpCd != null">
+        AND     A.CMGRP_CD         = #{cmgrpCd}
+        </if>
+        WHEN    MATCHED THEN
+                UPDATE
+                SET
+                    MSG_CONTENTS    = #{msgCon}
+                ,   USE_YN          = #{useYn}
+                ,   UPDATE_BY       = #{loginUserId}
+                ,   UPDATE_DATE     = NOW()
+                <if test="cmgrpCd != null">
+		        ,	CMGRP_CD         = #{cmgrpCd}
+		        </if>
+		        ,   TRLG_KEY_VAL		= NULL
+		        ,	LT_CHPR_ID		=	#{loginUserId}
+		        ,	LT_CH_DTTI		= FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS') 
+        WHEN    NOT MATCHED THEN
+                INSERT
+                (
+                    MSG_CONTENTS    
+                ,   USE_YN          
+                ,   CREATE_BY       
+                ,   CREATE_DATE   
+                <if test="cmgrpCd != null">
+		        ,	CMGRP_CD
+		        </if> 
+                ,	TRLG_KEY_VAL
+		        ,	LT_CHPR_ID
+		        ,	LT_CH_DTTI 
+                )
+                VALUES
+                (
+                    #{msgCon}
+                ,   #{useYn}
+                ,   #{loginUserId}
+                ,   NOW()
+                <if test="cmgrpCd != null">
+		        ,	#{cmgrpCd}
+		        </if>
+                ,	NULL
+		        ,	#{loginUserId}
+		        ,	FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
+                );
+
+    </insert>
+    <delete id="delete" parameterType="map">
+        DELETE  FROM MESSAGE
+        WHERE   MSG_ID  = #{msgId}
+        <if test="cmgrpCd != null">
+        AND     CMGRP_CD         = #{cmgrpCd}
+        </if>
+    </delete>
+</mapper>

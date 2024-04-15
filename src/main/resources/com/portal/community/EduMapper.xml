@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.portal.community.dao.EduDao">
+
+  <select id="search" parameterType="map" resultType="ParamMap">
+
+		SELECT
+		       	A.ID
+		,		A.STEP
+		,       A.TITLE
+		,		A.CONTENTS
+		,		A.CONTENT_DETAIL
+		,       CASE WHEN A.TRAINING_FILE_URL IS  NOT NULL THEN SUBSTRING(A.TRAINING_FILE_URL,LEN(A.TRAINING_FILE_URL) - CHARINDEX('\',REVERSE(A.TRAINING_FILE_URL))+2,LEN(A.TRAINING_FILE_URL))  ELSE NULL END TRAINING_FILE_URL
+		,		TRAINING_FILE_URL TRAINING_FILE_URL_PATH
+		,		A.VIDEO_URL
+		<if test="upId != null and step != '1'">
+		,		A.UP_ID
+		,		(SELECT TITLE FROM EDUCATION B WHERE B.ID = A.ID) UP_TITLE
+		</if>
+		,		A.CMGRP_CD
+		FROM    EDUCATION     A 
+		WHERE   A.STEP    = #{step}
+		
+		<if test="upId != null">
+		AND		A.UP_ID = #{upId}
+		</if>
+		<if test="id != null">
+		AND		A.ID = #{id}
+		</if>
+		<if test="loginCmgrpCd != null">
+		AND	   CMGRP_CD	   = #{loginCmgrpCd}
+		</if>
+    </select>
+
+    <insert id="save" parameterType="map">
+        MERGE INTO EDUCATION A
+        USING (SELECT 'A' AS A) B
+        ON  A.ID = #{id}
+        WHEN    MATCHED THEN
+                UPDATE
+                SET
+                    TITLE               = #{title}
+                ,   CONTENTS            = #{contents}
+                ,	CONTENT_DETAIL		= #{contentDetail}
+                ,   TRAINING_FILE_URL   = #{trainingFileUrl}
+                ,   VIDEO_URL           = #{videoUrl}
+                ,   UPDATE_BY           = #{loginUserId}
+                ,   UPDATE_DATE     = NOW()
+		        ,   TRLG_KEY_VAL		= NULL
+		        ,	LT_CHPR_ID		=	#{loginUserId}
+		        ,	LT_CH_DTTI		= FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
+		        ,   CMGRP_CD	   = #{loginCmgrpCd}
+        WHEN    NOT MATCHED THEN
+                INSERT
+                (
+                	STEP
+                ,    TITLE
+                ,   CONTENTS
+                ,	CONTENT_DETAIL
+                ,   TRAINING_FILE_URL
+                ,   VIDEO_URL
+                ,	UP_ID
+                ,   CREATE_BY
+                ,   CREATE_DATE
+                ,	TRLG_KEY_VAL
+		        ,	LT_CHPR_ID
+		        ,	LT_CH_DTTI
+		        ,	CMGRP_CD
+                )
+                VALUES
+                (
+                	#{step}
+                ,   #{title}
+                ,   #{contents}
+                ,	#{contentDetail}
+                ,   #{trainingFileUrl}
+                ,   #{videoUrl}
+                ,	#{upId}
+                ,   #{loginUserId}
+                ,   NOW()
+                ,	NULL
+		        ,	#{loginUserId}
+		        ,	FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
+		        ,	#{loginCmgrpCd}
+                );
+    </insert>
+
+    <delete id="delete" parameterType="map">
+        DELETE  FROM EDUCATION
+        WHERE   ID = #{id}
+        AND	   CMGRP_CD	   = #{loginCmgrpCd};
+
+        DELETE  FROM EDUCATION
+        WHERE   UP_ID = #{id}
+        AND	   CMGRP_CD	   = #{loginCmgrpCd};
+    </delete>
+
+    <update id="fileDelete" parameterType="map">
+    	UPDATE  EDUCATION
+    	SET
+    			<if test ="trainingFileUrl != null">TRAINING_FILE_URL = NULL,</if>
+    			<if test ="videoUrl != null">VIDEO_URL = NULL,</if>
+    			UPDATE_DATE     = NOW()
+		        ,   TRLG_KEY_VAL		= NULL
+		        ,	LT_CHPR_ID		=	#{loginUserId}
+		        ,	LT_CH_DTTI		= FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
+        WHERE   ID = #{id}
+        AND	   CMGRP_CD	   = #{loginCmgrpCd}
+    </update>
+</mapper>

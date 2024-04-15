@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<comment>DB Information for dataSource</comment>
+
+	
+	<!-- postgresql -->
+ 	<entry key="postgresql.driverClassName">org.postgresql.Driver</entry>
+	<entry key="postgresql.url">jdbc:postgresql://114.108.146.153:64302/esg</entry>
+	<entry key="postgresql.username">esg</entry>
+	<entry key="postgresql.password">Rz3z8FS4W3UL7ty8</entry>
+	<entry key="postgresql.defaultAutoCommit">false</entry>
+	<entry key="postgresql.validationQuery">select 1</entry>
+	<entry key="postgresql.validationQueryTimeout">10</entry>
+	<!-- <entry key="postgresql.initialSize">200</entry>
+	<entry key="postgresql.maxActive">200</entry>
+	<entry key="postgresql.maxIdle">200</entry>
+	<entry key="postgresql.maxWait">-1</entry> -->
+	
+
+
+</properties>

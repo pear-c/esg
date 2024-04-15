@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.portal.login.dao.LoginDao">
+
+  <select id="getList"  resultType="ParamMap">
+    SELECT  CAST(Id AS VARCHAR(10)) as ID
+      ,Name as NAME
+    FROM [UiPath].[dbo].[Robots]
+    WHERE IsDeleted= 0
+    AND TYPE=2
+   </select>
+</mapper>

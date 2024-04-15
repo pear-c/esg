@@ -1,0 +1,654 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.portal.main.dao.MainDao">
+
+	<select id="searchTopMenu" parameterType="map" resultType="ParamMap">
+	    SELECT
+		        B.UPPR_MENU_ID
+		,       C.MENU_NM   UPPR_MENU_NM
+		,       C.SORT_NO
+		FROM    ROLE_PRIV   A 
+		        JOIN
+		        MENU        B 
+		        ON  A.MENU_ID   = B.MENU_ID
+		        JOIN
+		        MENU        C 
+		        ON  B.UPPR_MENU_ID  = C.MENU_ID
+		WHERE   A.ROLE_ID   =   COALESCE((
+		                            SELECT  ROLE_ID FROM USER_INFO WHERE USER_ID = #{userId}
+		                        ),'R010')
+		AND     B.USE_YN    = 'Y'
+		AND     C.USE_YN    = 'Y'
+		GROUP   BY
+		        B.UPPR_MENU_ID
+		,       C.MENU_NM
+		,       C.SORT_NO
+		ORDER   BY
+		        C.SORT_NO
+	</select>
+	<select id="searchMenu" parameterType="map" resultType="ParamMap">
+	    SELECT
+		        A.MENU_ID
+		,       B.MENU_NM
+		,       B.MENU_PATH
+		,       B.UPPR_MENU_ID
+		,		B.MENU_URL
+		,       (SELECT MENU_NM FROM MENU  WHERE B.UPPR_MENU_ID = MENU_ID) UPPR_MENU_NM
+		,		B.SOURCE_DIV
+		FROM    ROLE_PRIV   A 
+		        JOIN
+		        MENU        B 
+		        ON  A.MENU_ID   = B.MENU_ID
+		WHERE   A.ROLE_ID       =   COALESCE((
+		                                SELECT  ROLE_ID FROM USER_INFO WHERE USER_ID = #{userId}
+		                            ),'R010')
+		AND     B.USE_YN        = 'Y'
+		ORDER   BY
+		        B.SORT_NO
+
+	</select>
+
+	<select id="loginUserInfo" parameterType="map" resultType="ParamMap">
+		 SELECT
+				A.USER_ID
+		,		A.USER_NAME
+		,		A.USER_PWD
+		,		COALESCE(TRIM(A.DEPT_CODE),'') DEPT_CODE
+		,		A.DEPT_NAME
+		,		A.ROLE_ID
+		,		(SELECT LOGIN_PAGE FROM ROLE B WHERE A.ROLE_ID = B.ROLE_ID) LOGIN_PAGE
+		,		A.CMGRP_CD
+		,       A.CEL_TEL
+		,       A.ACCESS_IP
+		FROM 	V_USER_INFO A
+		WHERE	A.USER_ID 	= 	#{userId}
+
+	</select>
+
+	<select id="searchUserInfo" parameterType="map" resultType="ParamMap">
+	    SELECT
+		        A.PERNR     USER_ID
+		,       A.NAME      USER_NAME
+		,       SUBSTRING(A.DEPT_CODE,1,12) DEPT_CODE
+		,       B.DEPT_NAME
+		,       JIKWI
+		,       COALESCE((SELECT ROLE_ID FROM USER_INFO WHERE USER_ID = A.PERNR),'R010') ROLE_ID
+		FROM    IF_INSA     A
+		        JOIN
+		        IF_JOJIK    B
+		        ON  SUBSTRING(A.DEPT_CODE,1,12) = B.DEPT_CODE
+		WHERE   A.DUP_FLAG = 0
+		<if test="userName != null">
+		AND     A.NAME  LIKE '%' + #{userName} + '%'
+		</if>
+		<if test="deptName != null">
+		AND     B.DEPT_NAME LIKE '%' + #{deptName} + '%'
+		</if>
+		<if test="userId != null">
+		AND 	A.PERNR = #{userId}
+		</if>
+		ORDER   BY
+		        B.DEPT_NAME
+		,       A.NAME
+
+	</select>
+
+	<!-- 사용자 작업 및 과제 현황 -->
+	<select id="searchUserJobInfo" parameterType="map" resultType="ParamMap">
+        SELECT
+		        COALESCE([1],0)     JOB_STATE_1      --작업중
+		,       COALESCE([0],0)     JOB_STATE_0      --작업대기
+		,       COALESCE([5],0)     JOB_STATE_5      --성공
+		,       COALESCE([4],0)     JOB_STATE_4      --실패
+		,       COALESCE([A],0)     PROC_STATE_A     --보유과제
+		,       COALESCE([S],0)     PROC_STATE_S     --승인대기
+		FROM    (
+		            SELECT
+		                    A.CODE
+		            ,       COALESCE(B.CNT,0) CNT
+		            FROM    CODE    A
+		                    LEFT OUTER JOIN
+		                    (
+		                        SELECT
+		                                JOB_STATE
+		                        ,       COUNT(*)    CNT
+		                        FROM    JOB
+		                        WHERE   USER_ID     = #{loginUserId}
+		                        AND     CREATE_DATE	BETWEEN CAST(FN_DATE_TO_CHAR(NOW(), 'YYYYMMDD') + ' 00:00:00' AS DATETIME) AND CAST(FN_DATE_TO_CHAR(NOW(), 'YYYYMMDD') + ' 23:59:59' AS DATETIME)
+		                        GROUP   BY
+		                                JOB_STATE
+		                    )       B
+		                    ON      A.CODE  = B.JOB_STATE
+		            WHERE   UPPR_CODE   = 'JOB_STATE'
+		            AND     A.USE_YN    = 'Y'
+		            AND     A.CODE      != '6'
+		            UNION   ALL
+		            SELECT
+		                    PRIV_REQ_STATUS   CODE
+		            ,       COUNT(*) CNT
+		            FROM    (
+		            		SELECT
+					        		USER_ID
+							,       SERVER_ID
+							,       PROCESS_ID
+							,		SOLUTION
+							,       PRIV_REQ_STATUS
+							FROM    MY_BOT 
+							WHERE   USER_ID = #{loginUserId}
+							UNION
+							SELECT
+							        #{loginUserId}       USER_ID
+							,       SERVER_ID
+							,       PROCESS_ID
+							,		SOLUTION
+							,		'A' PRIV_REQ_STATUS
+							FROM    RELEASES 
+							WHERE   ISDELETED    = 0
+							AND     PRIV_REQ_TYPE   = 'A'
+		            		)  A
+					JOIN    RELEASES B
+					ON		A.PROCESS_ID = B.PROCESS_ID
+					AND		A.SERVER_ID  = B.SERVER_ID
+					AND 	A.SOLUTION		= B.SOLUTION 
+		            WHERE   A.USER_ID           = #{loginUserId}
+		            AND     A.PRIV_REQ_STATUS   != 'R'
+					AND     B.ISDELETED = '0'
+					AND     B.PORTAL_RELEASED = '1'
+					AND		NOT EXISTS (SELECT 1 FROM SUBJECT_CHAIN WHERE A.PROCESS_ID = PROCESS_ID AND A.SERVER_ID = SERVER_ID AND A.SOLUTION = SOLUTION )
+					AND		B.PORTAL_OUTPUT_TYPE in (0,1)
+					GROUP   BY
+		                    A.PRIV_REQ_STATUS
+					UNION
+					SELECT
+					        D.PRIV_REQ_STATUS   CODE
+		            ,       COUNT(*) CNT
+						FROM    SUBJECT         A	
+					LEFT OUTER  JOIN
+					SUBJECT_CHAIN   B	
+					ON  A.SUBJECT_ID    = B.SUBJECT_ID
+					AND 1               = B.EXEC_ORDER
+					LEFT OUTER JOIN
+					RELEASES        C	
+					ON  B.PROCESS_ID    = C.PROCESS_ID
+					AND B.SERVER_ID     = C.SERVER_ID
+					AND B.SOLUTION		= C.SOLUTION 
+					JOIN
+					(
+        				SELECT
+								USER_ID
+						,       SERVER_ID
+						,       PROCESS_ID
+						,		SOLUTION
+						,       PRIV_REQ_STATUS
+						FROM    MY_BOT 
+						WHERE   USER_ID = #{loginUserId}
+						UNION
+						SELECT
+								#{loginUserId}       USER_ID
+						,       SERVER_ID
+						,       PROCESS_ID
+						,		SOLUTION
+						,		'A' PRIV_REQ_STATUS
+						FROM    RELEASES 
+						WHERE   ISDELETED    = 0
+						AND     PRIV_REQ_TYPE   = 'A'
+
+        			)      	D
+					ON  D.PROCESS_ID    = C.PROCESS_ID
+					AND D.SERVER_ID 	= C.SERVER_ID
+					AND D.SOLUTION		= C.SOLUTION
+					WHERE   C.ISDELETED   = 0
+					AND 	A.RELEASED 	  = 1
+					AND     D.PRIV_REQ_STATUS = 'A'
+					AND		C.PORTAL_OUTPUT_TYPE in (0,1)
+		            GROUP   BY
+		                    D.PRIV_REQ_STATUS
+		        )   AS RESULT
+		PIVOT   (
+		            SUM(CNT) FOR CODE IN ([0],[1],[4],[5],[A],[S])
+		        )   AS PIVOT_RESULT
+	</select>
+
+	<!--  배터 조회 -->
+	<select id="searchBanner" parameterType="map" resultType="ParamMap">
+	   SELECT
+		        A.ID          			--ID
+		,       A.TITLE					--타이틀
+		,		A.BBS_TYPE			--게시판 유형
+		,       A.BANNER_IMG_YN			--배너이미지 사용여부
+		,		A.BANNER_DEFAULT_IMG
+        ,       REPLACE(REPLACE(A.BANNER_IMG_PATH,'C:\upload\','/upload/'),'\','/')	BANNER_IMG_PATH	--배너이미지 경로
+		FROM    BBS     A
+		WHERE   A.BBS_TYPE  IN  ('A','B','C')       --공지사항(A), RPA교육(B), RPA홍보(C)
+		AND     A.BANNER_REGI_YN    = 'Y'
+		AND     A.DATE_TO >= FN_DATE_TO_CHAR(NOW(), 'YYYYMMDD')
+		AND     A.BBS_SHOW_YN = 'Y'
+		ORDER   BY
+		        A.ID DESC
+	</select>
+	<!-- 연간 수행 실적 -->
+	<select id="searchProcPerform" parameterType="map" resultType="ParamMap">
+	   SELECT
+		        COALESCE(SUM(A.PROC_CNT),0)     PROC_CNT        --수행건수
+		,       COALESCE(SUM(COALESCE(A.PROC_CNT,0) * COALESCE(B.PROC_TIME_PER_ONE,0)),0) AUTOMATION_TIME   --자동화시간
+		FROM    PROC_PERFORM         A
+		        JOIN
+		        RELEASES    B
+		        ON  A.PROCESS_ID    = B.PROCESS_ID
+		        AND A.SERVER_ID     = B.SERVER_ID
+		        AND A.SOLUTION		= B.SOLUTION
+		WHERE   A.PROC_YY           = FN_DATE_TO_CHAR(NOW(), 'YYYY')
+	</select>
+
+	<!-- 연간 자동화 시간(사업소) -->
+	<select id="searchYearBizAutomationTime" parameterType="map" resultType="ParamMap">
+	   SELECT
+		        '본사'    DEPT_NAME
+		,       SUM(COALESCE(B.AUTOMATION_TIME,0)) AUTOMATION_TIME
+		FROM    IF_JOJIK    A
+		        LEFT OUTER JOIN
+		        (
+		            SELECT
+		                    A.DEPT_CODE
+		            ,       SUM(COALESCE(A.PROC_CNT,0) * COALESCE(B.PROC_TIME_PER_ONE,0)) AUTOMATION_TIME
+		            FROM    PROC_PERFORM         A
+		                    JOIN
+		                    RELEASES    B
+		                    ON  A.PROCESS_ID    = B.PROCESS_ID
+		                    AND A.SERVER_ID		= B.SERVER_ID
+		                    AND A.SOLUTION		= B.SOLUTION
+		            WHERE   A.PROC_YY           = FN_DATE_TO_CHAR(NOW(), 'YYYY')
+		            GROUP   BY
+		                    A.DEPT_CODE
+		        )   B
+		        ON  A.DEPT_CODE = B.DEPT_CODE
+		WHERE   A.DEPT_LEVEL    = 3
+		AND     A.DEL_FLAG      = 0
+		AND     A.GROUP_FLAG    = 1
+		AND     SUBSTRING(A.EMAIL_CODE,1,3) = '011'
+		UNION   ALL
+		SELECT
+		        SUBSTRING(MAX(A.DEPT_NAME),1,2)    DEPT_NAME
+		,       SUM(COALESCE(B.AUTOMATION_TIME,0)) AUTOMATION_TIME
+		FROM    IF_JOJIK    A
+		        LEFT OUTER JOIN
+		        (
+		            SELECT
+		                    A.DEPT_CODE
+		            ,       SUM(COALESCE(A.PROC_CNT,0) * COALESCE(B.PROC_TIME_PER_ONE,0)) AUTOMATION_TIME
+		            FROM    PROC_PERFORM         A
+		                    JOIN
+		                    RELEASES    B
+		                    ON  A.PROCESS_ID    = B.PROCESS_ID
+		                    AND A.SERVER_ID		= B.SERVER_ID
+		                    AND A.SOLUTION		= B.SOLUTION
+		            WHERE   A.PROC_YY           = FN_DATE_TO_CHAR(NOW(), 'YYYY')
+		            GROUP   BY
+		                    A.DEPT_CODE
+		        )   B
+		        ON  A.DEPT_CODE = B.DEPT_CODE
+		WHERE   A.DEPT_LEVEL    = 3
+		AND     A.DEL_FLAG      = 0
+		AND     A.GROUP_FLAG    = 1
+		AND     A.UP_CODE       = '001100'
+		GROUP   BY
+		        A.DEPT_CODE
+		UNION   ALL
+		SELECT
+                '한강'    DEPT_NAME
+        ,       SUM(COALESCE(B.AUTOMATION_TIME,0)) AUTOMATION_TIME
+        FROM    IF_JOJIK    A
+                LEFT OUTER JOIN
+                (
+                    SELECT
+                            A.DEPT_CODE
+                    ,       SUM(COALESCE(A.PROC_CNT,0) * COALESCE(B.PROC_TIME_PER_ONE,0)) AUTOMATION_TIME
+                    FROM    PROC_PERFORM         A
+                            JOIN
+                            RELEASES    B
+                            ON  A.PROCESS_ID    = B.PROCESS_ID
+                            AND A.SERVER_ID		= B.SERVER_ID
+                            AND A.SOLUTION		= B.SOLUTION
+                    WHERE   A.PROC_YY           = FN_DATE_TO_CHAR(NOW(), 'YYYY')
+                    GROUP   BY
+                            A.DEPT_CODE
+                )   B
+                ON  A.DEPT_CODE = B.DEPT_CODE
+        WHERE   A.DEPT_LEVEL    = 3
+        AND     A.DEL_FLAG      = 0
+        AND     A.GROUP_FLAG    = 1
+        AND     A.UP_CODE       = '001001'
+        UNION   ALL
+        SELECT
+                '양수'    DEPT_NAME
+        ,       SUM(COALESCE(B.AUTOMATION_TIME,0)) AUTOMATION_TIME
+        FROM    IF_JOJIK    A
+                LEFT OUTER JOIN
+                (
+                    SELECT
+                            A.DEPT_CODE
+                    ,       SUM(COALESCE(A.PROC_CNT,0) * COALESCE(B.PROC_TIME_PER_ONE,0)) AUTOMATION_TIME
+                    FROM    PROC_PERFORM         A
+                            JOIN
+                            RELEASES    B
+                            ON  A.PROCESS_ID    = B.PROCESS_ID
+                            AND A.SERVER_ID		= B.SERVER_ID
+                            AND A.SOLUTION		= B.SOLUTION
+                    WHERE   A.PROC_YY           = FN_DATE_TO_CHAR(NOW(), 'YYYY')
+                    GROUP   BY
+                            A.DEPT_CODE
+                )   B
+                ON  A.DEPT_CODE = B.DEPT_CODE
+        WHERE   A.DEPT_LEVEL    = 3
+        AND     A.DEL_FLAG      = 0
+        AND     A.GROUP_FLAG    = 1
+        AND     A.UP_CODE       = '001028'
+        AND     SUBSTRING(A.EMAIL_CODE,1,3) != '011'
+        UNION   ALL
+		SELECT
+		        '기타'    DEPT_NAME
+		,       SUM(COALESCE(B.AUTOMATION_TIME,0)) AUTOMATION_TIME
+		FROM    IF_JOJIK    A
+		        LEFT OUTER JOIN
+		        (
+		            SELECT
+		                    A.DEPT_CODE
+		            ,       SUM(COALESCE(A.PROC_CNT,0) * COALESCE(B.PROC_TIME_PER_ONE,0)) AUTOMATION_TIME
+		            FROM    PROC_PERFORM         A
+		                    JOIN
+		                    RELEASES    B
+		                    ON  A.PROCESS_ID    = B.PROCESS_ID
+		                    AND A.SERVER_ID		= B.SERVER_ID
+		                    AND A.SOLUTION		= B.SOLUTION
+		            WHERE   A.PROC_YY           = FN_DATE_TO_CHAR(NOW(), 'YYYY')
+		            GROUP   BY
+		                    A.DEPT_CODE
+		        )   B
+		        ON  A.DEPT_CODE = B.DEPT_CODE
+		WHERE   A.DEPT_LEVEL    = 3
+		AND     A.DEL_FLAG      = 0
+		AND     A.GROUP_FLAG    = 1
+		AND     A.UP_CODE       NOT IN ('001001','001028','001100')
+		AND     SUBSTRING(A.EMAIL_CODE,1,3) != '011'
+	</select>
+
+	<!-- 연간 자동화 시간(과제별) -->
+	<select id="searchYearProcAutomationTime" parameterType="map" resultType="ParamMap">
+	   WITH    W_ALL AS
+		(
+		    SELECT
+		            A.PROCESS_ID
+		    ,       MAX(B.PORTAL_PROCESS_NAME)  PROCESS_NAME
+		    ,       SUM(COALESCE(A.PROC_CNT,0) * COALESCE(B.PROC_TIME_PER_ONE,0)) AUTOMATION_TIME
+		    FROM    PROC_PERFORM         A
+		            JOIN
+		            RELEASES    B
+		            ON  A.PROCESS_ID    = B.PROCESS_ID
+		            AND A.SERVER_ID		= B.SERVER_ID
+		            AND A.SOLUTION		= B.SOLUTION
+		    WHERE   A.PROC_YY           = FN_DATE_TO_CHAR(NOW(), 'YYYY')
+		    GROUP   BY
+		            A.PROCESS_ID
+		)
+		,
+		W_TOP AS
+		(
+		    SELECT
+		            A.PROCESS_ID
+		    ,       A.PROCESS_NAME
+		    ,       A.AUTOMATION_TIME
+		    FROM    W_ALL   A
+		    ORDER   BY
+		            A.AUTOMATION_TIME desc
+		    LIMIT	5
+		)
+		SELECT
+		        A.PROCESS_NAME
+		,       A.AUTOMATION_TIME
+		FROM    W_TOP   A
+		UNION   ALL
+		SELECT
+		        '기타'    PROCESS_NAME
+		,       COALESCE(SUM(A.AUTOMATION_TIME),0)  AUTOMATION_TIME
+		FROM    W_ALL   A
+		WHERE   NOT EXISTS (SELECT 1 FROM W_TOP WHERE A.PROCESS_ID = PROCESS_ID)
+	</select>
+
+	<!-- 연간 자동화 시간(과제별) -->
+	<select id="searchYearProcAutomationTime2" parameterType="map" resultType="ParamMap">
+	   WITH    W_ALL AS
+		(
+		    SELECT
+		            A.PROCESS_ID
+		    ,       MAX(B.PORTAL_PROCESS_NAME)  PROCESS_NAME
+		    ,       SUM(COALESCE(A.PROC_CNT,0) * COALESCE(B.PROC_TIME_PER_ONE,0)) AUTOMATION_TIME
+		    FROM    PROC_PERFORM         A
+		            JOIN
+		            RELEASES    B
+		            ON  A.PROCESS_ID    = B.PROCESS_ID
+		            AND A.SERVER_ID		= B.SERVER_ID
+		            AND A.SOLUTION		= B.SOLUTION
+		    WHERE   A.PROC_YY           = #{year}
+		    GROUP   BY
+		            A.PROCESS_ID, A.SERVER_ID, A.SOLUTION
+		)
+		,
+		W_TOP AS
+		(
+		    SELECT
+		            A.PROCESS_ID
+		    ,       A.PROCESS_NAME
+		    ,       A.AUTOMATION_TIME
+		    FROM    W_ALL   A
+		    ORDER   BY
+		            A.AUTOMATION_TIME desc
+		    LIMIT	10
+		)
+		SELECT
+		        A.PROCESS_NAME
+		,       A.AUTOMATION_TIME
+		FROM    W_TOP   A
+	</select>
+
+	<!-- 연간 자동화 시간(과제별) -->
+	<select id="searchYearProcAutomationTime3" parameterType="map" resultType="ParamMap">
+	   WITH    W_ALL AS
+		(
+		    SELECT
+		            C.TASK_NAME  PROCESS_NAME
+		    ,       SUM(COALESCE(A.PROC_CNT,0) * COALESCE(B.PROC_TIME_PER_ONE,0)) AUTOMATION_TIME
+		    FROM    PROC_PERFORM         A
+		            JOIN
+		            RELEASES    B
+		            ON  A.PROCESS_ID    = B.PROCESS_ID
+		            AND A.SERVER_ID		= B.SERVER_ID
+		            AND A.SOLUTION		= B.SOLUTION
+					JOIN
+					V_TASK_PROCESS	C
+					ON A.PROCESS_ID		= C.PROCESS_ID
+					AND A.SERVER_ID		= C.SERVER_ID
+					AND A.SOLUTION		= C.SOLUTION
+		    WHERE   A.PROC_YY           = #{year}
+		    GROUP   BY
+		            C.TASK_NAME
+		)
+		,
+		W_TOP AS
+		(
+		    SELECT
+		            A.PROCESS_NAME
+		    ,       A.AUTOMATION_TIME
+		    FROM    W_ALL   A
+		    ORDER   BY
+		            A.AUTOMATION_TIME desc
+		    LIMIT	10
+		)
+		SELECT
+		        A.PROCESS_NAME
+		,       A.AUTOMATION_TIME
+		FROM    W_TOP   A
+	</select>
+
+	<!-- BOT STORE 조회 -->
+	<select id="searchBotStoreSummary" parameterType="map" resultType="ParamMap">
+	    SELECT
+		        A   CATEGORY_A      --교육
+		,       B   CATEGORY_B      --홍보
+		,       C   CATEGORY_C      --회계
+		,       D   CATEGORY_D      --인사
+		,       E   CATEGORY_E      --조달
+		,       Z   CATEGORY_Z      --기타
+		,       COALESCE(A,0) + COALESCE(B,0) + COALESCE(C,0) + COALESCE(D,0) + COALESCE(E,0) + COALESCE(Z,0)   CATEGORY_SUM
+		FROM    (
+		            SELECT
+		                    A.CODE      PROCESS_CATEGORY
+		            ,       COALESCE(B.CNT,0) CNT
+		            FROM    CODE    A
+		                    LEFT OUTER JOIN
+		                    (
+		                        SELECT
+		                            A.PROCESS_CATEGORY  CODE
+		                    ,       COUNT(*)    CNT
+		                    FROM    RELEASES    A
+		                    WHERE   A.PORTAL_RELEASED   = 1
+		                    AND     A.ISDELETED         = 0
+							AND     NOT EXISTS (SELECT 1 FROM SUBJECT_CHAIN WHERE A.PROCESS_ID = PROCESS_ID AND A.SERVER_ID = SERVER_ID AND A.SOLUTION= SOLUTION)
+							GROUP   BY
+		                            A.PROCESS_CATEGORY
+							UNION ALL
+								SELECT
+									A.PROCESS_CATEGORY  CODE
+							,		COUNT(*)	CNT
+							FROM	RELEASES		A
+							JOIN	SUBJECT_CHAIN	B
+							ON		A.PROCESS_ID	=	B.PROCESS_ID
+							AND		A.SERVER_ID		=	B.SERVER_ID
+							AND 	A.SOLUTION		= B.SOLUTION
+							JOIN	SUBJECT			C
+							ON		B.SUBJECT_ID	=	C.SUBJECT_ID
+							WHERE	C.RELEASED		=	1
+							AND     A.ISDELETED         = 0
+							AND		A.PORTAL_RELEASED   = 1
+		                    GROUP   BY
+		                            A.PROCESS_CATEGORY
+		                    )       B
+		                    ON  A.CODE  = B.CODE
+		            WHERE   A.UPPR_CODE = 'PROCESS_CATEGORY'
+		            AND     A.USE_YN    = 'Y'
+		        )   AS RESULT
+		PIVOT   (
+		            MAX(CNT) FOR PROCESS_CATEGORY IN ([A],[B],[C],[D],[E],[Z])
+		        )   AS PIVOT_RESULT
+	</select>
+
+	<!-- 공지사항 -->
+    <select id="searchBBSNotice" parameterType="map" resultType="ParamMap">
+        SELECT
+		        A.ID
+		,		FN_DATE_TO_CHAR(CAST(A.WRITE_YMD AS TIMESTAMPTZ), 'YY.MM.DD') WRITE_YMD
+		,       A.TITLE
+		,       CASE    WHEN WRITE_YMD = FN_DATE_TO_CHAR(NOW(), 'YYYYMMDD') THEN 'Y' ELSE 'N' END IS_NEW
+		FROM    BBS     A
+		WHERE   A.BBS_TYPE  = 'A'
+		<if test='loginUserRole != "R999" and loginUserRole != "RDEV"'>
+		AND     A.BBS_SHOW_YN = 'Y'
+		</if>
+		ORDER   BY
+		        A.WRITE_YMD DESC
+		LIMIT	5
+    </select>
+
+    <!-- 교육 -->
+    <select id="searchBBSEdu" parameterType="map" resultType="ParamMap">
+        SELECT
+		        A.ID
+		,		FN_DATE_TO_CHAR(CAST(A.WRITE_YMD AS TIMESTAMPTZ), 'YY.MM.DD') WRITE_YMD
+		,       A.TITLE
+		,       CASE    WHEN WRITE_YMD = FN_DATE_TO_CHAR(NOW(), 'YYYYMMDD') THEN 'Y' ELSE 'N' END IS_NEW
+		FROM    BBS     A
+		WHERE   A.BBS_TYPE  = 'B'
+		<if test='loginUserRole != "R999" and loginUserRole != "RDEV"'>
+		AND     A.BBS_SHOW_YN = 'Y'
+		</if>
+		ORDER   BY
+		        A.WRITE_YMD DESC
+		LIMIT	5
+    </select>
+
+    <!-- 홍보 -->
+    <select id="searchBBSPromotion" parameterType="map" resultType="ParamMap">
+        SELECT
+		        A.ID
+		,		FN_DATE_TO_CHAR(CAST(A.WRITE_YMD AS TIMESTAMPTZ), 'YY.MM.DD') WRITE_YMD
+		,       A.TITLE
+		,       CASE    WHEN WRITE_YMD = FN_DATE_TO_CHAR(NOW(), 'YYYYMMDD') THEN 'Y' ELSE 'N' END IS_NEW
+		FROM    BBS     A
+		WHERE   A.BBS_TYPE  = 'C'
+		<if test='loginUserRole != "R999" and loginUserRole != "RDEV"'>
+		AND     A.BBS_SHOW_YN = 'Y'
+		</if>
+		ORDER   BY
+		        A.WRITE_YMD DESC
+		LIMIT	5		        
+    </select>
+
+    <!-- Q&A -->
+    <select id="searchBBSQna" parameterType="map" resultType="ParamMap">
+        SELECT
+		        A.ID
+		,		FN_DATE_TO_CHAR(CAST(A.WRITE_YMD AS TIMESTAMPTZ), 'YY.MM.DD') WRITE_YMD
+		,       A.TITLE
+		,       CASE    WHEN WRITE_YMD = FN_DATE_TO_CHAR(NOW(), 'YYYYMMDD') THEN 'Y' ELSE 'N' END IS_NEW
+		FROM    BBS     A
+		WHERE   A.BBS_TYPE  = 'D'
+		AND		A.ORG_ID IS NULL
+		<if test='loginUserRole != "R999" and loginUserRole != "RDEV"'>
+		AND     A.BBS_SHOW_YN = 'Y'
+		</if>
+		ORDER   BY
+		        A.WRITE_YMD DESC
+		LIMIT	5
+    </select>
+
+    <!-- FAQ -->
+    <select id="searchBBSFaq" parameterType="map" resultType="ParamMap">
+        SELECT
+		        A.FAQ_ID
+		,       CASE    WHEN A.UPDATE_DATE IS NULL THEN FN_DATE_TO_CHAR(A.CREATE_DATE, 'YY.MM.DD') 
+		                ELSE FN_DATE_TO_CHAR(A.UPDATE_DATE, 'YYYY-MM-DD')
+		        END     WRITE_YMD
+		,       A.QUESTION
+		FROM    FAQ A
+		WHERE   A.USE_YN = 'Y'
+		ORDER   BY
+		        COALESCE(A.UPDATE_DATE, A.CREATE_DATE) DESC
+		LIMIT	5
+    </select>
+
+    <!-- 장애신고 -->
+    <select id="searchBBSErrorReport" parameterType="map" resultType="ParamMap">
+        SELECT
+                A.ID
+        ,		FN_DATE_TO_CHAR(CAST(A.WRITE_YMD AS TIMESTAMPTZ), 'YY.MM.DD') WRITE_YMD
+        ,       A.TITLE
+        ,       CASE    WHEN WRITE_YMD = FN_DATE_TO_CHAR(NOW(), 'YYYYMMDD') THEN 'Y' ELSE 'N' END IS_NEW
+        FROM    BBS     A
+        WHERE   A.BBS_TYPE  = 'E'
+        AND		A.ORG_ID IS NULL
+        <if test='loginUserRole != "R999" and loginUserRole != "RDEV"'>
+		AND     A.BBS_SHOW_YN = 'Y'
+		</if>
+        ORDER   BY
+                A.WRITE_YMD DESC
+        LIMIT	5
+    </select>
+
+    <!-- 한수원 UMS -->
+    <!-- rcptNo : '수신자번호', sendNo: '발신자번호'(null일경우, 한수원본사대표번호), msg: '메세지내용' -->
+    <insert id="insertUMS" parameterType="map">
+        INSERT INTO OPENQUERY(DBL_UMS,'SELECT TR_SENDDATE, TR_SENDSTAT, TR_MSGTYPE, TR_PHONE, TR_CALLBACK, TR_MSG FROM SC_TRAN')
+        VALUES (NOW(), '0','0',REPLACE(#{rcptNo},'-',''),(SELECT VAL2 FROM CODE WHERE UPPR_CODE = 'UMS_SEND_TEL_NO' AND CODE = 'A' AND USE_YN = 'Y'),COALESCE(#{msg},''));
+    </insert>
+</mapper>

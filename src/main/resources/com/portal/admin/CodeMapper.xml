@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.portal.admin.dao.CodeDao">
+
+	<select id="searchUpperCode" parameterType="map" resultType="ParamMap">
+	    SELECT
+		        A.UPPR_CODE
+		,       A.UPPR_CODE_NAME
+		,       A.CONFIG_YN
+		,		A.INPUT_YN
+		,       A.USE_YN
+		From    UPPR_CODE   A 
+		WHERE	1 = 1
+		<if test= "upperCodeName != null">
+		AND     A.UPPR_CODE_NAME LIKE '%' + #{upperCodeName} + '%'
+		</if>
+		<if test= "inputYn != null">
+		AND     A.INPUT_YN = #{inputYn}
+		</if>
+		<if test="cmgrpCd != null">
+        AND     A.CMGRP_CD = #{cmgrpCd}
+        </if>
+		ORDER   BY
+		        A.UPPR_CODE
+	</select>
+	<select id="searchUpperCodeCount" parameterType="map" resultType="ParamMap">
+	    SELECT
+		        COUNT(*)  CNT
+		FROM    UPPR_CODE   A 
+		WHERE   A.UPPR_CODE = #{upprCode}
+		<if test="useYn != null">
+		AND 	A.USE_YN = #{useYn}
+		</if>
+		<if test="cmgrpCd != null">
+        AND     A.CMGRP_CD         = #{cmgrpCd}
+        </if>
+	</select>
+	<select id="searchCode" parameterType="map" resultType="ParamMap">
+	    SELECT
+		        A.CODE
+		,       A.CODE_NAME
+		,       A.VAL1
+		,       A.VAL2
+		,       A.VAL3
+		,       A.SORT_NO
+		,		A.USE_YN
+		FROM    CODE    A 
+		WHERE   A.UPPR_CODE = #{upprCode}
+		<if test="useYn != null">
+		AND 	A.USE_YN = #{useYn}
+		</if>
+		<if test="val1 != null">
+		AND     A.VAL1    = #{val1}
+		</if>
+		<if test="val2 != null">
+        AND     A.VAL2    LIKE '%' + #{val2} + '%'
+        </if>
+        <if test="code != null">
+        AND     A.CODE    = #{code}
+        </if>
+        <if test="codeName != null">
+        AND     A.CODE_NAME   LIKE '%' + #{codeName}+ '%'
+        </if>
+        <if test="cmgrpCd != null">
+        AND     A.CMGRP_CD         = #{cmgrpCd}
+        </if>
+		ORDER   BY
+		        A.UPPR_CODE
+		,       A.SORT_NO
+	</select>
+	<!-- 화면별 콤보(Select Box) 바이딩을 위한 조회 -->
+	<select id="searchCodeBind" parameterType="map" resultType="ParamMap">
+	    SELECT
+		        A.CODE
+		,       A.CODE_NAME
+		,       A.VAL1
+		,       A.VAL2
+		,       A.VAL3
+		,       A.SORT_NO
+		,		A.USE_YN
+		FROM    V_CODE    A 
+		WHERE   A.UPPR_CODE = #{upprCode}
+		AND     A.USE_YN    = 'Y'
+		<if test="cmgrpCd != null">
+        AND     A.CMGRP_CD         = #{cmgrpCd}
+        </if>
+		ORDER   BY
+		        A.SORT_NO
+
+	</select>
+
+	<!-- 코드 중복 체크용 -->
+	<select id="searchCodeCount" parameterType="map" resultType="ParamMap">
+	    SELECT
+		        COUNT(*)  CNT
+		FROM    CODE    A 
+		WHERE   A.UPPR_CODE = #{upprCode}
+		AND     A.CODE      = #{code}
+		<if test="useYn != null">
+		AND 	A.USE_YN = #{useYn}
+		</if>
+		<if test="cmgrpCd != null">
+        AND     A.CMGRP_CD         = #{cmgrpCd}
+        </if>
+	</select>
+
+	<select id="searchCodeCount2" parameterType="map" resultType="ParamMap">
+	    SELECT
+		        COUNT(*)  CNT
+		FROM    CODE    A 
+		WHERE   A.UPPR_CODE = #{upprCode}
+		<if test="cmgrpCd != null">
+        AND     A.CMGRP_CD         = #{cmgrpCd}
+        </if>
+	</select>
+
+	<insert id="saveUpperCode" parameterType="map">
+		MERGE INTO UPPR_CODE A
+		USING (SELECT 'A' AS A) B
+		ON    A.UPPR_CODE = #{upprCode}
+		<if test="cmgrpCd != null">
+        AND     A.CMGRP_CD         = #{cmgrpCd}
+        </if>
+		WHEN    MATCHED THEN
+		        UPDATE
+		        SET
+		            UPPR_CODE_NAME  = #{upprCodeName}
+		        ,	INPUT_YN		= #{inputYn}
+		        ,   CONFIG_YN       = #{configYn}
+		        ,   USE_YN          = #{useYn}
+		        ,   UPDATE_BY       = #{loginUserId}
+		        ,   UPDATE_DATE     = NOW()
+		        <if test="cmgrpCd != null">
+		        ,	CMGRP_CD         = #{cmgrpCd}
+		        </if>
+		        ,   TRLG_KEY_VAL		= NULL
+		        ,	LT_CHPR_ID		=	#{loginUserId}
+		        ,	LT_CH_DTTI		= FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS') 
+		WHEN    NOT MATCHED THEN
+		        INSERT
+		        (
+		            UPPR_CODE
+		        ,   UPPR_CODE_NAME
+		        ,   CONFIG_YN
+		        ,	INPUT_YN
+		        ,   USE_YN
+		        ,   CREATE_BY
+		        ,   CREATE_DATE
+		        <if test="cmgrpCd != null">
+		        ,	CMGRP_CD
+		        </if>
+		        ,	TRLG_KEY_VAL
+		        ,	LT_CHPR_ID
+		        ,	LT_CH_DTTI
+		        )
+		        VALUES
+		        (
+		            #{upprCode}
+		        ,   #{upprCodeName}
+		        ,   #{configYn}
+		        ,	#{inputYn}
+		        ,   #{useYn}
+		        ,   #{loginUserId}
+		        ,   NOW()
+		        <if test="cmgrpCd != null">
+		        ,	#{cmgrpCd}
+		        </if>
+		        ,	NULL
+		        ,	#{loginUserId}
+		        ,	FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
+		        );
+	</insert>
+	<insert id="saveCode" parameterType="map">
+		MERGE INTO CODE A
+		USING (SELECT 'A' AS A) B
+		ON  A.CODE = #{code} AND A.UPPR_CODE = #{upprCode}
+		<if test="cmgrpCd != null">
+        AND     A.CMGRP_CD         = #{cmgrpCd}
+        </if>
+		WHEN    MATCHED THEN
+		        UPDATE
+		        SET
+		            CODE_NAME   = #{codeName}
+		        ,   VAL1        = #{val1}
+		        ,   VAL2        = #{val2}
+		        ,   VAL3        = #{val3}
+		        ,   SORT_NO     = #{sortNo}
+		        ,   USE_YN      = #{useYn}
+		        ,   UPDATE_BY   = #{loginUserId}
+		        ,   UPDATE_DATE     = NOW()
+		        <if test="cmgrpCd != null">
+		        ,	CMGRP_CD         = #{cmgrpCd}
+		        </if>
+		        ,   TRLG_KEY_VAL		= NULL
+		        ,	LT_CHPR_ID		=	#{loginUserId}
+		        ,	LT_CH_DTTI		= FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS') 
+		WHEN    NOT MATCHED THEN
+		        INSERT
+		        (
+		            CODE
+		        ,   CODE_NAME
+		        ,   UPPR_CODE
+		        ,   VAL1
+		        ,   VAL2
+		        ,   VAL3
+		        ,   SORT_NO
+		        ,   USE_YN
+		        ,   CREATE_BY
+		        ,   CREATE_DATE
+		        <if test="cmgrpCd != null">
+		        ,	CMGRP_CD
+		        </if>
+		        ,	TRLG_KEY_VAL
+		        ,	LT_CHPR_ID
+		        ,	LT_CH_DTTI
+		        )
+		        VALUES
+		        (
+		            #{code}
+		        ,   #{codeName}
+		        ,   #{upprCode}
+		        ,   #{val1}
+		        ,   #{val2}
+		        ,   #{val3}
+		        ,   #{sortNo}
+		        ,   #{useYn}
+		        ,   #{loginUserId}
+		        ,   NOW()
+		        <if test="cmgrpCd != null">
+		        ,	#{cmgrpCd}
+		        </if>
+		        ,	NULL
+		        ,	#{loginUserId}
+		        ,	FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
+		        );
+	</insert>
+
+	<delete id="deleteUpperCode" parameterType="map">
+		DELETE FROM UPPR_CODE
+		WHERE  UPPR_CODE = #{upprCode}
+		<if test="cmgrpCd != null">
+        AND     CMGRP_CD         = #{cmgrpCd}
+        </if>
+	</delete>
+	<delete id="deleteUpperCode2" parameterType="map">
+		DELETE FROM CODE
+		WHERE  UPPR_CODE = #{upprCode}
+		<if test="cmgrpCd != null">
+        AND     CMGRP_CD         = #{cmgrpCd}
+        </if>
+		;
+	</delete>
+
+	<delete id="deleteCode" parameterType="map">
+		DELETE FROM CODE
+		WHERE  UPPR_CODE = #{upprCode}
+		AND  CODE = #{code}
+		<if test="cmgrpCd != null">
+        AND     CMGRP_CD         = #{cmgrpCd}
+        </if>
+	</delete>
+
+	<update id="updateVal1" parameterType="map">
+		UPDATE 	CODE
+		SET		VAL1 = #{val1}
+		WHERE	UPPR_CODE = #{upprCode}
+		AND		CODE = #{code}
+		<if test="cmgrpCd != null">
+        AND    .CMGRP_CD         = #{cmgrpCd}
+        </if>
+	</update>
+
+</mapper>

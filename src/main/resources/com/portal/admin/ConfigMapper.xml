@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.portal.admin.dao.ConfigDao">
+
+	<select id="search" resultType="ParamMap">
+	   SELECT
+	            ROW_NUMBER() OVER(ORDER BY CASE WHEN A.UPPR_CODE = 'SERVER ID' THEN 1
+                     WHEN A.UPPR_CODE = 'UMS_SEND_TEL_NO' THEN 2
+                     WHEN A.UPPR_CODE = 'ENCRYPTION' THEN 3
+                     WHEN A.UPPR_CODE = 'PROCESS_CATEGORY' THEN 4
+                     WHEN A.UPPR_CODE = 'ROBOT_WORK_TIME' THEN 5
+					 WHEN A.UPPR_CODE = 'KAKAOTALK_USEYN' THEN 6
+					 WHEN A.UPPR_CODE = 'DRM_USEYN' THEN 7
+                     ELSE 8 END DESC) SEQ
+		,       A.UPPR_CODE_NAME
+        ,       A.UPPR_CODE
+        ,       B.CODE_NAME
+        ,       B.CODE
+		,       B.VAL1
+        ,       B.VAL2
+        ,       B.VAL3
+        ,       FN_CODE_NAME('YN',B.VAL2) YN_NAME
+		FROM    UPPR_CODE   A 
+                JOIN
+                CODE        B 
+        ON      A.UPPR_CODE = B.UPPR_CODE
+        WHERE   VAL1 IS NOT NULL
+        AND     A.CONFIG_YN = 'Y'
+        <if test="cmgrpCd != null">
+        AND     A.CMGRP_CD = #{cmgrpCd}
+        </if>
+		ORDER   BY
+		        CASE WHEN A.UPPR_CODE = 'SERVER ID' THEN 1
+                     WHEN A.UPPR_CODE = 'UMS_SEND_TEL_NO' THEN 2
+                     WHEN A.UPPR_CODE = 'ENCRYPTION' THEN 3
+                     WHEN A.UPPR_CODE = 'PROCESS_CATEGORY' THEN 4
+                     WHEN A.UPPR_CODE = 'ROBOT_WORK_TIME' THEN 5
+					 WHEN A.UPPR_CODE = 'KAKAOTALK_USEYN' THEN 6
+					 WHEN A.UPPR_CODE = 'DRM_USEYN' THEN 7
+                     ELSE 8 END DESC
+	</select>
+
+	<select id="searchCnt" resultType="ParamMap">
+       SELECT
+                A.UPPR_CODE_NAME
+        ,       A.UPPR_CODE
+        ,       COUNT(A.UPPR_CODE_NAME) CNT
+        FROM    UPPR_CODE   A 
+                JOIN
+                CODE        B 
+        ON      A.UPPR_CODE = B.UPPR_CODE
+        WHERE   VAL1 IS NOT NULL
+        AND     A.CONFIG_YN = 'Y'
+        <if test="cmgrpCd != null">
+        AND     A.CMGRP_CD         = #{cmgrpCd}
+        </if>
+        group by A.UPPR_CODE_NAME, A.UPPR_CODE
+        ORDER   BY
+                CASE WHEN A.UPPR_CODE = 'SERVER ID' THEN 1
+                     WHEN A.UPPR_CODE = 'UMS_SEND_TEL_NO' THEN 2
+                     WHEN A.UPPR_CODE = 'ENCRYPTION' THEN 3
+                     WHEN A.UPPR_CODE = 'PROCESS_CATEGORY' THEN 4
+                     WHEN A.UPPR_CODE = 'ROBOT_WORK_TIME' THEN 5
+					 WHEN A.UPPR_CODE = 'KAKAOTALK_USEYN' THEN 6
+					 WHEN A.UPPR_CODE = 'DRM_USEYN' THEN 7
+                     ELSE 8 END DESC
+    </select>
+
+
+	<select id="searchConfig" parameterType="map" resultType="ParamMap">
+	   SELECT
+	           VAL2        CONFIG_VALUE
+	   FROM    CODE
+	   WHERE   UPPR_CODE   = #{upprCode}
+	   AND     CODE        = #{code}
+	   AND     USE_YN      = 'Y'
+	   <if test="cmgrpCd != null">
+        AND     CMGRP_CD         = #{cmgrpCd}
+        </if>
+	</select>
+
+    <update id="save" parameterType="map">
+        UPDATE  CODE
+        SET
+                VAL2        = #{val2}
+        ,       UPDATE_BY   = #{loginUserId}
+        ,       UPDATE_DATE     = NOW()
+		        ,   TRLG_KEY_VAL		= NULL
+		        ,	LT_CHPR_ID		=	#{loginUserId}
+		        ,	LT_CH_DTTI		= FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS') 
+        WHERE   UPPR_CODE   = #{upprCode}
+        AND     CODE        = #{code}
+        <if test="cmgrpCd != null">
+        AND     CMGRP_CD         = #{cmgrpCd}
+        </if>
+    </update>
+
+    <select id="dbConn" resultType="ParamMap">
+	   ${dbConn}
+	</select>
+
+	<select id="JobInfo" parameterType="map" resultType="ParamMap">
+		SELECT *
+		FROM
+		<if test='type=="job"'>
+		JOB
+		</if>
+		<if test='type=="process"'>
+		RELEASES
+		</if>
+		<if test='type=="robot"'>
+		ROBOTS
+		</if>				
+		<if test='type=="job" and date!="all"'>
+		WHERE CREATE_DATE between CONCAT(#{date},' 00:00:00') and CONCAT(#{date},' 23:59:59')
+			<if test="cmgrpCd != null">
+	        AND     CMGRP_CD         = #{cmgrpCd}
+	        </if>
+		</if>
+		<if test='type=="process" and date!="all"'>
+		WHERE IF_DATE between CONCAT(#{date},' 00:00:00') and CONCAT(#{date},' 23:59:59')
+			<if test="cmgrpCd != null">
+	        AND     CMGRP_CD         = #{cmgrpCd}
+	        </if>
+		</if>
+		<if test='type=="robot" and date!="all"'>
+		WHERE IF_DATE between CONCAT(#{date},' 00:00:00') and CONCAT(#{date},' 23:59:59')
+			<if test="cmgrpCd != null">
+	        AND     CMGRP_CD         = #{cmgrpCd}
+	        </if>
+		</if>	
+	</select>
+
+	<insert id="JobInsert" parameterType="map">
+		<if test='type=="job"'>
+		INSERT INTO JOB(${header})
+		VALUES (${columns})
+		<if test="cmgrpCd != null">
+        WHERE     CMGRP_CD         = #{cmgrpCd}
+        </if>
+		</if>
+		<if test='type=="process"'>
+		INSERT INTO RELEASES(${header})
+		VALUES (${columns})
+		<if test="cmgrpCd != null">
+        WHERE     CMGRP_CD         = #{cmgrpCd}
+        </if>
+		</if>
+		<if test='type=="robot"'>
+		INSERT INTO ROBOTS(${header})
+		VALUES (${columns})
+		<if test="cmgrpCd != null">
+        WHERE     CMGRP_CD         = #{cmgrpCd}
+        </if>
+		</if>
+	</insert>
+</mapper>

@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.portal.admin.dao.RoleDao">
+
+    <select id="searchRole" parameterType="map" resultType="ParamMap">
+        SELECT
+                A.ROLE_ID
+		,       A.ROLE_NM
+		,		A.LOGIN_PAGE
+		,       A.USE_YN
+		FROM    ROLE    A 
+		WHERE   A.USE_YN    =  'Y'
+		<if test="roleNm != null">
+		AND     A.ROLE_NM   LIKE '%' + #{roleNm} + '%'
+		</if>
+		<if test="cmgrpCd != null">
+        AND     A.CMGRP_CD = #{cmgrpCd}
+        </if>
+		ORDER   BY
+		        A.ROLE_ID
+    </select>
+    <select id="searchRoleMenu" parameterType="map" resultType="ParamMap">
+        SELECT
+                CASE WHEN A.ROLE_ID IS NULL THEN '0' ELSE '1' END    CHK
+		,       A.ROLE_ID
+		,		A.CREATE_ROLE
+		,		A.UPDATE_ROLE
+		,		A.DELETE_ROLE
+		,       B.MENU_ID
+		,       B.MENU_NM
+		,       B.UPPR_MENU_ID
+		,       (
+		            SELECT  MENU_NM FROM MENU WHERE MENU_ID = B.UPPR_MENU_ID
+		        )   UPPR_MENU_NM
+		FROM    MENU        B 
+		        LEFT OUTER JOIN
+		        ROLE_PRIV   A 
+		        ON  B.MENU_ID   = A.MENU_ID
+		        AND     A.ROLE_ID       = #{roleId}
+		WHERE   B.USE_YN        = 'Y'
+		AND     B.UPPR_MENU_ID IS NOT NULL
+		<if test="cmgrpCd != null">
+        AND     A.CMGRP_CD         = #{cmgrpCd}
+        </if>
+		ORDER   BY
+		        B.SORT_NO
+    </select>
+    <select id="searchUserPriv" parameterType="map" resultType="ParamMap">
+        SELECT
+		        A.USER_ID
+		,       A.USER_NAME
+		,       A.DEPT_CODE
+		,       A.DEPT_NAME
+		,       A.ROLE_ID
+		,       (SELECT ROLE_NM FROM ROLE WHERE ROLE_ID = A.ROLE_ID) ROLE_NM
+		,       A.ACCESS_IP
+		FROM    USER_INFO   A 
+		<if test="cmgrpCd != null">
+        AND     A.CMGRP_CD         = #{cmgrpCd}
+        </if>
+		ORDER   BY
+		        A.DEPT_CODE
+		,       A.USER_ID
+    </select>
+    <select id="searchRoleCount" parameterType="map" resultType="ParamMap">
+        SELECT
+                COUNT(*) CNT
+        FROM    ROLE
+        WHERE   ROLE_ID = #{popRoleId}
+        <if test="cmgrpCd != null">
+        AND     A.CMGRP_CD         = #{cmgrpCd}
+        </if>
+    </select>
+
+    <select id="searchUserCount" parameterType="map" resultType="ParamMap">
+        SELECT
+                COUNT(*) CNT
+        FROM    USER_INFO
+        WHERE   USER_ID = #{userId}
+        <if test="cmgrpCd != null">
+        AND     A.CMGRP_CD         = #{cmgrpCd}
+        </if>
+    </select>
+
+    <select id="searchLoginMenu" resultType="ParamMap">
+        SELECT MENU_NM,
+        	   MENU_PATH,
+        	   MENU_ID
+        FROM  Menu
+        WHERE UPPR_MENU_ID is not null
+        AND   USE_YN = 'Y'
+        <if test="cmgrpCd != null">
+        AND     A.CMGRP_CD         = #{cmgrpCd}
+        </if>
+        ORDER BY SORT_NO
+    </select>
+
+    <!-- 롤 저장 -->
+    <insert id="saveRole" parameterType="map">
+        MERGE   INTO ROLE A
+		USING   (SELECT 'A' AS A) B
+		ON      A.ROLE_ID   = #{popRoleId}
+		<if test="cmgrpCd != null">
+        AND     A.CMGRP_CD         = #{cmgrpCd}
+        </if>
+		WHEN    MATCHED THEN
+		        UPDATE
+		        SET
+		            ROLE_NM     = #{popRoleName}
+		        ,	LOGIN_PAGE	= #{popLogin}
+		        <!-- ,   USE_YN      = #{popRoleYn} -->
+		        ,   UPDATE_BY   = #{loginUserId}
+		        ,   UPDATE_DATE     = NOW()
+		        <if test="cmgrpCd != null">
+		        ,	CMGRP_CD         = #{cmgrpCd}
+		        </if>
+		        ,   TRLG_KEY_VAL		= NULL
+		        ,	LT_CHPR_ID		=	#{loginUserId}
+		        ,	LT_CH_DTTI		= FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
+		WHEN    NOT MATCHED THEN
+		        INSERT
+		        (
+		            ROLE_ID
+		        ,   ROLE_NM
+		        ,	LOGIN_PAGE
+		        <!-- ,   USE_YN -->
+		        ,   CREATE_BY
+		        ,   CREATE_DATE
+		        <if test="cmgrpCd != null">
+		        ,	CMGRP_CD
+		        </if>
+		        ,	TRLG_KEY_VAL
+		        ,	LT_CHPR_ID
+		        ,	LT_CH_DTTI
+		        )
+		        VALUES
+		        (
+		            #{popRoleId}
+		        ,   #{popRoleName}
+		        ,	#{popLogin}
+		      <!-- ,   #{popRoleYn} -->
+		        ,   #{loginUserId}
+		        ,   NOW()
+		        <if test="cmgrpCd != null">
+		        ,	#{cmgrpCd}
+		        </if>
+		        ,	NULL
+		        ,	#{loginUserId}
+		        ,	FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
+		        );
+    </insert>
+    <insert id="saveRoleMenu" parameterType="map">
+        MERGE INTO ROLE_PRIV A
+        USING (SELECT 'A' AS A) B
+        ON  A.ROLE_ID = #{roleId} AND A.MENU_ID = #{menuId}
+        <if test="cmgrpCd != null">
+        AND     A.CMGRP_CD         = #{cmgrpCd}
+        </if>
+        WHEN    MATCHED AND #{chk} = '0' THEN
+                DELETE
+        WHEN    NOT MATCHED THEN
+                INSERT
+                (
+                    ROLE_ID
+                <if test="createRole != null">
+                ,	CREATE_ROLE
+                </if>
+                <if test="updateRole != null">
+                ,	UPDATE_ROLE
+                </if>
+                <if test="deleteRole != null">
+                ,	DELETE_ROLE
+                </if>
+                ,   MENU_ID
+                ,   CREATE_BY
+                ,   CREATE_DATE
+                <if test="cmgrpCd != null">
+		        ,	CMGRP_CD
+		        </if>
+                )
+                VALUES
+                (
+                    #{roleId}
+                <if test="createRole != null">
+                ,	#{createRole}
+                </if>
+                <if test="updateRole != null">
+                ,	#{updateRole}
+                </if>
+                <if test="deleteRole != null">
+                ,	#{deleteRole}
+                </if>
+                ,   #{menuId}
+                ,   #{loginUserId}
+                ,   NOW()
+                <if test="cmgrpCd != null">
+		        ,	#{cmgrpCd}
+		        </if>
+                );
+    </insert>
+
+    <insert id="saveRoleMenu2" parameterType="map">
+         MERGE INTO ROLE_PRIV A
+        USING (SELECT 'A' AS A) B
+        ON  A.ROLE_ID = #{roleId} AND A.MENU_ID = #{menuId}
+        <if test="cmgrpCd != null">
+        AND     A.CMGRP_CD         = #{cmgrpCd}
+        </if>
+        WHEN    MATCHED AND #{chk} = '0' THEN
+                DELETE
+        WHEN    MATCHED AND #{chk} = '1' THEN
+                UPDATE
+                SET
+                	CREATE_ROLE = #{createRole}
+                ,	UPDATE_ROLE = #{updateRole}
+                ,	DELETE_ROLE = #{deleteRole}
+                ,   UPDATE_BY   = #{loginUserId}
+		        ,   UPDATE_DATE     = NOW()
+		        <if test="cmgrpCd != null">
+		        ,	CMGRP_CD         = #{cmgrpCd}
+		        </if>
+		        ,   TRLG_KEY_VAL		= NULL
+		        ,	LT_CHPR_ID		=	#{loginUserId}
+		        ,	LT_CH_DTTI		= FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
+        WHEN    NOT MATCHED THEN
+                INSERT
+                (
+                    ROLE_ID
+                <if test="createRole != null">
+                ,	CREATE_ROLE
+                </if>
+                <if test="updateRole != null">
+                ,	UPDATE_ROLE
+                </if>
+                <if test="deleteRole != null">
+                ,	DELETE_ROLE
+                </if>
+                ,   MENU_ID
+                ,   CREATE_BY
+                ,   CREATE_DATE
+                <if test="cmgrpCd != null">
+		        ,	CMGRP_CD
+		        </if>
+                ,	TRLG_KEY_VAL
+		        ,	LT_CHPR_ID
+		        ,	LT_CH_DTTI
+                )
+                VALUES
+                (
+                    #{roleId}
+                <if test="createRole != null">
+                ,	#{createRole}
+                </if>
+                <if test="updateRole != null">
+                ,	#{updateRole}
+                </if>
+                <if test="deleteRole != null">
+                ,	#{deleteRole}
+                </if>
+                ,   #{menuId}
+                ,   #{loginUserId}
+                ,   NOW()
+                <if test="cmgrpCd != null">
+		        ,	#{cmgrpCd}
+		        </if>
+                ,	NULL
+		        ,	#{loginUserId}
+		        ,	FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
+                );
+    </insert>
+
+    <insert id="saveUserRole" parameterType="map">
+        MERGE   INTO USER_INFO  A
+		USING   (SELECT 'A' AS A) B
+		ON      A.USER_ID       = #{userId}
+		<if test="cmgrpCd != null">
+        AND     A.CMGRP_CD         = #{cmgrpCd}
+        </if>
+		WHEN    MATCHED THEN
+		        UPDATE
+		        SET
+		            ACCESS_IP   = #{accessIp}
+		        ,   ROLE_ID     = #{role}
+		        ,   UPDATE_BY   = #{loginUserId}
+		        ,   UPDATE_DATE     = NOW()
+		        <if test="cmgrpCd != null">
+		        ,	CMGRP_CD         = #{cmgrpCd}
+		        </if>
+		        ,   TRLG_KEY_VAL		= NULL
+		        ,	LT_CHPR_ID		=	#{loginUserId}
+		        ,	LT_CH_DTTI		= FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
+		WHEN    NOT MATCHED THEN
+		        INSERT
+		        (
+		            USER_ID
+		        ,   USER_NAME
+		        ,   DEPT_CODE
+		        ,   DEPT_NAME
+		        ,   ACCESS_IP
+		        ,   ROLE_ID
+		        ,   CREATE_BY
+		        ,   CREATE_DATE
+		        <if test="cmgrpCd != null">
+		        ,	CMGRP_CD
+		        </if>
+		        ,	TRLG_KEY_VAL
+		        ,	LT_CHPR_ID
+		        ,	LT_CH_DTTI
+		        )
+		        VALUES
+		        (
+		            #{userId}
+		        ,   #{userName}
+		        ,   #{deptCode}
+		        ,   #{deptName}
+		        ,   #{accessIp}
+		        ,   #{role}
+		        ,   #{loginUserId}
+		        ,   NOW()
+		        <if test="cmgrpCd != null">
+		        ,	#{cmgrpCd}
+		        </if>
+		        ,	NULL
+		        ,	#{loginUserId}
+		        ,	FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
+		        );
+    </insert>
+
+    <delete id="deleteRole" parameterType="map">
+        DELETE  FROM ROLE
+        WHERE   USE_YN  =  'Y'
+        AND     ROLE_ID = #{roleId}
+        <if test="cmgrpCd != null">
+        AND     CMGRP_CD         = #{cmgrpCd}
+        </if>
+    </delete>
+
+     <delete id="deleteUserRole" parameterType="map">
+        DELETE  FROM USER_INFO
+        WHERE   USER_ID  =  #{userId}
+        AND     USER_NAME = #{userName}
+        <if test="cmgrpCd != null">
+        AND     CMGRP_CD         = #{cmgrpCd}
+        </if>
+    </delete>
+</mapper>

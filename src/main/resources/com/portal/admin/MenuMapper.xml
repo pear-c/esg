@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.portal.admin.dao.MenuDao">
+
+
+    <select id="search"  parameterType="map" resultType="ParamMap">
+        SELECT
+                A.MENU_ID
+        ,       A.MENU_NM
+        ,       A.MENU_PATH
+        ,       A.MENU_URL
+        ,       A.SORT_NO
+        ,       A.USE_YN
+        ,       A.SOURCE_DIV
+        FROM    MENU    A 
+        WHERE   1=1
+        <if test="menuName != null">
+        AND     A.MENU_NM LIKE '%' + #{menuName} + '%'
+        </if>
+        <if test="upprMenuId == null and menuId == null">
+        AND     A.UPPR_MENU_ID IS NULL
+        </if>
+        <if test="upprMenuId != null">
+        AND     A.UPPR_MENU_ID = #{upprMenuId}
+        </if>
+        <if test="menuId != null">
+        AND		A.MENU_ID = #{menuId}
+        </if>
+        <if test="cmgrpCd != null">
+        AND     A.CMGRP_CD = #{cmgrpCd}
+        </if>
+        ORDER   BY
+                A.SORT_NO
+
+    </select>
+    <select id="searchMenuCount"  parameterType="map" resultType="ParamMap">
+        SELECT
+                COUNT(*) CNT
+        FROM    MENU    A 
+        WHERE   A.MENU_ID = #{menuId}
+        <if test="cmgrpCd != null">
+        AND     A.CMGRP_CD         = #{cmgrpCd}
+        </if>
+    </select>
+    <insert id="save"  parameterType="map">
+        MERGE INTO MENU A
+        USING (SELECT 'A' AS A) B
+        ON  A.MENU_ID = #{menuId}
+        <if test="cmgrpCd != null">
+        AND     A.CMGRP_CD         = #{cmgrpCd}
+        </if>
+        WHEN    MATCHED THEN
+                UPDATE
+                SET
+                    MENU_NM         = #{menuNm}
+                <if test="menuPath != null">
+                ,   MENU_PATH       = #{menuPath}
+                </if>
+                <if test="menuUrl != null">
+                ,   MENU_URL        = #{menuUrl}
+                </if>
+                ,   UPPR_MENU_ID    = #{upprMenuId}
+                ,   SORT_NO         = #{sortNo}
+                ,   USE_YN          = #{useYn}
+                ,   UPDATE_BY       = #{loginUserId}
+                ,   UPDATE_DATE     = NOW()
+                <if test="cmgrpCd != null">
+		        ,	CMGRP_CD         = #{cmgrpCd}
+		        </if>
+		        ,   TRLG_KEY_VAL		= NULL
+		        ,	LT_CHPR_ID		=	#{loginUserId}
+		        ,	LT_CH_DTTI		= FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS') 
+        WHEN    NOT MATCHED THEN
+                INSERT
+                (
+                    MENU_ID
+                ,   MENU_NM
+                <if test="menuPath != null">
+                ,   MENU_PATH
+                </if>
+                <if test="menuUrl != null">
+                ,   MENU_URL
+                </if>
+                ,   UPPR_MENU_ID
+                ,   SORT_NO
+                ,   USE_YN
+                ,   CREATE_BY
+                ,   CREATE_DATE
+                <if test="cmgrpCd != null">
+		        ,	CMGRP_CD
+		        </if>
+                ,	TRLG_KEY_VAL
+		        ,	LT_CHPR_ID
+		        ,	LT_CH_DTTI
+                )
+                VALUES
+                (
+                    #{menuId}
+                ,   #{menuNm}
+                <if test="menuPath != null">
+                ,   #{menuPath}
+                </if>
+                <if test="menuUrl != null">
+                ,   #{menuUrl}
+                </if>
+                ,   #{upprMenuId}
+                ,   #{sortNo}
+                ,   #{useYn}
+                ,   #{loginUserId}
+                ,   NOW()
+                <if test="cmgrpCd != null">
+		        ,	#{cmgrpCd}
+		        </if>
+                ,	NULL
+		        ,	#{loginUserId}
+		        ,	FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
+                );
+
+    </insert>
+
+    <!-- 상위 메뉴 삭제 -->
+    <delete id="delete" parameterType="map">
+        DELETE MENU
+        WHERE  MENU_ID = #{upprMenuId}
+        OR     UPPR_MENU_ID = #{upprMenuId}
+        <if test="cmgrpCd != null">
+        AND     CMGRP_CD         = #{cmgrpCd}
+        </if>
+    </delete>
+
+    <!-- 하위 메뉴 삭제 -->
+    <delete id="deleteDetail" parameterType="map">
+        DELETE MENU
+        WHERE  MENU_ID = #{menuId}
+        <if test="cmgrpCd != null">
+        AND     CMGRP_CD         = #{cmgrpCd}
+        </if>
+    </delete>
+</mapper>

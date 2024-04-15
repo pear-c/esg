@@ -1,0 +1,38 @@
+
+@charset "utf-8";
+
+@font-face {
+	font-family: 'NanumSquare';
+	font-weight:300;
+	src: local(NanumSquareOTFLight);
+	src: url("../fonts/NanumSquareOTFLight.eot");
+	src: url("../fonts/NanumSquareOTFLight.woff") format("woff"),
+		 url("../fonts/NanumSquareOTFLight.otf") format("opentype");
+  }
+  
+  @font-face {
+	font-family: 'NanumSquare';
+	font-weight:400;
+	src: local(NanumSquareOTFRegular);
+	src: url("../fonts/NanumSquareOTFRegular.eot");
+	src: url("../fonts/NanumSquareOTFRegular.woff") format("woff"),
+		 url("../fonts/NanumSquareOTFRegular.otf") format("opentype");
+  }
+  
+  @font-face {
+	font-family: 'NanumSquare';
+	font-weight:700;
+	src: local(NanumSquareOTFBold);
+	src: url("../fonts/NanumSquareOTFBold.eot");
+	src: url("../fonts/NanumSquareOTFBold.woff") format("woff"),
+		 url("../fonts/NanumSquareOTFBold.otf") format("opentype");
+  }
+  
+  @font-face {
+	font-family: 'NanumSquare';
+	font-weight:800;
+	src: local(NanumSquareOTFExtraBold);
+	src: url("../fonts/NanumSquareOTFExtraBold.eot");
+	src: url("../fonts/NanumSquareOTFExtraBold.woff") format("woff"),
+		 url("../fonts/NanumSquareOTFExtraBold.otf") format("opentype");
+  }

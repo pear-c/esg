@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.portal.community.dao.IdeaDao">
+
+    <select id="search" parameterType="map" resultType="ParamMap">
+    	
+    	WITH WW AS
+		(
+			SELECT      
+			       	A.ID
+			,		A.TITLE
+			,		A.CONTENTS
+			,		A.WRITE_YMD
+			,		A.USER_ID     
+			,		A.DEPT_CODE
+			,		FN_DEPT_NAME_BY_USER(A.USER_ID) DEPT_NAME
+			,       FN_USER_NAME(A.USER_ID) USER_NAME
+			,		FN_DATE_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') CREATE_DATE
+			,		A.IDEA_FILE_URL
+			,		A.HIT  	
+			,		(SELECT COUNT(*) FROM IDEA_REPLY WHERE A.ID = BOARD_ID) REPLY_COUNT
+			,       ROW_NUMBER() OVER (ORDER BY ID) RID
+			,		A.CMGRP_CD
+			FROM    IDEA_BOARD     A 
+			WHERE   WRITE_YMD   > '19900101'
+			AND	   CMGRP_CD	   = #{loginCmgrpCd}
+		)   
+        SELECT                
+                *
+        FROM    WW          
+        WHERE   1    = 1
+        AND	   CMGRP_CD	   = #{loginCmgrpCd}
+        <if test="searchTxt != null">        	
+	        <choose>
+		        <when test='searchCond == "A"'>
+		        AND     TITLE     LIKE '%' + #{searchTxt} + '%'
+		        </when>
+		        <when test='searchCond == "B"'>
+		        AND     CONTENTS  LIKE '%' + #{searchTxt} + '%'
+		        </when>
+		        <when test='searchCond == "C"'>
+		        AND     (
+		                      TITLE     LIKE '%' + #{searchTxt} + '%'
+		                  OR  CONTENTS  LIKE '%' + #{searchTxt} + '%'
+		                )
+		        </when>
+		        <when test='searchCond == "D"'>
+		        AND     WRITE_YMD = #{searchTxt}
+		        </when>
+		        <when test='searchCond == "E"'>
+		        AND     FN_USER_NAME(USER_ID) LIKE '%' +  #{searchTxt} + '%'
+		        </when>
+	        </choose>
+       </if>
+       <if test='deptCode != null'>
+       AND		DEPT_CODE = #{deptCode}
+       </if>       
+        <if test='dateUse != 0'>
+        AND     WRITE_YMD          BETWEEN REPLACE(#{startDate},'-','') AND REPLACE(#{endDate},'-','')
+        </if>
+        ORDER BY RID DESC
+        OFFSET ${startPage} ROWS FETCH NEXT ${paging} ROWS ONLY
+    </select>
+    
+    <select id="searchCount" parameterType="map" resultType="int">
+    	SELECT      
+		       	count(*) CNT
+		FROM    IDEA_BOARD     A 
+		WHERE   WRITE_YMD   > '19900101'
+		AND   1    = 1
+		AND	   CMGRP_CD	   = #{loginCmgrpCd}
+        <if test="searchTxt != null">        	
+	        <choose>
+		        <when test='searchCond == "A"'>
+		        AND     TITLE     LIKE '%' + #{searchTxt} + '%'
+		        </when>
+		        <when test='searchCond == "B"'>
+		        AND     CONTENTS  LIKE '%' + #{searchTxt} + '%'
+		        </when>
+		        <when test='searchCond == "C"'>
+		        AND     (
+		                      TITLE     LIKE '%' + #{searchTxt} + '%'
+		                  OR  CONTENTS  LIKE '%' + #{searchTxt} + '%'
+		                )
+		        </when>
+		        <when test='searchCond == "D"'>
+		        AND     WRITE_YMD = #{searchTxt}
+		        </when>
+		        <when test='searchCond == "E"'>
+		        AND     FN_USER_NAME(USER_ID) LIKE '%' +  #{searchTxt} + '%'
+		        </when>
+	        </choose>
+       </if>
+       <if test='deptCode != null'>
+       AND		DEPT_CODE = #{deptCode}
+       </if>   
+        <if test='dateUse != 0'>
+        AND     WRITE_YMD          BETWEEN REPLACE(#{startDate},'-','') AND REPLACE(#{endDate},'-','')
+        </if>
+    </select>
+    
+    <select id="searchDetail" parameterType="map" resultType="ParamMap">
+    	WITH WW AS
+		(
+			SELECT      
+			       	A.ID
+			,		A.TITLE
+			,		A.CONTENTS
+			,		A.WRITE_YMD
+			,		A.USER_ID    
+			,		FN_DEPT_NAME_BY_USER(A.USER_ID) DEPT_NAME 
+			,       FN_USER_NAME(A.USER_ID) USER_NAME
+			,       FN_DATE_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') CREATE_DATE
+			,		A.IDEA_FILE_URL
+			,		A.HIT  	
+			,       LAG(A.TITLE) OVER (ORDER BY ID) PRE_TITLE
+			,       LAG(A.ID) OVER (ORDER BY ID) PRE_ID
+			,       LEAD(A.TITLE) OVER (ORDER BY ID) AFT_TITLE
+			,       LEAD(A.ID) OVER (ORDER BY ID) AFT_ID
+			,		A.CMGRP_CD
+			FROM    IDEA_BOARD     A 
+			WHERE   WRITE_YMD   > '19900101'
+			AND	   CMGRP_CD	   = #{loginCmgrpCd}
+			 <if test='deptCode != null'>
+       		AND		DEPT_CODE = #{deptCode}
+       		</if> 
+		)
+		SELECT  *
+		FROM    WW 
+		WHERE 	1 =1 
+		AND	   CMGRP_CD	   = #{loginCmgrpCd}
+        <if test = "id != null">          
+        AND   ID    = #{id}
+        </if>
+       
+        
+    </select>
+    <select id="searchSub" parameterType="map" resultType="ParamMap">
+       WITH WW AS
+		(
+		SELECT      
+			       	A.ID
+			,		A.TITLE
+			,		A.CONTENTS
+			,		A.WRITE_YMD
+			,		A.USER_ID     
+			,		A.IDEA_FILE_URL
+			,		A.DEPT_CODE
+			,		A.HIT  	
+			,		A.CMGRP_CD
+			FROM    IDEA_BOARD     A 
+			WHERE   WRITE_YMD   > '19900101'			
+			AND	   CMGRP_CD	   = #{loginCmgrpCd} 
+		)
+		SELECT  *
+		FROM    WW 
+        WHERE   ID BETWEEN #{id} - 2 AND #{id} + 2
+        AND	   CMGRP_CD	   = #{loginCmgrpCd}
+        
+        ORDER   BY
+                ID DESC
+    </select>
+    
+    <select id="searchReply" parameterType="map" resultType="ParamMap">
+    	SELECT 
+    				A.ID
+    		,		A.BOARD_ID
+    		,		A.CONTENTS
+    		,		A.WRITE_YMD
+    		,		A.USER_ID
+    		,       FN_USER_NAME(A.USER_ID) USER_NAME
+    		,       FN_DATE_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS')  CREATE_DATE
+    		,		A.CMGRP_CD
+    	FROM		IDEA_REPLY A
+    	WHERE		A.BOARD_ID = #{boardId}
+    	AND	   CMGRP_CD	   = #{loginCmgrpCd}
+    	ORDER BY	A.ID	ASC
+    </select>
+    
+    <select id="searchDeptCnt" parameterType="map" resultType="ParamMap">
+    	SELECT CMGRP_CD ,DEPT_CODE, count(*) CNT
+  		  FROM IDEA_BOARD A
+ 		 WHERE DEPT_CODE in ('001100004005','001100004006','001100004010','001100004031','001100004013','001100004028')
+ 		 AND	   CMGRP_CD	   = #{loginCmgrpCd}
+ 		 GROUP BY DEPT_CODE
+    </select>
+    
+    <insert id="save" parameterType="map">
+        MERGE INTO IDEA_BOARD A
+        USING (SELECT 'A' AS A) B
+        ON  A.ID = #{id}
+        WHEN    MATCHED THEN
+                UPDATE
+                SET
+                    TITLE               = #{title}
+                ,   CONTENTS            = #{contents}               
+                <if test = "ideaFileUrl != null">                
+                ,	IDEA_FILE_URL		= #{ideaFileUrl}
+                </if>
+                ,   UPDATE_BY           = #{loginUserId}
+                ,   UPDATE_DATE     = NOW()
+		        ,   TRLG_KEY_VAL		= NULL
+		        ,	LT_CHPR_ID		=	#{loginUserId}
+		        ,	LT_CH_DTTI		= FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
+		        ,	CMGRP_CD	   = #{loginCmgrpCd}
+        WHEN    NOT MATCHED THEN
+                INSERT
+                (                 
+                    TITLE               
+                ,   CONTENTS            
+                ,   WRITE_YMD           
+                ,   USER_ID   
+                ,	DEPT_CODE
+                <if test = "ideaFileUrl != null">   
+                ,   IDEA_FILE_URL   
+                </if>    
+                ,	HIT
+                ,   CREATE_BY           
+                ,   CREATE_DATE     
+                ,	TRLG_KEY_VAL
+		        ,	LT_CHPR_ID
+		        ,	LT_CH_DTTI    
+		        ,	CMGRP_CD
+                )
+                VALUES
+                (
+                    #{title}
+                ,   #{contents}
+                ,   FN_DATE_TO_CHAR(NOW(), 'YYYYMMDD')
+                ,   #{loginUserId}  
+                ,	SUBSTRING(FN_DEPT_CODE_BY_USER(#{loginUserId}),1,12)
+                <if test = "ideaFileUrl != null">
+                ,   #{ideaFileUrl}
+                </if>
+                ,	0
+                ,   #{loginUserId}
+                ,   NOW()
+                ,	NULL
+		        ,	#{loginUserId}
+		        ,	FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
+		        ,	#{loginCmgrpCd}
+                );
+    </insert>
+    
+     <insert id="saveReply" parameterType="map">
+        MERGE INTO IDEA_REPLY A
+        USING (SELECT 'A' AS A) B
+        ON  A.ID = #{id}
+        WHEN    MATCHED THEN
+                UPDATE
+                SET
+                   	CONTENTS            = #{contents} 
+                ,   UPDATE_BY           = #{loginUserId}
+                ,   UPDATE_DATE     = NOW()
+		        ,   TRLG_KEY_VAL		= NULL
+		        ,	LT_CHPR_ID		=	#{loginUserId}
+		        ,	LT_CH_DTTI		= FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
+		        ,	CMGRP_CD	   = #{loginCmgrpCd}
+        WHEN    NOT MATCHED THEN
+                INSERT
+                (                 
+                    BOARD_ID               
+                ,   CONTENTS            
+                ,   WRITE_YMD           
+                ,   USER_ID   
+                ,   CREATE_BY           
+                ,   CREATE_DATE       
+                ,	TRLG_KEY_VAL
+		        ,	LT_CHPR_ID
+		        ,	LT_CH_DTTI  
+		        ,	CMGRP_CD
+                )
+                VALUES
+                (
+                    #{boardId}
+                ,   #{contents}
+                ,   FN_DATE_TO_CHAR(NOW(), 'YYYYMMDD')
+                ,   #{loginUserId}     
+                ,   #{loginUserId}
+                ,   NOW()
+                ,	NULL
+		        ,	#{loginUserId}
+		        ,	FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
+		        ,	#{loginCmgrpCd}
+                );
+    </insert>
+    
+    <update id="updateHit" parameterType="map">    	
+		UPDATE  IDEA_BOARD
+		   SET HIT = HIT +1
+        WHERE   ID    = #{id}
+        AND	   CMGRP_CD	   = #{loginCmgrpCd}
+    </update>
+    
+    <delete id="delete" parameterType="map">
+        DELETE  FROM IDEA_BOARD
+        WHERE   ID = #{id}
+        AND	   CMGRP_CD	   = #{loginCmgrpCd}
+    </delete>
+    
+    <update id="updateReply" parameterType="map">
+        UPDATE IDEA_REPLY
+           SET CONTENTS = #{contents}
+         WHERE ID = #{id}
+         AND	   CMGRP_CD	   = #{loginCmgrpCd}
+    </update>
+    
+    <delete id="deleteReply" parameterType="map">
+        DELETE FROM IDEA_REPLY
+         WHERE ID = #{id}
+         AND	   CMGRP_CD	   = #{loginCmgrpCd}
+    </delete>
+    
+    <update id="fileDelete" parameterType="map">
+    	UPDATE  IDEA_BOARD
+    	SET     
+    			IDEA_FILE_URL = NULL,
+    			UPDATE_DATE     = NOW()
+		        ,   TRLG_KEY_VAL		= NULL
+		        ,	LT_CHPR_ID		=	#{loginUserId}
+		        ,	LT_CH_DTTI		= FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
+		        ,   CMGRP_CD	   = #{loginCmgrpCd}
+        WHERE   ID = #{id}
+        AND	   CMGRP_CD	   = #{loginCmgrpCd}
+    </update>
+</mapper>
