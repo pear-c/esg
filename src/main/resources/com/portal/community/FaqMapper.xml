@@ -16,7 +16,9 @@
 	        ,		A.CMGRP_CD
 		    FROM    FAQ     A 
 		    WHERE   A.USE_YN	= 'Y'
-		    AND	   CMGRP_CD	   = #{loginCmgrpCd}
+		    <if test="loginCmgrpCd != null">
+    AND	   CMGRP_CD	   = #{loginCmgrpCd}
+    </if>
 		)
 		SELECT
 		       * 
@@ -38,13 +40,17 @@
 	        ,		A.CMGRP_CD
 		    FROM    FAQ     A 
 		    WHERE   A.USE_YN	= 'Y'
-		    AND	   CMGRP_CD	   = #{loginCmgrpCd}
+		    <if test="loginCmgrpCd != null">
+    AND	   CMGRP_CD	   = #{loginCmgrpCd}
+    </if>
 		)
 		SELECT
 		       * 
 		  FROM WW
 	     WHERE FAQ_ID = #{faqId}
-	     AND	   CMGRP_CD	   = #{loginCmgrpCd}
+	     <if test="loginCmgrpCd != null">
+     AND	   CMGRP_CD	   = #{loginCmgrpCd}
+     </if>
     </select>
     
     

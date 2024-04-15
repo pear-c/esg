@@ -90,11 +90,15 @@
     <delete id="delete" parameterType="map">
         DELETE  FROM EDUCATION
         WHERE   ID = #{id}
-        AND	   CMGRP_CD	   = #{loginCmgrpCd};
+        <if test="loginCmgrpCd != null">
+        AND	   CMGRP_CD	   = #{loginCmgrpCd}
+        </if>;
 
         DELETE  FROM EDUCATION
         WHERE   UP_ID = #{id}
+        <if test = "loginCmgrpCd != null">
         AND	   CMGRP_CD	   = #{loginCmgrpCd};
+        </if>
     </delete>
 
     <update id="fileDelete" parameterType="map">
@@ -107,6 +111,8 @@
 		        ,	LT_CHPR_ID		=	#{loginUserId}
 		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
         WHERE   ID = #{id}
+        <if test = "loginCmgrpCd != null">
         AND	   CMGRP_CD	   = #{loginCmgrpCd}
+        </if>
     </update>
 </mapper>

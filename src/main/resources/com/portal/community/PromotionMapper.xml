@@ -33,13 +33,17 @@
 			FROM    BBS     A 
 			WHERE   BBS_TYPE    = 'C'
 			AND     WRITE_YMD   > '19900101'
-			AND	   CMGRP_CD	   = #{loginCmgrpCd}
+			<if test="loginCmgrpCd != null">
+AND	   CMGRP_CD	   = #{loginCmgrpCd}
+</if>
 		)   
         SELECT                
                 *
         FROM    WW          
         WHERE   1    = 1
+        <if test="loginCmgrpCd != null">
         AND	   CMGRP_CD	   = #{loginCmgrpCd}
+        </if>
         <if test="searchTxt != null">        	
 	        <choose>
 		        <when test='searchCond == "A"'>
@@ -82,7 +86,9 @@
         WHERE   BBS_TYPE    = 'C'
 		AND     WRITE_YMD   > '19900101'
 		AND 	BANNER_REGI_YN = 'Y'    	 
-		AND	   CMGRP_CD	   = #{loginCmgrpCd}
+		<if test="loginCmgrpCd != null">
+AND	   CMGRP_CD	   = #{loginCmgrpCd}
+</if>
     </select>
     
     <select id="searchCount" parameterType="map" resultType="int">
@@ -92,7 +98,9 @@
 		WHERE   BBS_TYPE    = 'C'
 		AND     WRITE_YMD   > '19900101'
 		AND   1    = 1
-		AND	   CMGRP_CD	   = #{loginCmgrpCd}
+		<if test="loginCmgrpCd != null">
+AND	   CMGRP_CD	   = #{loginCmgrpCd}
+</if>
         <if test="searchTxt != null">        	
 	        <choose>
 		        <when test='searchCond == "A"'>
@@ -157,12 +165,16 @@
 			FROM    BBS     A 
 			WHERE   BBS_TYPE    = 'C'
 			AND     WRITE_YMD   > '19900101'
-			AND	   CMGRP_CD	   = #{loginCmgrpCd}
+			<if test="loginCmgrpCd != null">
+AND	   CMGRP_CD	   = #{loginCmgrpCd}
+</if>
 		)
 		SELECT  *
 		FROM    WW 
         WHERE 	1 =1 
+        <if test="loginCmgrpCd != null">
         AND	   CMGRP_CD	   = #{loginCmgrpCd}
+        </if>
 		<if test = "rid != null">          
         AND   RID    = #{rid}
         </if>
@@ -190,12 +202,16 @@
 		FROM    BBS     A 
 		WHERE   BBS_TYPE    = 'C'
 		AND     WRITE_YMD   > '19900101'
-		AND	   CMGRP_CD	   = #{loginCmgrpCd}
+		<if test="loginCmgrpCd != null">
+AND	   CMGRP_CD	   = #{loginCmgrpCd}
+</if>
 		)
 		SELECT  *
 		FROM    WW 
         WHERE   RID BETWEEN #{rid} - 2 AND #{rid} + 2
+        <if test="loginCmgrpCd != null">
         AND	   CMGRP_CD	   = #{loginCmgrpCd}
+        </if>
         ORDER   BY
                 RID DESC
     </select>
@@ -340,18 +356,24 @@
 			FROM    BBS     A 
 			WHERE   BBS_TYPE    = 'C'
 			AND     WRITE_YMD   > '19900101'
-			AND	   CMGRP_CD	   = #{loginCmgrpCd}
+			<if test="loginCmgrpCd != null">
+AND	   CMGRP_CD	   = #{loginCmgrpCd}
+</if>
 		)
 		UPDATE  WW
 		   SET HIT = HIT +1
         WHERE   RID    = #{rid}
+        <if test="loginCmgrpCd != null">
         AND	   CMGRP_CD	   = #{loginCmgrpCd}
+        </if>
     </update>
     
     <delete id="delete" parameterType="map">
         DELETE  FROM BBS
         WHERE   ID = #{id}
+        <if test="loginCmgrpCd != null">
         AND	   CMGRP_CD	   = #{loginCmgrpCd}
+        </if>
     </delete>
     
     <update id="fileDelete" parameterType="map">
@@ -368,6 +390,8 @@
 		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
 		        ,	CMGRP_CD	   = #{loginCmgrpCd}
         WHERE   ID = #{id}
+        <if test="loginCmgrpCd != null">
         AND	   CMGRP_CD	   = #{loginCmgrpCd}
+        </if>
     </update>
 </mapper>

@@ -25,13 +25,17 @@
 			,		A.CMGRP_CD
 			FROM    IDEA_BOARD     A 
 			WHERE   WRITE_YMD   > '19900101'
-			AND	   CMGRP_CD	   = #{loginCmgrpCd}
+			<if test="loginCmgrpCd != null">
+AND	   CMGRP_CD	   = #{loginCmgrpCd}
+</if>
 		)   
         SELECT                
                 *
         FROM    WW          
         WHERE   1    = 1
+        <if test="loginCmgrpCd != null">
         AND	   CMGRP_CD	   = #{loginCmgrpCd}
+        </if>
         <if test="searchTxt != null">        	
 	        <choose>
 		        <when test='searchCond == "A"'>
@@ -70,7 +74,9 @@
 		FROM    IDEA_BOARD     A 
 		WHERE   WRITE_YMD   > '19900101'
 		AND   1    = 1
-		AND	   CMGRP_CD	   = #{loginCmgrpCd}
+		<if test="loginCmgrpCd != null">
+AND	   CMGRP_CD	   = #{loginCmgrpCd}
+</if>
         <if test="searchTxt != null">        	
 	        <choose>
 		        <when test='searchCond == "A"'>
@@ -122,7 +128,9 @@
 			,		A.CMGRP_CD
 			FROM    IDEA_BOARD     A 
 			WHERE   WRITE_YMD   > '19900101'
-			AND	   CMGRP_CD	   = #{loginCmgrpCd}
+			<if test="loginCmgrpCd != null">
+AND	   CMGRP_CD	   = #{loginCmgrpCd}
+</if>
 			 <if test='deptCode != null'>
        		AND		DEPT_CODE = #{deptCode}
        		</if> 
@@ -130,7 +138,9 @@
 		SELECT  *
 		FROM    WW 
 		WHERE 	1 =1 
-		AND	   CMGRP_CD	   = #{loginCmgrpCd}
+		<if test="loginCmgrpCd != null">
+AND	   CMGRP_CD	   = #{loginCmgrpCd}
+</if>
         <if test = "id != null">          
         AND   ID    = #{id}
         </if>
@@ -152,12 +162,16 @@
 			,		A.CMGRP_CD
 			FROM    IDEA_BOARD     A 
 			WHERE   WRITE_YMD   > '19900101'			
-			AND	   CMGRP_CD	   = #{loginCmgrpCd} 
+			<if test="loginCmgrpCd != null">
+AND	   CMGRP_CD	   = #{loginCmgrpCd}
+</if> 
 		)
 		SELECT  *
 		FROM    WW 
         WHERE   ID BETWEEN #{id} - 2 AND #{id} + 2
+        <if test="loginCmgrpCd != null">
         AND	   CMGRP_CD	   = #{loginCmgrpCd}
+        </if>
         
         ORDER   BY
                 ID DESC
@@ -175,7 +189,9 @@
     		,		A.CMGRP_CD
     	FROM		IDEA_REPLY A
     	WHERE		A.BOARD_ID = #{boardId}
-    	AND	   CMGRP_CD	   = #{loginCmgrpCd}
+    	<if test="loginCmgrpCd != null">
+AND	   CMGRP_CD	   = #{loginCmgrpCd}
+</if>
     	ORDER BY	A.ID	ASC
     </select>
     
@@ -183,7 +199,9 @@
     	SELECT CMGRP_CD ,DEPT_CODE, count(*) CNT
   		  FROM IDEA_BOARD A
  		 WHERE DEPT_CODE in ('001100004005','001100004006','001100004010','001100004031','001100004013','001100004028')
- 		 AND	   CMGRP_CD	   = #{loginCmgrpCd}
+ 		 <if test="loginCmgrpCd != null">
+ AND	   CMGRP_CD	   = #{loginCmgrpCd}
+ </if>
  		 GROUP BY DEPT_CODE
     </select>
     
@@ -291,26 +309,34 @@
 		UPDATE  IDEA_BOARD
 		   SET HIT = HIT +1
         WHERE   ID    = #{id}
+        <if test="loginCmgrpCd != null">
         AND	   CMGRP_CD	   = #{loginCmgrpCd}
+        </if>
     </update>
     
     <delete id="delete" parameterType="map">
         DELETE  FROM IDEA_BOARD
         WHERE   ID = #{id}
+        <if test="loginCmgrpCd != null">
         AND	   CMGRP_CD	   = #{loginCmgrpCd}
+        </if>
     </delete>
     
     <update id="updateReply" parameterType="map">
         UPDATE IDEA_REPLY
            SET CONTENTS = #{contents}
          WHERE ID = #{id}
+         <if test="loginCmgrpCd != null">
          AND	   CMGRP_CD	   = #{loginCmgrpCd}
+         </if>
     </update>
     
     <delete id="deleteReply" parameterType="map">
         DELETE FROM IDEA_REPLY
          WHERE ID = #{id}
+         <if test="loginCmgrpCd != null">
          AND	   CMGRP_CD	   = #{loginCmgrpCd}
+         </if>
     </delete>
     
     <update id="fileDelete" parameterType="map">
@@ -323,6 +349,8 @@
 		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
 		        ,   CMGRP_CD	   = #{loginCmgrpCd}
         WHERE   ID = #{id}
+        <if test="loginCmgrpCd != null">
         AND	   CMGRP_CD	   = #{loginCmgrpCd}
+        </if>
     </update>
 </mapper>
