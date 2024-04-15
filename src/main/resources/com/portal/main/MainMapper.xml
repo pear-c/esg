@@ -16,7 +16,7 @@
 		        JOIN
 		        MENU        C 
 		        ON  B.UPPR_MENU_ID  = C.MENU_ID
-		WHERE   A.ROLE_ID   =   COALESCE((
+		WHERE   A.ROLE_ID   =   FN_NVL((
 		                            SELECT  ROLE_ID FROM USER_INFO WHERE USER_ID = #{userId}
 		                        ),'R010')
 		AND     B.USE_YN    = 'Y'
@@ -41,7 +41,7 @@
 		        JOIN
 		        MENU        B 
 		        ON  A.MENU_ID   = B.MENU_ID
-		WHERE   A.ROLE_ID       =   COALESCE((
+		WHERE   A.ROLE_ID       =   FN_NVL((
 		                                SELECT  ROLE_ID FROM USER_INFO WHERE USER_ID = #{userId}
 		                            ),'R010')
 		AND     B.USE_YN        = 'Y'
@@ -55,7 +55,7 @@
 				A.USER_ID
 		,		A.USER_NAME
 		,		A.USER_PWD
-		,		COALESCE(TRIM(A.DEPT_CODE),'') DEPT_CODE
+		,		FN_NVL(TRIM(A.DEPT_CODE),'') DEPT_CODE
 		,		A.DEPT_NAME
 		,		A.ROLE_ID
 		,		(SELECT LOGIN_PAGE FROM ROLE B WHERE A.ROLE_ID = B.ROLE_ID) LOGIN_PAGE
@@ -74,7 +74,7 @@
 		,       SUBSTRING(A.DEPT_CODE,1,12) DEPT_CODE
 		,       B.DEPT_NAME
 		,       JIKWI
-		,       COALESCE((SELECT ROLE_ID FROM USER_INFO WHERE USER_ID = A.PERNR),'R010') ROLE_ID
+		,       FN_NVL((SELECT ROLE_ID FROM USER_INFO WHERE USER_ID = A.PERNR),'R010') ROLE_ID
 		FROM    IF_INSA     A
 		        JOIN
 		        IF_JOJIK    B
@@ -98,16 +98,16 @@
 	<!-- 사용자 작업 및 과제 현황 -->
 	<select id="searchUserJobInfo" parameterType="map" resultType="ParamMap">
         SELECT
-		        COALESCE([1],0)     JOB_STATE_1      --작업중
-		,       COALESCE([0],0)     JOB_STATE_0      --작업대기
-		,       COALESCE([5],0)     JOB_STATE_5      --성공
-		,       COALESCE([4],0)     JOB_STATE_4      --실패
-		,       COALESCE([A],0)     PROC_STATE_A     --보유과제
-		,       COALESCE([S],0)     PROC_STATE_S     --승인대기
+		        FN_NVL([1],0)     JOB_STATE_1      --작업중
+		,       FN_NVL([0],0)     JOB_STATE_0      --작업대기
+		,       FN_NVL([5],0)     JOB_STATE_5      --성공
+		,       FN_NVL([4],0)     JOB_STATE_4      --실패
+		,       FN_NVL([A],0)     PROC_STATE_A     --보유과제
+		,       FN_NVL([S],0)     PROC_STATE_S     --승인대기
 		FROM    (
 		            SELECT
 		                    A.CODE
-		            ,       COALESCE(B.CNT,0) CNT
+		            ,       FN_NVL(B.CNT,0) CNT
 		            FROM    CODE    A
 		                    LEFT OUTER JOIN
 		                    (
@@ -231,8 +231,8 @@
 	<!-- 연간 수행 실적 -->
 	<select id="searchProcPerform" parameterType="map" resultType="ParamMap">
 	   SELECT
-		        COALESCE(SUM(A.PROC_CNT),0)     PROC_CNT        --수행건수
-		,       COALESCE(SUM(COALESCE(A.PROC_CNT,0) * COALESCE(B.PROC_TIME_PER_ONE,0)),0) AUTOMATION_TIME   --자동화시간
+		        FN_NVL(SUM(A.PROC_CNT),0)     PROC_CNT        --수행건수
+		,       FN_NVL(SUM(FN_NVL(A.PROC_CNT,0) * FN_NVL(B.PROC_TIME_PER_ONE,0)),0) AUTOMATION_TIME   --자동화시간
 		FROM    PROC_PERFORM         A
 		        JOIN
 		        RELEASES    B
@@ -246,13 +246,13 @@
 	<select id="searchYearBizAutomationTime" parameterType="map" resultType="ParamMap">
 	   SELECT
 		        '본사'    DEPT_NAME
-		,       SUM(COALESCE(B.AUTOMATION_TIME,0)) AUTOMATION_TIME
+		,       SUM(FN_NVL(B.AUTOMATION_TIME,0)) AUTOMATION_TIME
 		FROM    IF_JOJIK    A
 		        LEFT OUTER JOIN
 		        (
 		            SELECT
 		                    A.DEPT_CODE
-		            ,       SUM(COALESCE(A.PROC_CNT,0) * COALESCE(B.PROC_TIME_PER_ONE,0)) AUTOMATION_TIME
+		            ,       SUM(FN_NVL(A.PROC_CNT,0) * FN_NVL(B.PROC_TIME_PER_ONE,0)) AUTOMATION_TIME
 		            FROM    PROC_PERFORM         A
 		                    JOIN
 		                    RELEASES    B
@@ -271,13 +271,13 @@
 		UNION   ALL
 		SELECT
 		        SUBSTRING(MAX(A.DEPT_NAME),1,2)    DEPT_NAME
-		,       SUM(COALESCE(B.AUTOMATION_TIME,0)) AUTOMATION_TIME
+		,       SUM(FN_NVL(B.AUTOMATION_TIME,0)) AUTOMATION_TIME
 		FROM    IF_JOJIK    A
 		        LEFT OUTER JOIN
 		        (
 		            SELECT
 		                    A.DEPT_CODE
-		            ,       SUM(COALESCE(A.PROC_CNT,0) * COALESCE(B.PROC_TIME_PER_ONE,0)) AUTOMATION_TIME
+		            ,       SUM(FN_NVL(A.PROC_CNT,0) * FN_NVL(B.PROC_TIME_PER_ONE,0)) AUTOMATION_TIME
 		            FROM    PROC_PERFORM         A
 		                    JOIN
 		                    RELEASES    B
@@ -298,13 +298,13 @@
 		UNION   ALL
 		SELECT
                 '한강'    DEPT_NAME
-        ,       SUM(COALESCE(B.AUTOMATION_TIME,0)) AUTOMATION_TIME
+        ,       SUM(FN_NVL(B.AUTOMATION_TIME,0)) AUTOMATION_TIME
         FROM    IF_JOJIK    A
                 LEFT OUTER JOIN
                 (
                     SELECT
                             A.DEPT_CODE
-                    ,       SUM(COALESCE(A.PROC_CNT,0) * COALESCE(B.PROC_TIME_PER_ONE,0)) AUTOMATION_TIME
+                    ,       SUM(FN_NVL(A.PROC_CNT,0) * FN_NVL(B.PROC_TIME_PER_ONE,0)) AUTOMATION_TIME
                     FROM    PROC_PERFORM         A
                             JOIN
                             RELEASES    B
@@ -323,13 +323,13 @@
         UNION   ALL
         SELECT
                 '양수'    DEPT_NAME
-        ,       SUM(COALESCE(B.AUTOMATION_TIME,0)) AUTOMATION_TIME
+        ,       SUM(FN_NVL(B.AUTOMATION_TIME,0)) AUTOMATION_TIME
         FROM    IF_JOJIK    A
                 LEFT OUTER JOIN
                 (
                     SELECT
                             A.DEPT_CODE
-                    ,       SUM(COALESCE(A.PROC_CNT,0) * COALESCE(B.PROC_TIME_PER_ONE,0)) AUTOMATION_TIME
+                    ,       SUM(FN_NVL(A.PROC_CNT,0) * FN_NVL(B.PROC_TIME_PER_ONE,0)) AUTOMATION_TIME
                     FROM    PROC_PERFORM         A
                             JOIN
                             RELEASES    B
@@ -349,13 +349,13 @@
         UNION   ALL
 		SELECT
 		        '기타'    DEPT_NAME
-		,       SUM(COALESCE(B.AUTOMATION_TIME,0)) AUTOMATION_TIME
+		,       SUM(FN_NVL(B.AUTOMATION_TIME,0)) AUTOMATION_TIME
 		FROM    IF_JOJIK    A
 		        LEFT OUTER JOIN
 		        (
 		            SELECT
 		                    A.DEPT_CODE
-		            ,       SUM(COALESCE(A.PROC_CNT,0) * COALESCE(B.PROC_TIME_PER_ONE,0)) AUTOMATION_TIME
+		            ,       SUM(FN_NVL(A.PROC_CNT,0) * FN_NVL(B.PROC_TIME_PER_ONE,0)) AUTOMATION_TIME
 		            FROM    PROC_PERFORM         A
 		                    JOIN
 		                    RELEASES    B
@@ -381,7 +381,7 @@
 		    SELECT
 		            A.PROCESS_ID
 		    ,       MAX(B.PORTAL_PROCESS_NAME)  PROCESS_NAME
-		    ,       SUM(COALESCE(A.PROC_CNT,0) * COALESCE(B.PROC_TIME_PER_ONE,0)) AUTOMATION_TIME
+		    ,       SUM(FN_NVL(A.PROC_CNT,0) * FN_NVL(B.PROC_TIME_PER_ONE,0)) AUTOMATION_TIME
 		    FROM    PROC_PERFORM         A
 		            JOIN
 		            RELEASES    B
@@ -411,7 +411,7 @@
 		UNION   ALL
 		SELECT
 		        '기타'    PROCESS_NAME
-		,       COALESCE(SUM(A.AUTOMATION_TIME),0)  AUTOMATION_TIME
+		,       FN_NVL(SUM(A.AUTOMATION_TIME),0)  AUTOMATION_TIME
 		FROM    W_ALL   A
 		WHERE   NOT EXISTS (SELECT 1 FROM W_TOP WHERE A.PROCESS_ID = PROCESS_ID)
 	</select>
@@ -423,7 +423,7 @@
 		    SELECT
 		            A.PROCESS_ID
 		    ,       MAX(B.PORTAL_PROCESS_NAME)  PROCESS_NAME
-		    ,       SUM(COALESCE(A.PROC_CNT,0) * COALESCE(B.PROC_TIME_PER_ONE,0)) AUTOMATION_TIME
+		    ,       SUM(FN_NVL(A.PROC_CNT,0) * FN_NVL(B.PROC_TIME_PER_ONE,0)) AUTOMATION_TIME
 		    FROM    PROC_PERFORM         A
 		            JOIN
 		            RELEASES    B
@@ -458,7 +458,7 @@
 		(
 		    SELECT
 		            C.TASK_NAME  PROCESS_NAME
-		    ,       SUM(COALESCE(A.PROC_CNT,0) * COALESCE(B.PROC_TIME_PER_ONE,0)) AUTOMATION_TIME
+		    ,       SUM(FN_NVL(A.PROC_CNT,0) * FN_NVL(B.PROC_TIME_PER_ONE,0)) AUTOMATION_TIME
 		    FROM    PROC_PERFORM         A
 		            JOIN
 		            RELEASES    B
@@ -500,11 +500,11 @@
 		,       D   CATEGORY_D      --인사
 		,       E   CATEGORY_E      --조달
 		,       Z   CATEGORY_Z      --기타
-		,       COALESCE(A,0) + COALESCE(B,0) + COALESCE(C,0) + COALESCE(D,0) + COALESCE(E,0) + COALESCE(Z,0)   CATEGORY_SUM
+		,       FN_NVL(A,0) + FN_NVL(B,0) + FN_NVL(C,0) + FN_NVL(D,0) + FN_NVL(E,0) + FN_NVL(Z,0)   CATEGORY_SUM
 		FROM    (
 		            SELECT
 		                    A.CODE      PROCESS_CATEGORY
-		            ,       COALESCE(B.CNT,0) CNT
+		            ,       FN_NVL(B.CNT,0) CNT
 		            FROM    CODE    A
 		                    LEFT OUTER JOIN
 		                    (
@@ -623,7 +623,7 @@
 		FROM    FAQ A
 		WHERE   A.USE_YN = 'Y'
 		ORDER   BY
-		        COALESCE(A.UPDATE_DATE, A.CREATE_DATE) DESC
+		        FN_NVL(A.UPDATE_DATE, A.CREATE_DATE) DESC
 		LIMIT	5
     </select>
 
@@ -649,6 +649,6 @@
     <!-- rcptNo : '수신자번호', sendNo: '발신자번호'(null일경우, 한수원본사대표번호), msg: '메세지내용' -->
     <insert id="insertUMS" parameterType="map">
         INSERT INTO OPENQUERY(DBL_UMS,'SELECT TR_SENDDATE, TR_SENDSTAT, TR_MSGTYPE, TR_PHONE, TR_CALLBACK, TR_MSG FROM SC_TRAN')
-        VALUES (NOW(), '0','0',REPLACE(#{rcptNo},'-',''),(SELECT VAL2 FROM CODE WHERE UPPR_CODE = 'UMS_SEND_TEL_NO' AND CODE = 'A' AND USE_YN = 'Y'),COALESCE(#{msg},''));
+        VALUES (NOW(), '0','0',REPLACE(#{rcptNo},'-',''),(SELECT VAL2 FROM CODE WHERE UPPR_CODE = 'UMS_SEND_TEL_NO' AND CODE = 'A' AND USE_YN = 'Y'),FN_NVL(#{msg},''));
     </insert>
 </mapper>
