@@ -37,7 +37,7 @@
                 ,   UPDATE_DATE     = NOW()
 		        ,   TRLG_KEY_VAL		= NULL
 		        ,	LT_CHPR_ID		=	#{loginUserId}
-		        ,	LT_CH_DTTI		= FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
+		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
 		        <if test="cmgrpCd != null">
 				AND		CMGRP_CD 		= #{cmgrpCd} 
 				</if> 
@@ -67,7 +67,7 @@
                 ,   NOW()
                 ,	NULL
 		        ,	#{loginUserId}
-		        ,	FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
+		        ,	FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
 		        <if test="cmgrpCd != null">
 				,	#{cmgrpCd} 
 				</if>

@@ -10,7 +10,7 @@
         ,       B.USER_NAME
         ,       FN_DEPT_NAME(A.DEPT_CODE) USER_DEPT_NAME
         ,       A.EVENT
-        ,       FN_DATE_TO_CHAR(A.ACT_DATE, 'YYYY-MM-DD HH24:MI:SS') ACT_DATE
+        ,       FN_TO_CHAR(A.ACT_DATE, 'YYYY-MM-DD HH24:MI:SS') ACT_DATE
         ,       A.IP
         FROM    USER_ACT_LOG     A 
                 LEFT OUTER JOIN
@@ -52,7 +52,7 @@
     <select id="searchUserActHst" parameterType="map" resultType="ParamMap">
         SELECT
                 A.EVENT
-        ,       FN_DATE_TO_CHAR(A.ACT_DATE,'YYYY-MM-DD HH24:MI:SS') ACT_DATE
+        ,       FN_TO_CHAR(A.ACT_DATE,'YYYY-MM-DD HH24:MI:SS') ACT_DATE
         ,       A.IP
         FROM    USER_ACT_LOG    A 
         WHERE   A.USER_ID   = #{userId}
@@ -95,7 +95,7 @@
             NOW(),
             #{event},
             #{ip},
-            FN_DATE_TO_CHAR(NOW(), 'YYYYMMDD')
+            FN_TO_CHAR(NOW(), 'YYYYMMDD')
             <if test="cmgrpCd != null">
 			,#{cmgrpCd} 
 			</if>

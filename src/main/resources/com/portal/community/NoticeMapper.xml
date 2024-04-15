@@ -13,7 +13,7 @@
 			,       A.TITLE
 			,       A.USER_ID
 			,       FN_USER_NAME(A.USER_ID) USER_NAME
-			,       FN_DATE_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') CREATE_DATE
+			,       FN_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') CREATE_DATE
 			,		A.HIT
 			,		A.WRITE_YMD
 			,		A.BBS_CATEGORY
@@ -23,7 +23,7 @@
 			,       A.ATTACH_FILE_URL4
 			,       A.ATTACH_FILE_URL5
 			<![CDATA[
-			,       CASE WHEN FN_DATE_TO_CHAR(NOW(), 'YYYYMMDD') <= FN_DATE_TO_CHAR(A.DATE_TO, 'YYYYMMDD') THEN A.BANNER_REGI_YN
+			,       CASE WHEN FN_TO_CHAR(NOW(), 'YYYYMMDD') <= FN_TO_CHAR(A.DATE_TO, 'YYYYMMDD') THEN A.BANNER_REGI_YN
                          ELSE 'N'
                     END BANNER_REGI_YN
             ]]>
@@ -128,7 +128,7 @@
 		<if test='dateUse != 0'>
         AND     WRITE_YMD          BETWEEN REPLACE(#{startDate},'-','') AND REPLACE(#{endDate},'-','')
         </if>
-		AND     FN_DATE_TO_CHAR(A.DATE_TO, 'YYYYMMDD') >= FN_DATE_TO_CHAR(NOW(), 'YYYYMMDD')
+		AND     FN_TO_CHAR(A.DATE_TO, 'YYYYMMDD') >= FN_TO_CHAR(NOW(), 'YYYYMMDD')
     </select>
     
     <select id="searchDetail" parameterType="map" resultType="ParamMap">
@@ -139,11 +139,11 @@
 			,       A.TITLE
 			,       A.USER_ID
 			,       FN_USER_NAME(A.USER_ID) USER_NAME
-			,       FN_DATE_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS') CREATE_DATE
+			,       FN_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS') CREATE_DATE
 			,       A.CONTENTS
 			,		A.HIT
-			,		FN_DATE_TO_CHAR(A.DATE_FROM, 'YYYY-MM-DD') DATE_FROM
-			,		FN_DATE_TO_CHAR(A.DATE_TO, 'YYYY-MM-DD') DATE_TO
+			,		FN_TO_CHAR(A.DATE_FROM, 'YYYY-MM-DD') DATE_FROM
+			,		FN_TO_CHAR(A.DATE_TO, 'YYYY-MM-DD') DATE_TO
 			,		A.BANNER_REGI_YN
 			,		A.BANNER_IMG_YN
 			,		A.BANNER_IMG_PATH
@@ -184,7 +184,7 @@
 		,       A.TITLE
 		,       A.USER_ID
 		,       FN_USER_NAME(A.USER_ID) USER_NAME
-		,       FN_DATE_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS') CREATE_DATE
+		,       FN_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS') CREATE_DATE
 		,       A.CONTENTS
 		,		A.HIT
 		,		A.WRITE_YMD
@@ -241,7 +241,7 @@
                 ,   UPDATE_DATE     = NOW()
 		        ,   TRLG_KEY_VAL		= NULL
 		        ,	LT_CHPR_ID		=	#{loginUserId}
-		        ,	LT_CH_DTTI		= FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
+		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
         WHEN    NOT MATCHED THEN
                 INSERT
                 (                 
@@ -285,9 +285,9 @@
                 (
                     #{title}
                 ,   #{contents}
-                ,   FN_DATE_TO_CHAR(NOW(), 'YYYYMMDD')
+                ,   FN_TO_CHAR(NOW(), 'YYYYMMDD')
                 ,   #{loginUserId}
-                ,   FN_DATE_TO_CHAR(NOW(), 'YYYY-MM-DD')
+                ,   FN_TO_CHAR(NOW(), 'YYYY-MM-DD')
                 ,   #{dateTo}
                 ,   #{bannerRegiYn}
                 ,	#{bannerImgYn}
@@ -316,7 +316,7 @@
                 ,   NOW()
                 ,	NULL
 		        ,	#{loginUserId}
-		        ,	FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
+		        ,	FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
 		        ,   #{loginCmgrpCd}
                 );
     </insert>
@@ -328,7 +328,7 @@
 			,       A.TITLE
 			,       A.USER_ID
 			,       FN_USER_NAME(A.USER_ID) USER_NAME
-			,       FN_DATE_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS') CREATE_DATE
+			,       FN_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS') CREATE_DATE
 			,       A.CONTENTS
 			,		A.HIT
 			,       A.ATTACH_FILE_URL1
@@ -368,7 +368,7 @@
     			UPDATE_DATE     = NOW()
 		        ,   TRLG_KEY_VAL		= NULL
 		        ,	LT_CHPR_ID		=	#{loginUserId}
-		        ,	LT_CH_DTTI		= FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
+		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
         WHERE   ID = #{id}
         AND	   CMGRP_CD	   = #{loginCmgrpCd}
     </update>

@@ -17,7 +17,7 @@
 			,		A.DEPT_CODE
 			,		FN_DEPT_NAME_BY_USER(A.USER_ID) DEPT_NAME
 			,       FN_USER_NAME(A.USER_ID) USER_NAME
-			,		FN_DATE_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') CREATE_DATE
+			,		FN_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') CREATE_DATE
 			,		A.IDEA_FILE_URL
 			,		A.HIT  	
 			,		(SELECT COUNT(*) FROM IDEA_REPLY WHERE A.ID = BOARD_ID) REPLY_COUNT
@@ -112,7 +112,7 @@
 			,		A.USER_ID    
 			,		FN_DEPT_NAME_BY_USER(A.USER_ID) DEPT_NAME 
 			,       FN_USER_NAME(A.USER_ID) USER_NAME
-			,       FN_DATE_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') CREATE_DATE
+			,       FN_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') CREATE_DATE
 			,		A.IDEA_FILE_URL
 			,		A.HIT  	
 			,       LAG(A.TITLE) OVER (ORDER BY ID) PRE_TITLE
@@ -171,7 +171,7 @@
     		,		A.WRITE_YMD
     		,		A.USER_ID
     		,       FN_USER_NAME(A.USER_ID) USER_NAME
-    		,       FN_DATE_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS')  CREATE_DATE
+    		,       FN_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS')  CREATE_DATE
     		,		A.CMGRP_CD
     	FROM		IDEA_REPLY A
     	WHERE		A.BOARD_ID = #{boardId}
@@ -203,7 +203,7 @@
                 ,   UPDATE_DATE     = NOW()
 		        ,   TRLG_KEY_VAL		= NULL
 		        ,	LT_CHPR_ID		=	#{loginUserId}
-		        ,	LT_CH_DTTI		= FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
+		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
 		        ,	CMGRP_CD	   = #{loginCmgrpCd}
         WHEN    NOT MATCHED THEN
                 INSERT
@@ -228,7 +228,7 @@
                 (
                     #{title}
                 ,   #{contents}
-                ,   FN_DATE_TO_CHAR(NOW(), 'YYYYMMDD')
+                ,   FN_TO_CHAR(NOW(), 'YYYYMMDD')
                 ,   #{loginUserId}  
                 ,	SUBSTRING(FN_DEPT_CODE_BY_USER(#{loginUserId}),1,12)
                 <if test = "ideaFileUrl != null">
@@ -239,7 +239,7 @@
                 ,   NOW()
                 ,	NULL
 		        ,	#{loginUserId}
-		        ,	FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
+		        ,	FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
 		        ,	#{loginCmgrpCd}
                 );
     </insert>
@@ -256,7 +256,7 @@
                 ,   UPDATE_DATE     = NOW()
 		        ,   TRLG_KEY_VAL		= NULL
 		        ,	LT_CHPR_ID		=	#{loginUserId}
-		        ,	LT_CH_DTTI		= FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
+		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
 		        ,	CMGRP_CD	   = #{loginCmgrpCd}
         WHEN    NOT MATCHED THEN
                 INSERT
@@ -276,13 +276,13 @@
                 (
                     #{boardId}
                 ,   #{contents}
-                ,   FN_DATE_TO_CHAR(NOW(), 'YYYYMMDD')
+                ,   FN_TO_CHAR(NOW(), 'YYYYMMDD')
                 ,   #{loginUserId}     
                 ,   #{loginUserId}
                 ,   NOW()
                 ,	NULL
 		        ,	#{loginUserId}
-		        ,	FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
+		        ,	FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
 		        ,	#{loginCmgrpCd}
                 );
     </insert>
@@ -320,7 +320,7 @@
     			UPDATE_DATE     = NOW()
 		        ,   TRLG_KEY_VAL		= NULL
 		        ,	LT_CHPR_ID		=	#{loginUserId}
-		        ,	LT_CH_DTTI		= FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
+		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
 		        ,   CMGRP_CD	   = #{loginCmgrpCd}
         WHERE   ID = #{id}
         AND	   CMGRP_CD	   = #{loginCmgrpCd}

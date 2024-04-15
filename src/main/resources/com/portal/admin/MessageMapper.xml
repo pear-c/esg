@@ -47,7 +47,7 @@
 		        </if>
 		        ,   TRLG_KEY_VAL		= NULL
 		        ,	LT_CHPR_ID		=	#{loginUserId}
-		        ,	LT_CH_DTTI		= FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS') 
+		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS') 
         WHEN    NOT MATCHED THEN
                 INSERT
                 (
@@ -73,7 +73,7 @@
 		        </if>
                 ,	NULL
 		        ,	#{loginUserId}
-		        ,	FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
+		        ,	FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
                 );
 
     </insert>

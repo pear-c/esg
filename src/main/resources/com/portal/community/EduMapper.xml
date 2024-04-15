@@ -12,7 +12,7 @@
 		,       A.TITLE
 		,		A.CONTENTS
 		,		A.CONTENT_DETAIL
-		,       CASE WHEN A.TRAINING_FILE_URL IS  NOT NULL THEN SUBSTRING(A.TRAINING_FILE_URL,LEN(A.TRAINING_FILE_URL) - CHARINDEX('\',REVERSE(A.TRAINING_FILE_URL))+2,LEN(A.TRAINING_FILE_URL))  ELSE NULL END TRAINING_FILE_URL
+		,       CASE WHEN A.TRAINING_FILE_URL IS  NOT NULL THEN SUBSTRING(A.TRAINING_FILE_URL,FN_LEN(A.TRAINING_FILE_URL) - FN_STRINDEX('\',FN_REVERSE(A.TRAINING_FILE_URL))+2,FN_LEN(A.TRAINING_FILE_URL))  ELSE NULL END TRAINING_FILE_URL
 		,		TRAINING_FILE_URL TRAINING_FILE_URL_PATH
 		,		A.VIDEO_URL
 		<if test="upId != null and step != '1'">
@@ -50,7 +50,7 @@
                 ,   UPDATE_DATE     = NOW()
 		        ,   TRLG_KEY_VAL		= NULL
 		        ,	LT_CHPR_ID		=	#{loginUserId}
-		        ,	LT_CH_DTTI		= FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
+		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
 		        ,   CMGRP_CD	   = #{loginCmgrpCd}
         WHEN    NOT MATCHED THEN
                 INSERT
@@ -82,7 +82,7 @@
                 ,   NOW()
                 ,	NULL
 		        ,	#{loginUserId}
-		        ,	FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
+		        ,	FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
 		        ,	#{loginCmgrpCd}
                 );
     </insert>
@@ -105,7 +105,7 @@
     			UPDATE_DATE     = NOW()
 		        ,   TRLG_KEY_VAL		= NULL
 		        ,	LT_CHPR_ID		=	#{loginUserId}
-		        ,	LT_CH_DTTI		= FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
+		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
         WHERE   ID = #{id}
         AND	   CMGRP_CD	   = #{loginCmgrpCd}
     </update>

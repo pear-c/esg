@@ -12,7 +12,7 @@
             ,       A.TITLE
             ,       A.USER_ID
             ,       FN_USER_NAME(A.USER_ID) USER_NAME
-            ,       FN_DATE_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') CREATE_DATE
+            ,       FN_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') CREATE_DATE
             ,       A.HIT
             ,       A.WRITE_YMD
             ,       A.BBS_CATEGORY
@@ -124,11 +124,11 @@
             ,       A.TITLE
             ,       A.USER_ID
             ,       FN_USER_NAME(A.USER_ID) USER_NAME
-            ,       FN_DATE_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS') CREATE_DATE
+            ,       FN_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS') CREATE_DATE
             ,       A.CONTENTS
             ,       A.HIT
-            ,       FN_DATE_TO_CHAR(A.DATE_FROM, 'YYYY-MM-DD') DATE_FROM
-            ,       FN_DATE_TO_CHAR(A.DATE_TO, 'YYYY-MM-DD') DATE_TO
+            ,       FN_TO_CHAR(A.DATE_FROM, 'YYYY-MM-DD') DATE_FROM
+            ,       FN_TO_CHAR(A.DATE_TO, 'YYYY-MM-DD') DATE_TO
             ,       A.BANNER_REGI_YN
             ,       A.BANNER_IMG_YN
             ,       A.BANNER_IMG_PATH
@@ -171,7 +171,7 @@
         ,       A.TITLE
         ,       A.USER_ID
         ,       FN_USER_NAME(A.USER_ID) USER_NAME
-        ,       FN_DATE_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS') CREATE_DATE
+        ,       FN_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS') CREATE_DATE
         ,       A.CONTENTS
         ,       A.HIT
         ,       A.WRITE_YMD
@@ -204,7 +204,7 @@
                     A.ID
             ,       A.CONTENTS
             ,       A.USER_ROLE
-            ,       FN_DATE_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS')  CREATE_DATE
+            ,       FN_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS')  CREATE_DATE
             ,       A.USER_ID
             ,       FN_USER_NAME(A.USER_ID) USER_NAME
             ,       A.ORG_ID
@@ -220,7 +220,7 @@
                     A.ID
             ,       A.CONTENTS
             ,       A.USER_ROLE
-            ,       FN_DATE_TO_CHAR(A.CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS')  CREATE_DATE
+            ,       FN_TO_CHAR(A.CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS')  CREATE_DATE
             ,       A.USER_ID
             ,       FN_USER_NAME(A.USER_ID) USER_NAME
             ,       A.ORG_ID
@@ -244,7 +244,7 @@
         ,       CASE 
                     WHEN A.REPLY_ID IS NOT NULL 
                     THEN 
-                           (SELECT CONCAT(FN_USER_NAME(C.USER_ID),'replySplit',C.USER_ROLE,'replySplit',FN_DATE_TO_CHAR(C.CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS'),'replySplit', 
+                           (SELECT CONCAT(FN_USER_NAME(C.USER_ID),'replySplit',C.USER_ROLE,'replySplit',FN_TO_CHAR(C.CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS'),'replySplit', 
                                 CASE WHEN LENGTH(C.CONTENTS) > 30 THEN CONCAT(SUBSTRING(CAST(C.CONTENTS AS VARCHAR),0,30),'...') ELSE C.CONTENTS END )
                             FROM BBS C WHERE C.ID = A.REPLY_ID)
                     ELSE NULL
@@ -263,7 +263,7 @@
             ,       A.TITLE
             ,       A.USER_ID
             ,       FN_USER_NAME(A.USER_ID) USER_NAME
-            ,       FN_DATE_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS') CREATE_DATE
+            ,       FN_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS') CREATE_DATE
             ,       A.CONTENTS
             ,		A.CMGRP_CD
             FROM    BBS     A 
@@ -280,7 +280,7 @@
             SELECT  
                     A.ID
             ,       A.CONTENTS
-            ,       FN_DATE_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS')  CREATE_DATE
+            ,       FN_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS')  CREATE_DATE
             ,       A.USER_ID
             ,       FN_USER_NAME(A.USER_ID) USER_NAME
             ,       A.ORG_ID
@@ -294,7 +294,7 @@
             SELECT  
                     A.ID
             ,       A.CONTENTS
-            ,       FN_DATE_TO_CHAR(A.CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS')  CREATE_DATE
+            ,       FN_TO_CHAR(A.CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS')  CREATE_DATE
             ,       A.USER_ID
             ,       FN_USER_NAME(A.USER_ID) USER_NAME
             ,       A.ORG_ID
@@ -347,7 +347,7 @@
                 ,   UPDATE_DATE     = NOW()
 		        ,   TRLG_KEY_VAL		= NULL
 		        ,	LT_CHPR_ID		=	#{loginUserId}
-		        ,	LT_CH_DTTI		= FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS') 
+		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS') 
 		        ,   CMGRP_CD	   = #{loginCmgrpCd}
         WHEN    NOT MATCHED THEN
                 INSERT
@@ -389,7 +389,7 @@
                 (
                     #{title}
                 ,   #{contents}
-                ,   FN_DATE_TO_CHAR(NOW(), 'YYYYMMDD')
+                ,   FN_TO_CHAR(NOW(), 'YYYYMMDD')
                 ,   #{loginUserId}
                 ,   #{dateFrom}
                 ,   #{dateTo}
@@ -417,7 +417,7 @@
                 ,   NOW()
                 ,	NULL
 		        ,	#{loginUserId}
-		        ,	FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
+		        ,	FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
 		        , 	#{loginCmgrpCd}
                 );
     </insert>
@@ -440,7 +440,7 @@
         VALUES
         (
             #{contents}
-        ,   FN_DATE_TO_CHAR(NOW(), 'YYYYMMDD')
+        ,   FN_TO_CHAR(NOW(), 'YYYYMMDD')
         ,   #{loginUserId}
         ,   #{loginUserRole}
         ,   #{orgId}
@@ -474,7 +474,7 @@
             ,       A.TITLE
             ,       A.USER_ID
             ,       FN_USER_NAME(A.USER_ID) USER_NAME
-            ,       FN_DATE_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS') CREATE_DATE
+            ,       FN_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS') CREATE_DATE
             ,       A.CONTENTS
             ,       A.HIT
             ,       A.ATTACH_FILE_URL1
@@ -532,7 +532,7 @@
                 UPDATE_DATE     = NOW()
 		        ,   TRLG_KEY_VAL		= NULL
 		        ,	LT_CHPR_ID		=	#{loginUserId}
-		        ,	LT_CH_DTTI		= FN_DATE_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
+		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
 		        ,	CMGRP_CD	   = #{loginCmgrpCd}
         WHERE   ID = #{id}
         AND	   CMGRP_CD	   = #{loginCmgrpCd}

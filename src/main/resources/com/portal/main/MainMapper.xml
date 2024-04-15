@@ -116,7 +116,7 @@
 		                        ,       COUNT(*)    CNT
 		                        FROM    JOB
 		                        WHERE   USER_ID     = #{loginUserId}
-		                        AND     CREATE_DATE	BETWEEN CAST(FN_DATE_TO_CHAR(NOW(), 'YYYYMMDD') + ' 00:00:00' AS DATETIME) AND CAST(FN_DATE_TO_CHAR(NOW(), 'YYYYMMDD') + ' 23:59:59' AS DATETIME)
+		                        AND     CREATE_DATE	BETWEEN CAST(FN_TO_CHAR(NOW(), 'YYYYMMDD') + ' 00:00:00' AS DATETIME) AND CAST(FN_TO_CHAR(NOW(), 'YYYYMMDD') + ' 23:59:59' AS DATETIME)
 		                        GROUP   BY
 		                                JOB_STATE
 		                    )       B
@@ -223,7 +223,7 @@
 		FROM    BBS     A
 		WHERE   A.BBS_TYPE  IN  ('A','B','C')       --공지사항(A), RPA교육(B), RPA홍보(C)
 		AND     A.BANNER_REGI_YN    = 'Y'
-		AND     A.DATE_TO >= FN_DATE_TO_CHAR(NOW(), 'YYYYMMDD')
+		AND     A.DATE_TO >= FN_TO_CHAR(NOW(), 'YYYYMMDD')
 		AND     A.BBS_SHOW_YN = 'Y'
 		ORDER   BY
 		        A.ID DESC
@@ -239,7 +239,7 @@
 		        ON  A.PROCESS_ID    = B.PROCESS_ID
 		        AND A.SERVER_ID     = B.SERVER_ID
 		        AND A.SOLUTION		= B.SOLUTION
-		WHERE   A.PROC_YY           = FN_DATE_TO_CHAR(NOW(), 'YYYY')
+		WHERE   A.PROC_YY           = FN_TO_CHAR(NOW(), 'YYYY')
 	</select>
 
 	<!-- 연간 자동화 시간(사업소) -->
@@ -259,7 +259,7 @@
 		                    ON  A.PROCESS_ID    = B.PROCESS_ID
 		                    AND A.SERVER_ID		= B.SERVER_ID
 		                    AND A.SOLUTION		= B.SOLUTION
-		            WHERE   A.PROC_YY           = FN_DATE_TO_CHAR(NOW(), 'YYYY')
+		            WHERE   A.PROC_YY           = FN_TO_CHAR(NOW(), 'YYYY')
 		            GROUP   BY
 		                    A.DEPT_CODE
 		        )   B
@@ -284,7 +284,7 @@
 		                    ON  A.PROCESS_ID    = B.PROCESS_ID
 		                    AND A.SERVER_ID		= B.SERVER_ID
 		                    AND A.SOLUTION		= B.SOLUTION
-		            WHERE   A.PROC_YY           = FN_DATE_TO_CHAR(NOW(), 'YYYY')
+		            WHERE   A.PROC_YY           = FN_TO_CHAR(NOW(), 'YYYY')
 		            GROUP   BY
 		                    A.DEPT_CODE
 		        )   B
@@ -311,7 +311,7 @@
                             ON  A.PROCESS_ID    = B.PROCESS_ID
                             AND A.SERVER_ID		= B.SERVER_ID
                             AND A.SOLUTION		= B.SOLUTION
-                    WHERE   A.PROC_YY           = FN_DATE_TO_CHAR(NOW(), 'YYYY')
+                    WHERE   A.PROC_YY           = FN_TO_CHAR(NOW(), 'YYYY')
                     GROUP   BY
                             A.DEPT_CODE
                 )   B
@@ -336,7 +336,7 @@
                             ON  A.PROCESS_ID    = B.PROCESS_ID
                             AND A.SERVER_ID		= B.SERVER_ID
                             AND A.SOLUTION		= B.SOLUTION
-                    WHERE   A.PROC_YY           = FN_DATE_TO_CHAR(NOW(), 'YYYY')
+                    WHERE   A.PROC_YY           = FN_TO_CHAR(NOW(), 'YYYY')
                     GROUP   BY
                             A.DEPT_CODE
                 )   B
@@ -362,7 +362,7 @@
 		                    ON  A.PROCESS_ID    = B.PROCESS_ID
 		                    AND A.SERVER_ID		= B.SERVER_ID
 		                    AND A.SOLUTION		= B.SOLUTION
-		            WHERE   A.PROC_YY           = FN_DATE_TO_CHAR(NOW(), 'YYYY')
+		            WHERE   A.PROC_YY           = FN_TO_CHAR(NOW(), 'YYYY')
 		            GROUP   BY
 		                    A.DEPT_CODE
 		        )   B
@@ -388,7 +388,7 @@
 		            ON  A.PROCESS_ID    = B.PROCESS_ID
 		            AND A.SERVER_ID		= B.SERVER_ID
 		            AND A.SOLUTION		= B.SOLUTION
-		    WHERE   A.PROC_YY           = FN_DATE_TO_CHAR(NOW(), 'YYYY')
+		    WHERE   A.PROC_YY           = FN_TO_CHAR(NOW(), 'YYYY')
 		    GROUP   BY
 		            A.PROCESS_ID
 		)
@@ -547,9 +547,9 @@
     <select id="searchBBSNotice" parameterType="map" resultType="ParamMap">
         SELECT
 		        A.ID
-		,		FN_DATE_TO_CHAR(CAST(A.WRITE_YMD AS TIMESTAMPTZ), 'YY.MM.DD') WRITE_YMD
+		,		FN_TO_CHAR(CAST(A.WRITE_YMD AS TIMESTAMPTZ), 'YY.MM.DD') WRITE_YMD
 		,       A.TITLE
-		,       CASE    WHEN WRITE_YMD = FN_DATE_TO_CHAR(NOW(), 'YYYYMMDD') THEN 'Y' ELSE 'N' END IS_NEW
+		,       CASE    WHEN WRITE_YMD = FN_TO_CHAR(NOW(), 'YYYYMMDD') THEN 'Y' ELSE 'N' END IS_NEW
 		FROM    BBS     A
 		WHERE   A.BBS_TYPE  = 'A'
 		<if test='loginUserRole != "R999" and loginUserRole != "RDEV"'>
@@ -564,9 +564,9 @@
     <select id="searchBBSEdu" parameterType="map" resultType="ParamMap">
         SELECT
 		        A.ID
-		,		FN_DATE_TO_CHAR(CAST(A.WRITE_YMD AS TIMESTAMPTZ), 'YY.MM.DD') WRITE_YMD
+		,		FN_TO_CHAR(CAST(A.WRITE_YMD AS TIMESTAMPTZ), 'YY.MM.DD') WRITE_YMD
 		,       A.TITLE
-		,       CASE    WHEN WRITE_YMD = FN_DATE_TO_CHAR(NOW(), 'YYYYMMDD') THEN 'Y' ELSE 'N' END IS_NEW
+		,       CASE    WHEN WRITE_YMD = FN_TO_CHAR(NOW(), 'YYYYMMDD') THEN 'Y' ELSE 'N' END IS_NEW
 		FROM    BBS     A
 		WHERE   A.BBS_TYPE  = 'B'
 		<if test='loginUserRole != "R999" and loginUserRole != "RDEV"'>
@@ -581,9 +581,9 @@
     <select id="searchBBSPromotion" parameterType="map" resultType="ParamMap">
         SELECT
 		        A.ID
-		,		FN_DATE_TO_CHAR(CAST(A.WRITE_YMD AS TIMESTAMPTZ), 'YY.MM.DD') WRITE_YMD
+		,		FN_TO_CHAR(CAST(A.WRITE_YMD AS TIMESTAMPTZ), 'YY.MM.DD') WRITE_YMD
 		,       A.TITLE
-		,       CASE    WHEN WRITE_YMD = FN_DATE_TO_CHAR(NOW(), 'YYYYMMDD') THEN 'Y' ELSE 'N' END IS_NEW
+		,       CASE    WHEN WRITE_YMD = FN_TO_CHAR(NOW(), 'YYYYMMDD') THEN 'Y' ELSE 'N' END IS_NEW
 		FROM    BBS     A
 		WHERE   A.BBS_TYPE  = 'C'
 		<if test='loginUserRole != "R999" and loginUserRole != "RDEV"'>
@@ -598,9 +598,9 @@
     <select id="searchBBSQna" parameterType="map" resultType="ParamMap">
         SELECT
 		        A.ID
-		,		FN_DATE_TO_CHAR(CAST(A.WRITE_YMD AS TIMESTAMPTZ), 'YY.MM.DD') WRITE_YMD
+		,		FN_TO_CHAR(CAST(A.WRITE_YMD AS TIMESTAMPTZ), 'YY.MM.DD') WRITE_YMD
 		,       A.TITLE
-		,       CASE    WHEN WRITE_YMD = FN_DATE_TO_CHAR(NOW(), 'YYYYMMDD') THEN 'Y' ELSE 'N' END IS_NEW
+		,       CASE    WHEN WRITE_YMD = FN_TO_CHAR(NOW(), 'YYYYMMDD') THEN 'Y' ELSE 'N' END IS_NEW
 		FROM    BBS     A
 		WHERE   A.BBS_TYPE  = 'D'
 		AND		A.ORG_ID IS NULL
@@ -616,8 +616,8 @@
     <select id="searchBBSFaq" parameterType="map" resultType="ParamMap">
         SELECT
 		        A.FAQ_ID
-		,       CASE    WHEN A.UPDATE_DATE IS NULL THEN FN_DATE_TO_CHAR(A.CREATE_DATE, 'YY.MM.DD') 
-		                ELSE FN_DATE_TO_CHAR(A.UPDATE_DATE, 'YYYY-MM-DD')
+		,       CASE    WHEN A.UPDATE_DATE IS NULL THEN FN_TO_CHAR(A.CREATE_DATE, 'YY.MM.DD') 
+		                ELSE FN_TO_CHAR(A.UPDATE_DATE, 'YYYY-MM-DD')
 		        END     WRITE_YMD
 		,       A.QUESTION
 		FROM    FAQ A
@@ -631,9 +631,9 @@
     <select id="searchBBSErrorReport" parameterType="map" resultType="ParamMap">
         SELECT
                 A.ID
-        ,		FN_DATE_TO_CHAR(CAST(A.WRITE_YMD AS TIMESTAMPTZ), 'YY.MM.DD') WRITE_YMD
+        ,		FN_TO_CHAR(CAST(A.WRITE_YMD AS TIMESTAMPTZ), 'YY.MM.DD') WRITE_YMD
         ,       A.TITLE
-        ,       CASE    WHEN WRITE_YMD = FN_DATE_TO_CHAR(NOW(), 'YYYYMMDD') THEN 'Y' ELSE 'N' END IS_NEW
+        ,       CASE    WHEN WRITE_YMD = FN_TO_CHAR(NOW(), 'YYYYMMDD') THEN 'Y' ELSE 'N' END IS_NEW
         FROM    BBS     A
         WHERE   A.BBS_TYPE  = 'E'
         AND		A.ORG_ID IS NULL
