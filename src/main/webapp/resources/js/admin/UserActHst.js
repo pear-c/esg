@@ -140,7 +140,6 @@ function fnInitComp() {
     
     //콤보(Select box) 바인딩 설정
     var combo = [
-	 	{id: "cmgrpCd", upprCode: "CMGRP_CD", isAll: false}
     ];
     gfnInitComboBind(combo);
     

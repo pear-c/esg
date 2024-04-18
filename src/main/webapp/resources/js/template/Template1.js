@@ -40,7 +40,7 @@ function fnSearch() {
 
         var paramData = gfnGetInputParam();
 
-        gfnTransation("/Code/SearchUpperCode",paramData,"POST",fnSearchCallback)
+        gfnTransation("/Template1/SearchUpperCode",paramData,"POST",fnSearchCallback)
 
     }
 }
@@ -58,7 +58,6 @@ function fnSearchCallback(data) {
         gfnSetNoDataMsg('second-grid');
     }
     else {
-        //rowIndex = 0;
         rowIndex = gfnGetTrsDataRowPos(firstGrid, trsData);
         trsData = {};
         gfnSelectFocus('first-grid', rowIndex-1, rowIndex);
@@ -82,7 +81,7 @@ function fnSearch2(index) {
 
     paramData.upprCode = firstGrid.getList()[index]['UPPR_CODE']
 
-    gfnTransation("/Code/SearchCode",paramData,"POST",fnSearch2Callback)
+    gfnTransation("/Template1/SearchCode",paramData,"POST",fnSearch2Callback)
 }
 
 /********************************
@@ -131,7 +130,7 @@ function fnSave() {
         paramData.inputYn = $("#popParamInputYn").val()
         paramData.useYn = $("#popParamCodeUseYn").val()
         paramData.action = tAction;
-        gfnTransation("/Code/SaveUpperCode",paramData,"POST",fnSaveCallback)
+        gfnTransation("/Template1/SaveUpperCode",paramData,"POST",fnSaveCallback)
     }
 }
 
@@ -183,7 +182,7 @@ function fnSave2() {
         paramData.sortNo = $("#popParamSortNo").val()
         paramData.useYn = $("#popParamCodeUseYn2").val()
         paramData.action = tAction;
-        gfnTransation("/Code/SaveCode",paramData,"POST",fnSave2Callback)
+        gfnTransation("/Template1/SaveCode",paramData,"POST",fnSave2Callback)
     }
 }
 
@@ -199,7 +198,7 @@ function fnSave2Callback(data) {
 
           paramData.upprCode = $("#hiddenUpperCode").val();
 
-         gfnTransation("/Code/SearchCode",paramData,"POST",fnSearch2Callback)
+         gfnTransation("/Template1/SearchCode",paramData,"POST",fnSearch2Callback)
     }else{
         gfnPopMsg.alert(data.resData.message);
     }
@@ -226,7 +225,7 @@ function fnPreDelete() {
 function fnDelete() {
     var paramData = new Object();
     paramData.upprCode =  $("#popParamUpperCode").val();
-    gfnTransation("/Code/DeleteUpperCode",paramData,"POST",fnDeleteCallback)
+    gfnTransation("/Template1/DeleteUpperCode",paramData,"POST",fnDeleteCallback)
 }
 
 /********************************
@@ -250,7 +249,7 @@ function fnDelete2() {
     var paramData = new Object();
     paramData.upprCode =  $("#hiddenUpperCode").val();
     paramData.code =  $("#popParamCode").val();
-    gfnTransation("/Code/DeleteCode",paramData,"POST",fnDelete2Callback)
+    gfnTransation("/Template1/DeleteCode",paramData,"POST",fnDelete2Callback)
 }
 
 /********************************
@@ -604,6 +603,7 @@ function fnInitGrid1(){
             {key: "CONFIG_YN", label: "환경설정", width:80, align:"center"},
             {key: "INPUT_YN", label: "입력설정", width:80, align:"center"},
             {key: "USE_YN", label: "사용", width:80, align:"center"}
+
         ]
 
     });

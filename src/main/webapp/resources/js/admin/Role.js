@@ -231,7 +231,6 @@ function fnUpdate() {
     {
         var data = new Object();
 		
-		data.cmgrpCd = $("#popParamCmgrpCd").val();
         data.userId = $("#popUserId").val();
         data.userName = $("#popUserNameRole").val();
         data.role = $("#popRole").val();
@@ -497,7 +496,6 @@ function popRoleInsert(){
 function popRoleUpdate(index){
     gFnAllClear();
 	
-	$("#popParamCmgrpCd").val(firstGrid.getList()[index]['CMGRP_CD']);
     $("#popRoleId").val(firstGrid.getList()[index]['ROLE_ID']);
     $("#popRoleId").attr('readonly','readonly');
     $("#popRoleName").val(firstGrid.getList()[index]['ROLE_NM']);
@@ -702,8 +700,6 @@ function fnInitComp() {
 
 	//콤보(Select box) 바인딩 설정
     var combo = [
-	 		{id: "cmgrpCd", upprCode: "CMGRP_CD", isAll: false}
-	 	,	{id: "popParamCmgrpCd", upprCode: "CMGRP_CD", isAll: false}
     ];
     gfnInitComboBind(combo);
 
@@ -714,8 +710,6 @@ function fnInitComp() {
     // isUpper : 대문자만 허용
     var arrObj = [
         {id : 'roleNm', numberFormat: false, dataLength: 30, checkFormat: false, isUpper: false},
-		
-		{id : 'popParamCmgrpCd', numberFormat: false, dataLength: 0, checkFormat: true, isUpper: false},
         {id : 'popRoleId', numberFormat: false, dataLength: 4, checkFormat: true, isUpper: true},
         {id : 'popRoleName', numberFormat: false, dataLength: 30, checkFormat: true, isUpper: false}
 
@@ -767,8 +761,7 @@ function fnInitGrid1(){
         ,
         columns:[
             {key: "ROLE_ID", label: "롤 ID", width:180, align:"center"},
-            {key: "ROLE_NM", label: "롤 명", width:258, align:"left"},
-            {key: "CMGRP_CD", label: "CMGRP CD", width:0}
+            {key: "ROLE_NM", label: "롤 명", width:258, align:"left"}
         ]
 
     });

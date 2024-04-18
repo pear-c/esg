@@ -184,10 +184,15 @@
 	        <version>1.16</version>
 	    </dependency>
 
-	    <dependency>
+	    <!--<dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>42.2.5</version>
+        </dependency>-->
+	    <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.3</version>
         </dependency>
 
         <dependency>

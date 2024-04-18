@@ -28,9 +28,6 @@
         <if test="menuId != null">
         AND		A.MENU_ID = #{menuId}
         </if>
-        <if test="cmgrpCd != null">
-        AND     A.CMGRP_CD = #{cmgrpCd}
-        </if>
         ORDER   BY
                 A.SORT_NO
 
@@ -40,17 +37,11 @@
                 COUNT(*) CNT
         FROM    MENU    A 
         WHERE   A.MENU_ID = #{menuId}
-        <if test="cmgrpCd != null">
-        AND     A.CMGRP_CD         = #{cmgrpCd}
-        </if>
     </select>
     <insert id="save"  parameterType="map">
         MERGE INTO MENU A
         USING (SELECT 'A' AS A) B
         ON  A.MENU_ID = #{menuId}
-        <if test="cmgrpCd != null">
-        AND     A.CMGRP_CD         = #{cmgrpCd}
-        </if>
         WHEN    MATCHED THEN
                 UPDATE
                 SET
@@ -62,16 +53,10 @@
                 ,   MENU_URL        = #{menuUrl}
                 </if>
                 ,   UPPR_MENU_ID    = #{upprMenuId}
-                ,   SORT_NO         = #{sortNo}
+                ,   SORT_NO         = FN_TO_NUMBER(#{sortNo})
                 ,   USE_YN          = #{useYn}
                 ,   UPDATE_BY       = #{loginUserId}
                 ,   UPDATE_DATE     = NOW()
-                <if test="cmgrpCd != null">
-		        ,	CMGRP_CD         = #{cmgrpCd}
-		        </if>
-		        ,   TRLG_KEY_VAL		= NULL
-		        ,	LT_CHPR_ID		=	#{loginUserId}
-		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS') 
         WHEN    NOT MATCHED THEN
                 INSERT
                 (
@@ -88,12 +73,6 @@
                 ,   USE_YN
                 ,   CREATE_BY
                 ,   CREATE_DATE
-                <if test="cmgrpCd != null">
-		        ,	CMGRP_CD
-		        </if>
-                ,	TRLG_KEY_VAL
-		        ,	LT_CHPR_ID
-		        ,	LT_CH_DTTI
                 )
                 VALUES
                 (
@@ -106,16 +85,10 @@
                 ,   #{menuUrl}
                 </if>
                 ,   #{upprMenuId}
-                ,   #{sortNo}
+                ,   FN_TO_NUMBER(#{sortNo})
                 ,   #{useYn}
                 ,   #{loginUserId}
                 ,   NOW()
-                <if test="cmgrpCd != null">
-		        ,	#{cmgrpCd}
-		        </if>
-                ,	NULL
-		        ,	#{loginUserId}
-		        ,	FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
                 );
 
     </insert>
@@ -125,17 +98,11 @@
         DELETE MENU
         WHERE  MENU_ID = #{upprMenuId}
         OR     UPPR_MENU_ID = #{upprMenuId}
-        <if test="cmgrpCd != null">
-        AND     CMGRP_CD         = #{cmgrpCd}
-        </if>
     </delete>
 
     <!-- 하위 메뉴 삭제 -->
     <delete id="deleteDetail" parameterType="map">
         DELETE MENU
         WHERE  MENU_ID = #{menuId}
-        <if test="cmgrpCd != null">
-        AND     CMGRP_CD         = #{cmgrpCd}
-        </if>
     </delete>
 </mapper>

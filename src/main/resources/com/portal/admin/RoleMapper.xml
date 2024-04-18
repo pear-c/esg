@@ -15,9 +15,6 @@
 		<if test="roleNm != null">
 		AND     A.ROLE_NM   LIKE '%' + #{roleNm} + '%'
 		</if>
-		<if test="cmgrpCd != null">
-        AND     A.CMGRP_CD = #{cmgrpCd}
-        </if>
 		ORDER   BY
 		        A.ROLE_ID
     </select>
@@ -41,9 +38,6 @@
 		        AND     A.ROLE_ID       = #{roleId}
 		WHERE   B.USE_YN        = 'Y'
 		AND     B.UPPR_MENU_ID IS NOT NULL
-		<if test="cmgrpCd != null">
-        AND     A.CMGRP_CD         = #{cmgrpCd}
-        </if>
 		ORDER   BY
 		        B.SORT_NO
     </select>
@@ -57,9 +51,6 @@
 		,       (SELECT ROLE_NM FROM ROLE WHERE ROLE_ID = A.ROLE_ID) ROLE_NM
 		,       A.ACCESS_IP
 		FROM    USER_INFO   A 
-		<if test="cmgrpCd != null">
-        AND     A.CMGRP_CD         = #{cmgrpCd}
-        </if>
 		ORDER   BY
 		        A.DEPT_CODE
 		,       A.USER_ID
@@ -69,9 +60,6 @@
                 COUNT(*) CNT
         FROM    ROLE
         WHERE   ROLE_ID = #{popRoleId}
-        <if test="cmgrpCd != null">
-        AND     A.CMGRP_CD         = #{cmgrpCd}
-        </if>
     </select>
 
     <select id="searchUserCount" parameterType="map" resultType="ParamMap">
@@ -79,9 +67,6 @@
                 COUNT(*) CNT
         FROM    USER_INFO
         WHERE   USER_ID = #{userId}
-        <if test="cmgrpCd != null">
-        AND     A.CMGRP_CD         = #{cmgrpCd}
-        </if>
     </select>
 
     <select id="searchLoginMenu" resultType="ParamMap">
@@ -91,9 +76,6 @@
         FROM  Menu
         WHERE UPPR_MENU_ID is not null
         AND   USE_YN = 'Y'
-        <if test="cmgrpCd != null">
-        AND     A.CMGRP_CD         = #{cmgrpCd}
-        </if>
         ORDER BY SORT_NO
     </select>
 
@@ -102,23 +84,13 @@
         MERGE   INTO ROLE A
 		USING   (SELECT 'A' AS A) B
 		ON      A.ROLE_ID   = #{popRoleId}
-		<if test="cmgrpCd != null">
-        AND     A.CMGRP_CD         = #{cmgrpCd}
-        </if>
 		WHEN    MATCHED THEN
 		        UPDATE
 		        SET
 		            ROLE_NM     = #{popRoleName}
 		        ,	LOGIN_PAGE	= #{popLogin}
-		        <!-- ,   USE_YN      = #{popRoleYn} -->
 		        ,   UPDATE_BY   = #{loginUserId}
 		        ,   UPDATE_DATE     = NOW()
-		        <if test="cmgrpCd != null">
-		        ,	CMGRP_CD         = #{cmgrpCd}
-		        </if>
-		        ,   TRLG_KEY_VAL		= NULL
-		        ,	LT_CHPR_ID		=	#{loginUserId}
-		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
 		WHEN    NOT MATCHED THEN
 		        INSERT
 		        (
@@ -128,36 +100,20 @@
 		        <!-- ,   USE_YN -->
 		        ,   CREATE_BY
 		        ,   CREATE_DATE
-		        <if test="cmgrpCd != null">
-		        ,	CMGRP_CD
-		        </if>
-		        ,	TRLG_KEY_VAL
-		        ,	LT_CHPR_ID
-		        ,	LT_CH_DTTI
 		        )
 		        VALUES
 		        (
 		            #{popRoleId}
 		        ,   #{popRoleName}
 		        ,	#{popLogin}
-		      <!-- ,   #{popRoleYn} -->
 		        ,   #{loginUserId}
 		        ,   NOW()
-		        <if test="cmgrpCd != null">
-		        ,	#{cmgrpCd}
-		        </if>
-		        ,	NULL
-		        ,	#{loginUserId}
-		        ,	FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
 		        );
     </insert>
     <insert id="saveRoleMenu" parameterType="map">
         MERGE INTO ROLE_PRIV A
         USING (SELECT 'A' AS A) B
         ON  A.ROLE_ID = #{roleId} AND A.MENU_ID = #{menuId}
-        <if test="cmgrpCd != null">
-        AND     A.CMGRP_CD         = #{cmgrpCd}
-        </if>
         WHEN    MATCHED AND #{chk} = '0' THEN
                 DELETE
         WHEN    NOT MATCHED THEN
@@ -176,9 +132,6 @@
                 ,   MENU_ID
                 ,   CREATE_BY
                 ,   CREATE_DATE
-                <if test="cmgrpCd != null">
-		        ,	CMGRP_CD
-		        </if>
                 )
                 VALUES
                 (
@@ -195,9 +148,6 @@
                 ,   #{menuId}
                 ,   #{loginUserId}
                 ,   NOW()
-                <if test="cmgrpCd != null">
-		        ,	#{cmgrpCd}
-		        </if>
                 );
     </insert>
 
@@ -205,9 +155,6 @@
          MERGE INTO ROLE_PRIV A
         USING (SELECT 'A' AS A) B
         ON  A.ROLE_ID = #{roleId} AND A.MENU_ID = #{menuId}
-        <if test="cmgrpCd != null">
-        AND     A.CMGRP_CD         = #{cmgrpCd}
-        </if>
         WHEN    MATCHED AND #{chk} = '0' THEN
                 DELETE
         WHEN    MATCHED AND #{chk} = '1' THEN
@@ -218,12 +165,6 @@
                 ,	DELETE_ROLE = #{deleteRole}
                 ,   UPDATE_BY   = #{loginUserId}
 		        ,   UPDATE_DATE     = NOW()
-		        <if test="cmgrpCd != null">
-		        ,	CMGRP_CD         = #{cmgrpCd}
-		        </if>
-		        ,   TRLG_KEY_VAL		= NULL
-		        ,	LT_CHPR_ID		=	#{loginUserId}
-		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
         WHEN    NOT MATCHED THEN
                 INSERT
                 (
@@ -240,12 +181,6 @@
                 ,   MENU_ID
                 ,   CREATE_BY
                 ,   CREATE_DATE
-                <if test="cmgrpCd != null">
-		        ,	CMGRP_CD
-		        </if>
-                ,	TRLG_KEY_VAL
-		        ,	LT_CHPR_ID
-		        ,	LT_CH_DTTI
                 )
                 VALUES
                 (
@@ -262,12 +197,6 @@
                 ,   #{menuId}
                 ,   #{loginUserId}
                 ,   NOW()
-                <if test="cmgrpCd != null">
-		        ,	#{cmgrpCd}
-		        </if>
-                ,	NULL
-		        ,	#{loginUserId}
-		        ,	FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
                 );
     </insert>
 
@@ -275,9 +204,6 @@
         MERGE   INTO USER_INFO  A
 		USING   (SELECT 'A' AS A) B
 		ON      A.USER_ID       = #{userId}
-		<if test="cmgrpCd != null">
-        AND     A.CMGRP_CD         = #{cmgrpCd}
-        </if>
 		WHEN    MATCHED THEN
 		        UPDATE
 		        SET
@@ -285,12 +211,6 @@
 		        ,   ROLE_ID     = #{role}
 		        ,   UPDATE_BY   = #{loginUserId}
 		        ,   UPDATE_DATE     = NOW()
-		        <if test="cmgrpCd != null">
-		        ,	CMGRP_CD         = #{cmgrpCd}
-		        </if>
-		        ,   TRLG_KEY_VAL		= NULL
-		        ,	LT_CHPR_ID		=	#{loginUserId}
-		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
 		WHEN    NOT MATCHED THEN
 		        INSERT
 		        (
@@ -302,12 +222,6 @@
 		        ,   ROLE_ID
 		        ,   CREATE_BY
 		        ,   CREATE_DATE
-		        <if test="cmgrpCd != null">
-		        ,	CMGRP_CD
-		        </if>
-		        ,	TRLG_KEY_VAL
-		        ,	LT_CHPR_ID
-		        ,	LT_CH_DTTI
 		        )
 		        VALUES
 		        (
@@ -319,12 +233,6 @@
 		        ,   #{role}
 		        ,   #{loginUserId}
 		        ,   NOW()
-		        <if test="cmgrpCd != null">
-		        ,	#{cmgrpCd}
-		        </if>
-		        ,	NULL
-		        ,	#{loginUserId}
-		        ,	FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
 		        );
     </insert>
 
@@ -332,17 +240,11 @@
         DELETE  FROM ROLE
         WHERE   USE_YN  =  'Y'
         AND     ROLE_ID = #{roleId}
-        <if test="cmgrpCd != null">
-        AND     CMGRP_CD         = #{cmgrpCd}
-        </if>
     </delete>
 
      <delete id="deleteUserRole" parameterType="map">
         DELETE  FROM USER_INFO
         WHERE   USER_ID  =  #{userId}
         AND     USER_NAME = #{userName}
-        <if test="cmgrpCd != null">
-        AND     CMGRP_CD         = #{cmgrpCd}
-        </if>
     </delete>
 </mapper>

@@ -22,20 +22,13 @@
 			,		A.HIT  	
 			,		(SELECT COUNT(*) FROM IDEA_REPLY WHERE A.ID = BOARD_ID) REPLY_COUNT
 			,       ROW_NUMBER() OVER (ORDER BY ID) RID
-			,		A.CMGRP_CD
 			FROM    IDEA_BOARD     A 
 			WHERE   WRITE_YMD   > '19900101'
-			<if test="loginCmgrpCd != null">
-AND	   CMGRP_CD	   = #{loginCmgrpCd}
-</if>
 		)   
         SELECT                
                 *
         FROM    WW          
         WHERE   1    = 1
-        <if test="loginCmgrpCd != null">
-        AND	   CMGRP_CD	   = #{loginCmgrpCd}
-        </if>
         <if test="searchTxt != null">        	
 	        <choose>
 		        <when test='searchCond == "A"'>
@@ -74,9 +67,6 @@ AND	   CMGRP_CD	   = #{loginCmgrpCd}
 		FROM    IDEA_BOARD     A 
 		WHERE   WRITE_YMD   > '19900101'
 		AND   1    = 1
-		<if test="loginCmgrpCd != null">
-AND	   CMGRP_CD	   = #{loginCmgrpCd}
-</if>
         <if test="searchTxt != null">        	
 	        <choose>
 		        <when test='searchCond == "A"'>
@@ -125,12 +115,8 @@ AND	   CMGRP_CD	   = #{loginCmgrpCd}
 			,       LAG(A.ID) OVER (ORDER BY ID) PRE_ID
 			,       LEAD(A.TITLE) OVER (ORDER BY ID) AFT_TITLE
 			,       LEAD(A.ID) OVER (ORDER BY ID) AFT_ID
-			,		A.CMGRP_CD
 			FROM    IDEA_BOARD     A 
 			WHERE   WRITE_YMD   > '19900101'
-			<if test="loginCmgrpCd != null">
-AND	   CMGRP_CD	   = #{loginCmgrpCd}
-</if>
 			 <if test='deptCode != null'>
        		AND		DEPT_CODE = #{deptCode}
        		</if> 
@@ -138,9 +124,6 @@ AND	   CMGRP_CD	   = #{loginCmgrpCd}
 		SELECT  *
 		FROM    WW 
 		WHERE 	1 =1 
-		<if test="loginCmgrpCd != null">
-AND	   CMGRP_CD	   = #{loginCmgrpCd}
-</if>
         <if test = "id != null">          
         AND   ID    = #{id}
         </if>
@@ -159,20 +142,12 @@ AND	   CMGRP_CD	   = #{loginCmgrpCd}
 			,		A.IDEA_FILE_URL
 			,		A.DEPT_CODE
 			,		A.HIT  	
-			,		A.CMGRP_CD
 			FROM    IDEA_BOARD     A 
 			WHERE   WRITE_YMD   > '19900101'			
-			<if test="loginCmgrpCd != null">
-AND	   CMGRP_CD	   = #{loginCmgrpCd}
-</if> 
 		)
 		SELECT  *
 		FROM    WW 
         WHERE   ID BETWEEN #{id} - 2 AND #{id} + 2
-        <if test="loginCmgrpCd != null">
-        AND	   CMGRP_CD	   = #{loginCmgrpCd}
-        </if>
-        
         ORDER   BY
                 ID DESC
     </select>
@@ -186,22 +161,15 @@ AND	   CMGRP_CD	   = #{loginCmgrpCd}
     		,		A.USER_ID
     		,       FN_USER_NAME(A.USER_ID) USER_NAME
     		,       FN_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS')  CREATE_DATE
-    		,		A.CMGRP_CD
     	FROM		IDEA_REPLY A
     	WHERE		A.BOARD_ID = #{boardId}
-    	<if test="loginCmgrpCd != null">
-AND	   CMGRP_CD	   = #{loginCmgrpCd}
-</if>
     	ORDER BY	A.ID	ASC
     </select>
     
     <select id="searchDeptCnt" parameterType="map" resultType="ParamMap">
-    	SELECT CMGRP_CD ,DEPT_CODE, count(*) CNT
+    	SELECT DEPT_CODE, count(*) CNT
   		  FROM IDEA_BOARD A
  		 WHERE DEPT_CODE in ('001100004005','001100004006','001100004010','001100004031','001100004013','001100004028')
- 		 <if test="loginCmgrpCd != null">
- AND	   CMGRP_CD	   = #{loginCmgrpCd}
- </if>
  		 GROUP BY DEPT_CODE
     </select>
     
@@ -219,10 +187,6 @@ AND	   CMGRP_CD	   = #{loginCmgrpCd}
                 </if>
                 ,   UPDATE_BY           = #{loginUserId}
                 ,   UPDATE_DATE     = NOW()
-		        ,   TRLG_KEY_VAL		= NULL
-		        ,	LT_CHPR_ID		=	#{loginUserId}
-		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
-		        ,	CMGRP_CD	   = #{loginCmgrpCd}
         WHEN    NOT MATCHED THEN
                 INSERT
                 (                 
@@ -237,10 +201,6 @@ AND	   CMGRP_CD	   = #{loginCmgrpCd}
                 ,	HIT
                 ,   CREATE_BY           
                 ,   CREATE_DATE     
-                ,	TRLG_KEY_VAL
-		        ,	LT_CHPR_ID
-		        ,	LT_CH_DTTI    
-		        ,	CMGRP_CD
                 )
                 VALUES
                 (
@@ -255,10 +215,6 @@ AND	   CMGRP_CD	   = #{loginCmgrpCd}
                 ,	0
                 ,   #{loginUserId}
                 ,   NOW()
-                ,	NULL
-		        ,	#{loginUserId}
-		        ,	FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
-		        ,	#{loginCmgrpCd}
                 );
     </insert>
     
@@ -272,10 +228,6 @@ AND	   CMGRP_CD	   = #{loginCmgrpCd}
                    	CONTENTS            = #{contents} 
                 ,   UPDATE_BY           = #{loginUserId}
                 ,   UPDATE_DATE     = NOW()
-		        ,   TRLG_KEY_VAL		= NULL
-		        ,	LT_CHPR_ID		=	#{loginUserId}
-		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
-		        ,	CMGRP_CD	   = #{loginCmgrpCd}
         WHEN    NOT MATCHED THEN
                 INSERT
                 (                 
@@ -285,10 +237,6 @@ AND	   CMGRP_CD	   = #{loginCmgrpCd}
                 ,   USER_ID   
                 ,   CREATE_BY           
                 ,   CREATE_DATE       
-                ,	TRLG_KEY_VAL
-		        ,	LT_CHPR_ID
-		        ,	LT_CH_DTTI  
-		        ,	CMGRP_CD
                 )
                 VALUES
                 (
@@ -298,10 +246,6 @@ AND	   CMGRP_CD	   = #{loginCmgrpCd}
                 ,   #{loginUserId}     
                 ,   #{loginUserId}
                 ,   NOW()
-                ,	NULL
-		        ,	#{loginUserId}
-		        ,	FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
-		        ,	#{loginCmgrpCd}
                 );
     </insert>
     
@@ -309,34 +253,22 @@ AND	   CMGRP_CD	   = #{loginCmgrpCd}
 		UPDATE  IDEA_BOARD
 		   SET HIT = HIT +1
         WHERE   ID    = #{id}
-        <if test="loginCmgrpCd != null">
-        AND	   CMGRP_CD	   = #{loginCmgrpCd}
-        </if>
     </update>
     
     <delete id="delete" parameterType="map">
         DELETE  FROM IDEA_BOARD
         WHERE   ID = #{id}
-        <if test="loginCmgrpCd != null">
-        AND	   CMGRP_CD	   = #{loginCmgrpCd}
-        </if>
     </delete>
     
     <update id="updateReply" parameterType="map">
         UPDATE IDEA_REPLY
            SET CONTENTS = #{contents}
          WHERE ID = #{id}
-         <if test="loginCmgrpCd != null">
-         AND	   CMGRP_CD	   = #{loginCmgrpCd}
-         </if>
     </update>
     
     <delete id="deleteReply" parameterType="map">
         DELETE FROM IDEA_REPLY
          WHERE ID = #{id}
-         <if test="loginCmgrpCd != null">
-         AND	   CMGRP_CD	   = #{loginCmgrpCd}
-         </if>
     </delete>
     
     <update id="fileDelete" parameterType="map">
@@ -344,13 +276,6 @@ AND	   CMGRP_CD	   = #{loginCmgrpCd}
     	SET     
     			IDEA_FILE_URL = NULL,
     			UPDATE_DATE     = NOW()
-		        ,   TRLG_KEY_VAL		= NULL
-		        ,	LT_CHPR_ID		=	#{loginUserId}
-		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
-		        ,   CMGRP_CD	   = #{loginCmgrpCd}
         WHERE   ID = #{id}
-        <if test="loginCmgrpCd != null">
-        AND	   CMGRP_CD	   = #{loginCmgrpCd}
-        </if>
     </update>
 </mapper>

@@ -25,23 +25,16 @@
             ,       FN_CODE_NAME('QNA_CATEGORY',A.BBS_CATEGORY) BBS_CATEGORY_NAME
             ,		(SELECT COUNT(*) FROM BBS WHERE BBS_TYPE = 'E' AND A.ID = ORG_ID) REPLY_COUNT
             ,       ROW_NUMBER() OVER (ORDER BY ID) RID
-            ,		A.CMGRP_CD
             FROM    BBS     A 
             WHERE   BBS_TYPE    = 'E'
             AND     WRITE_YMD   > '19900101'
             AND     ORG_ID IS NULL
             AND 	REPLY_ID IS NULL
-            <if test="loginCmgrpCd != null">
-            AND	   CMGRP_CD	   = #{loginCmgrpCd}
-            </if>
         )   
         SELECT                
                 *
         FROM    WW          
         WHERE   1    = 1
-        <if test="loginCmgrpCd != null">
-        AND	   CMGRP_CD	   = #{loginCmgrpCd}
-        </if>
         <if test="searchTxt != null">           
             <choose>
                 <when test='searchCond == "A"'>
@@ -86,9 +79,6 @@
         AND   1    = 1
         AND   A.ORG_ID IS NULL
         AND   A.REPLY_ID IS NULL
-        <if test="loginCmgrpCd != null">
-        AND	 CMGRP_CD	   = #{loginCmgrpCd}
-        </if>
         <if test="searchTxt != null">           
             <choose>
                 <when test='searchCond == "A"'>
@@ -148,22 +138,15 @@
             ,       LAG(A.TITLE) OVER (ORDER BY ID) PRE_TITLE
             ,       LEAD(A.TITLE) OVER (ORDER BY ID) AFT_TITLE
             ,       ROW_NUMBER() OVER (ORDER BY ID) RID
-            ,		A.CMGRP_CD
             FROM    BBS     A 
             WHERE   BBS_TYPE    = 'E'
             AND     WRITE_YMD   > '19900101'
             AND     ORG_ID IS NULL
             AND 	REPLY_ID IS NULL
-            <if test="loginCmgrpCd != null">
-            AND	   CMGRP_CD	   = #{loginCmgrpCd}
-            </if>
         )
         SELECT  *
         FROM    WW 
         WHERE 1 = 1
-        <if test="loginCmgrpCd != null">
-        AND	   CMGRP_CD	   = #{loginCmgrpCd}
-        </if>
         <if test = "rid != null">          
         AND   RID    = #{rid}
         </if>
@@ -187,15 +170,11 @@
         ,       A.WRITE_YMD
         ,       BBS_SHOW_YN
         ,       ROW_NUMBER() OVER (ORDER BY ID) RID
-        ,		A.CMGRP_CD
         FROM    BBS     A 
         WHERE   BBS_TYPE    = 'E'
         AND     WRITE_YMD   > '19900101'
         AND     ORG_ID IS NULL
         AND 	REPLY_ID IS NULL
-        <if test="loginCmgrpCd != null">
-        AND	   CMGRP_CD	   = #{loginCmgrpCd}
-        </if>
         <if test='loginUserRole != "R999" and loginUserRole != "RDEV"'>
             AND BBS_SHOW_YN  = 'Y'
        </if>
@@ -203,10 +182,6 @@
         SELECT  *
         FROM    WW 
         WHERE   RID BETWEEN #{rid} - 2 AND #{rid} + 2
-        <if test="loginCmgrpCd != null">
-        AND	   CMGRP_CD	   = #{loginCmgrpCd}
-        </if>
-        
         ORDER   BY
                 RID DESC
     </select>
@@ -225,12 +200,8 @@
             ,       0   LEVEL
             ,       A.REPLY_ID
             ,       ROW_NUMBER() OVER (ORDER BY A.ID) RID
-            ,		A.CMGRP_CD
             FROM    BBS A 
             WHERE   ID  = #{id}
-            <if test="loginCmgrpCd != null">
-            AND	   CMGRP_CD	   = #{loginCmgrpCd}
-            </if>
             UNION   ALL
             SELECT  
                     A.ID
@@ -243,7 +214,6 @@
             ,       B.LEVEL + 1 LEVEL
             ,       A.REPLY_ID
             ,       ROW_NUMBER() OVER (ORDER BY A.ID) RID
-            ,		A.CMGRP_CD
             FROM    BBS A 
                     JOIN
                     CTE B
@@ -266,12 +236,8 @@
                     ELSE NULL
                     END REPLY_ID
         ,       A.LEVEL
-        ,		A.CMGRP_CD
         FROM    CTE A
         WHERE   A.LEVEL != 0
-        <if test="loginCmgrpCd != null">
-        AND	   CMGRP_CD	   = #{loginCmgrpCd}
-        </if>
         ORDER BY RID DESC
         OFFSET ${startPage} ROWS FETCH NEXT 5 ROWS ONLY
     </select>
@@ -283,15 +249,10 @@
             ,       FN_USER_NAME(A.USER_ID) USER_NAME
             ,       FN_TO_CHAR(CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS') CREATE_DATE
             ,       A.CONTENTS
-            ,		A.CMGRP_CD
             FROM    BBS     A 
             WHERE   BBS_TYPE    = 'E'
             AND     WRITE_YMD   > '19900101'       
        	    AND   	ID    		= #{id}
-       	    <if test="loginCmgrpCd != null">
-    AND	   CMGRP_CD	   = #{loginCmgrpCd}
-    </if>
-        
     </select>
     <select id="searchReplyCount" parameterType="map"  resultType="int">
         WITH CTE 
@@ -306,12 +267,8 @@
             ,       A.ORG_ID
             ,       0   LEVEL
             ,       ROW_NUMBER() OVER (ORDER BY A.ID) RID
-            ,		A.CMGRP_CD
             FROM    BBS A 
             WHERE   ID  = #{id}
-            <if test="loginCmgrpCd != null">
-            AND	   CMGRP_CD	   = #{loginCmgrpCd}
-            </if>
             UNION   ALL
             SELECT  
                     A.ID
@@ -322,7 +279,6 @@
             ,       A.ORG_ID
             ,       B.LEVEL + 1 LEVEL
             ,       ROW_NUMBER() OVER (ORDER BY A.ID) RID
-            ,		A.CMGRP_CD
             FROM    BBS A 
                     JOIN
                     CTE B
@@ -332,9 +288,6 @@
                 Count(*) CNT
         FROM    CTE A
         WHERE   A.LEVEL != 0
-        <if test="loginCmgrpCd != null">
-        AND	   CMGRP_CD	   = #{loginCmgrpCd}
-        </if>
     </select>
     <insert id="save" parameterType="map">
         MERGE INTO BBS A
@@ -369,10 +322,6 @@
                 ,   BBS_CATEGORY        = #{bbsCategory}
                 ,   UPDATE_BY           = #{loginUserId}
                 ,   UPDATE_DATE     = NOW()
-		        ,   TRLG_KEY_VAL		= NULL
-		        ,	LT_CHPR_ID		=	#{loginUserId}
-		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
-		        ,	CMGRP_CD	   = #{loginCmgrpCd}
         WHEN    NOT MATCHED THEN
                 INSERT
                 (                 
@@ -404,10 +353,6 @@
                 ,   BBS_CATEGORY    
                 ,   CREATE_BY           
                 ,   CREATE_DATE         
-                ,	TRLG_KEY_VAL
-		        ,	LT_CHPR_ID
-		        ,	LT_CH_DTTI
-		        ,	CMGRP_CD
                 )
                 VALUES
                 (
@@ -439,10 +384,6 @@
                 ,   #{bbsCategory}
                 ,   #{loginUserId}
                 ,   NOW()
-                ,	NULL
-		        ,	#{loginUserId}
-		        ,	FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
-		        ,	#{loginCmgrpCd}
                 );
     </insert>
     <insert id="saveReply" parameterType="map">
@@ -459,7 +400,6 @@
         <if test="replyId">
         ,	REPLY_ID
         </if>        
-        ,	CMGRP_CD
         )
         VALUES
         (
@@ -474,24 +414,17 @@
         <if test="replyId">
         ,	#{replyId}
         </if>
-        ,	#{loginCmgrpCd}
         )
     </insert>
     <update id="updateReply" parameterType="map">
         UPDATE BBS
            SET CONTENTS = #{contents}
          WHERE ID = #{id}
-         <if test="loginCmgrpCd != null">
-         AND	   CMGRP_CD	   = #{loginCmgrpCd}
-         </if>
     </update>
     
     <delete id="deleteReply" parameterType="map">
         DELETE FROM BBS
          WHERE ID = #{id}
-         <if test="loginCmgrpCd != null">
-         AND	   CMGRP_CD	   = #{loginCmgrpCd}
-         </if>
     </delete>
     
     <update id="updateHit" parameterType="map">
@@ -513,20 +446,13 @@
             ,       LAG(A.TITLE) OVER (ORDER BY ID) PRE_TITLE
             ,       LEAD(A.TITLE) OVER (ORDER BY ID) AFT_TITLE
             ,       ROW_NUMBER() OVER (ORDER BY ID) RID
-            ,		A.CMGRP_CD
             FROM    BBS     A 
             WHERE   BBS_TYPE    = 'E'
             AND     WRITE_YMD   > '19900101'
-            <if test="loginCmgrpCd != null">
-            AND	   CMGRP_CD	   = #{loginCmgrpCd}
-            </if>
         )
         UPDATE  WW
            SET HIT = HIT +1
         WHERE   RID    = #{rid}
-        <if test="loginCmgrpCd != null">
-        AND	   CMGRP_CD	   = #{loginCmgrpCd}
-        </if>
     </update>
     
     <delete id="delete" parameterType="map">
@@ -535,16 +461,11 @@
         (
             SELECT  
                     A.ID
-                    ,		A.CMGRP_CD
             FROM    BBS A 
             WHERE   ID  = #{id}
-            <if test="loginCmgrpCd != null">
-            AND	   CMGRP_CD	   = #{loginCmgrpCd}
-            </if>
             UNION   ALL
             SELECT  
                     A.ID
-                    ,		A.CMGRP_CD
             FROM    BBS A 
                     JOIN
                     CTE B
@@ -563,13 +484,6 @@
                 <if test ="fileUrlDelete4 != null">ATTACH_FILE_URL4 = NULL,</if>
                 <if test ="fileUrlDelete5 != null">ATTACH_FILE_URL5 = NULL,</if>
                 UPDATE_DATE     = NOW()
-		        ,   TRLG_KEY_VAL		= NULL
-		        ,	LT_CHPR_ID		=	#{loginUserId}
-		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
-		        ,   CMGRP_CD	   = #{loginCmgrpCd}
         WHERE   ID = #{id}
-        <if test="loginCmgrpCd != null">
-        AND	   CMGRP_CD	   = #{loginCmgrpCd}
-        </if>
     </update>
 </mapper>

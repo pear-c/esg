@@ -47,9 +47,9 @@
 						<!-- 팝업 레이어 열림 -->
 					</div>
 					<div class="grid_wrapper" style="position: relative">
-<!-- 						<div id="firstGrid" tabIndex="0" data-ax5grid="firstGrid" -->
-<!-- 						data-ax5grid-config="{}" style="font-size: 20px; height: 100%;"></div> -->
-						<div id="myGrid" style="font-size: 20px; height: 100%;" class="ag-theme-quartz-dark"></div>
+						<div id="firstGrid" tabIndex="0" data-ax5grid="firstGrid"
+							data-ax5grid-config="{}" style="font-size: 20px; height: 100%;"></div>
+<!-- 						<div id="myGrid" style="font-size: 20px; height: 100%;" class="ag-theme-quartz-dark"></div> -->
 					</div>
 					<!--- 레이어 팝업 (메세지 추가) -->
 					<div class="layPop" id="layPop01">
@@ -98,5 +98,5 @@
 
 <script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/jquery-ui.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/datepicker-ko.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/admin/Message.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/template/Template2.js"></script>
 </html>

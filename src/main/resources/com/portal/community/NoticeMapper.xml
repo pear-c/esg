@@ -30,13 +30,9 @@
 			,		A.BBS_SHOW_YN
 			,		FN_CODE_NAME('NOTICE_CATEGORY',A.BBS_CATEGORY) BBS_CATEGORY_NAME
 			,       ROW_NUMBER() OVER (ORDER BY ID) RID
-			,		A.CMGRP_CD
 			FROM    BBS     A 
 			WHERE   BBS_TYPE    = 'A'
 			AND     WRITE_YMD   > '19900101'
-			<if test="loginCmgrpCd != null">
-AND	   CMGRP_CD	   = #{loginCmgrpCd}
-</if>
 		)   
         SELECT                
                 *
@@ -73,9 +69,6 @@ AND	   CMGRP_CD	   = #{loginCmgrpCd}
         <if test='dateUse != 0'>
         AND     WRITE_YMD          BETWEEN REPLACE(#{startDate},'-','') AND REPLACE(#{endDate},'-','')
         </if>
-        <if test="loginCmgrpCd != null">
-        AND	   CMGRP_CD	   = #{loginCmgrpCd}
-        </if>
         ORDER BY RID DESC
         OFFSET ${startPage} ROWS FETCH NEXT ${paging} ROWS ONLY
     </select>
@@ -86,9 +79,6 @@ AND	   CMGRP_CD	   = #{loginCmgrpCd}
 		FROM    BBS     A 
 		WHERE   BBS_TYPE    = 'A'
 		AND     WRITE_YMD   > '19900101'
-		<if test="loginCmgrpCd != null">
-AND	   CMGRP_CD	   = #{loginCmgrpCd}
-</if>
 		AND   1    = 1
         <if test="searchTxt != null">        	
 	        <choose>
@@ -129,9 +119,6 @@ AND	   CMGRP_CD	   = #{loginCmgrpCd}
     	FROM    BBS     A 
         WHERE   BBS_TYPE    = 'A'
 		AND     WRITE_YMD   > '19900101'
-		<if test="loginCmgrpCd != null">
-AND	   CMGRP_CD	   = #{loginCmgrpCd}
-</if>
 		AND 	BANNER_REGI_YN = 'Y'    	 
 		<if test='dateUse != 0'>
         AND     WRITE_YMD          BETWEEN REPLACE(#{startDate},'-','') AND REPLACE(#{endDate},'-','')
@@ -166,13 +153,9 @@ AND	   CMGRP_CD	   = #{loginCmgrpCd}
 			,       LAG(A.TITLE) OVER (ORDER BY ID) PRE_TITLE
 			,       LEAD(A.TITLE) OVER (ORDER BY ID) AFT_TITLE
 			,       ROW_NUMBER() OVER (ORDER BY ID) RID
-			,		CMGRP_CD
 			FROM    BBS     A 
 			WHERE   BBS_TYPE    = 'A'
 			AND     WRITE_YMD   > '19900101'
-			<if test="loginCmgrpCd != null">
-AND	   CMGRP_CD	   = #{loginCmgrpCd}
-</if>
 		)
 		SELECT  *
 		FROM    WW 
@@ -183,10 +166,6 @@ AND	   CMGRP_CD	   = #{loginCmgrpCd}
         <if test = "rid == null and id != null">          
         AND   ID    = #{id}
         </if>
-       <if test="loginCmgrpCd != null">
-       AND	   CMGRP_CD	   = #{loginCmgrpCd}
-       </if>
-        
     </select>
     <select id="searchSub" parameterType="map" resultType="ParamMap">
        WITH WW AS
@@ -202,7 +181,6 @@ AND	   CMGRP_CD	   = #{loginCmgrpCd}
 		,		A.WRITE_YMD
 		,		BBS_SHOW_YN
 		,       ROW_NUMBER() OVER (ORDER BY ID) RID
-		,		CMGRP_CD
 		FROM    BBS     A 
 		WHERE   BBS_TYPE    = 'A'
 		AND     WRITE_YMD   > '19900101'
@@ -210,9 +188,6 @@ AND	   CMGRP_CD	   = #{loginCmgrpCd}
 		SELECT  *
 		FROM    WW 
         WHERE   RID BETWEEN #{rid} - 2 AND #{rid} + 2
-        <if test="loginCmgrpCd != null">
-        AND	   CMGRP_CD	   = #{loginCmgrpCd}
-        </if>
         ORDER   BY
                 RID DESC
     </select>
@@ -230,7 +205,6 @@ AND	   CMGRP_CD	   = #{loginCmgrpCd}
                 ,   BANNER_REGI_YN      = #{bannerRegiYn}
                 ,	BANNER_IMG_YN		= #{bannerImgYn}
                 ,	BANNER_DEFAULT_IMG	= #{bannerDefaultImg}
-                ,   CMGRP_CD	   = #{loginCmgrpCd}
                 <if test = "bannerImgPath != null">                
                 ,	BANNER_IMG_PATH		= #{bannerImgPath}
                 </if>   
@@ -253,9 +227,6 @@ AND	   CMGRP_CD	   = #{loginCmgrpCd}
                 ,	BBS_CATEGORY		= #{bbsCategory}
                 ,   UPDATE_BY           = #{loginUserId}
                 ,   UPDATE_DATE     = NOW()
-		        ,   TRLG_KEY_VAL		= NULL
-		        ,	LT_CHPR_ID		=	#{loginUserId}
-		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
         WHEN    NOT MATCHED THEN
                 INSERT
                 (                 
@@ -290,10 +261,6 @@ AND	   CMGRP_CD	   = #{loginCmgrpCd}
                 ,	BBS_CATEGORY    
                 ,   CREATE_BY           
                 ,   CREATE_DATE        
-                ,	TRLG_KEY_VAL
-		        ,	LT_CHPR_ID
-		        ,	LT_CH_DTTI 
-		        ,   CMGRP_CD
                 )
                 VALUES
                 (
@@ -328,10 +295,6 @@ AND	   CMGRP_CD	   = #{loginCmgrpCd}
                 ,	#{bbsCategory}
                 ,   #{loginUserId}
                 ,   NOW()
-                ,	NULL
-		        ,	#{loginUserId}
-		        ,	FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
-		        ,   #{loginCmgrpCd}
                 );
     </insert>
     <update id="updateHit" parameterType="map">
@@ -353,28 +316,18 @@ AND	   CMGRP_CD	   = #{loginCmgrpCd}
 			,       LAG(A.TITLE) OVER (ORDER BY ID) PRE_TITLE
 			,       LEAD(A.TITLE) OVER (ORDER BY ID) AFT_TITLE
 			,       ROW_NUMBER() OVER (ORDER BY ID) RID
-			,		A.CMGRP_CD
 			FROM    BBS     A 
 			WHERE   BBS_TYPE    = 'A'
 			AND     WRITE_YMD   > '19900101'
-			<if test="loginCmgrpCd != null">
-AND	   CMGRP_CD	   = #{loginCmgrpCd}
-</if>
 		)
 		UPDATE  WW
 		   SET HIT = HIT +1
         WHERE   RID    = #{rid}
-        <if test="loginCmgrpCd != null">
-        AND	   CMGRP_CD	   = #{loginCmgrpCd}
-        </if>
     </update>
     
     <delete id="delete" parameterType="map">
         DELETE  FROM BBS
         WHERE   ID = #{id}
-        <if test="loginCmgrpCd != null">
-        AND	   CMGRP_CD	   = #{loginCmgrpCd}
-        </if>
     </delete>
     
     <update id="fileDelete" parameterType="map">
@@ -386,12 +339,6 @@ AND	   CMGRP_CD	   = #{loginCmgrpCd}
     			<if test ="fileUrlDelete4 != null">ATTACH_FILE_URL4 = NULL,</if>
     			<if test ="fileUrlDelete5 != null">ATTACH_FILE_URL5 = NULL,</if>
     			UPDATE_DATE     = NOW()
-		        ,   TRLG_KEY_VAL		= NULL
-		        ,	LT_CHPR_ID		=	#{loginUserId}
-		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
         WHERE   ID = #{id}
-        <if test="loginCmgrpCd != null">
-        AND	   CMGRP_CD	   = #{loginCmgrpCd}
-        </if>
     </update>
 </mapper>

@@ -183,7 +183,6 @@ function fnUpdate() {
     {
         var data = new Object();
 		
-		data.cmgrpCd = $("#popParamCmgrpCd").val();
         data.userId = $("#popUserId").val();
         data.userName = $("#popUserNameRole").val();
         data.role = $("#popRole").val();
@@ -313,7 +312,6 @@ function fnUserPopSave(){
 
         var data = new Object();
 		
-		data.cmgrpCd = $("#popParamCmgrpCd").val();
         data.userId = $("#popUserId").val();
         data.userName = $("#popUserNameRole").val();
         data.role = $("#popRole").val();
@@ -477,7 +475,6 @@ function popUserUpdate(index){
 
 
 
-	$("#popParamCmgrpCd").val(firstGrid.getList()[index]['CMGRP_CD']);
     $("#popUserId").val(firstGrid.getList()[index]['USER_ID']);
     $("#popUserNameRole").val(firstGrid.getList()[index]['USER_NAME']);
     $("#popRole").val(firstGrid.getList()[index]['ROLE_ID']);
@@ -700,8 +697,6 @@ function fnInitComp() {
 
 	//콤보(Select box) 바인딩 설정
     var combo = [
-         	{id: "cmgrpCd", upprCode: "CMGRP_CD", isAll: false}
-         ,	{id: "popParamCmgrpCd", upprCode: "CMGRP_CD", isAll: false}
     ];
     gfnInitComboBind(combo);
 
@@ -712,7 +707,6 @@ function fnInitComp() {
     // isUpper : 대문자만 허용
 
     var arrObj = [
-		{id : 'popParamCmgrpCd', numberFormat: false, dataLength: 0, checkFormat: true, isUpper: false},
         {id : 'popUserId', numberFormat: true, dataLength: 30, checkFormat: true, isUpper: false},
         {id : 'popUserNameRole', numberFormat: false, dataLength: 10, checkFormat: true, isUpper: true},
         {id : 'popRole', numberFormat: false, dataLength: 10, checkFormat: true, isUpper: true},
@@ -773,8 +767,7 @@ function fnInitGrid(){
             {key: "USER_NAME", label: "직원명", width:215, align:"center"},
             {key: "ROLE_ID", label: "Role ID", width:215, align:"center"},
             {key: "ROLE_NM", label: "Role 명", width:215, align:"left"},
-            {key: "ACCESS_IP", label: "접근IP", width:438, align:"center"},
-            {key: "CMGRP_CD", label: "CMGRP CD", width:0}
+            {key: "ACCESS_IP", label: "접근IP", width:438, align:"center"}
         ]
 
     });

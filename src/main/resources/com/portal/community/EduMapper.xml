@@ -19,7 +19,6 @@
 		,		A.UP_ID
 		,		(SELECT TITLE FROM EDUCATION B WHERE B.ID = A.ID) UP_TITLE
 		</if>
-		,		A.CMGRP_CD
 		FROM    EDUCATION     A 
 		WHERE   A.STEP    = #{step}
 		
@@ -28,9 +27,6 @@
 		</if>
 		<if test="id != null">
 		AND		A.ID = #{id}
-		</if>
-		<if test="loginCmgrpCd != null">
-		AND	   CMGRP_CD	   = #{loginCmgrpCd}
 		</if>
     </select>
 
@@ -48,10 +44,6 @@
                 ,   VIDEO_URL           = #{videoUrl}
                 ,   UPDATE_BY           = #{loginUserId}
                 ,   UPDATE_DATE     = NOW()
-		        ,   TRLG_KEY_VAL		= NULL
-		        ,	LT_CHPR_ID		=	#{loginUserId}
-		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
-		        ,   CMGRP_CD	   = #{loginCmgrpCd}
         WHEN    NOT MATCHED THEN
                 INSERT
                 (
@@ -64,10 +56,6 @@
                 ,	UP_ID
                 ,   CREATE_BY
                 ,   CREATE_DATE
-                ,	TRLG_KEY_VAL
-		        ,	LT_CHPR_ID
-		        ,	LT_CH_DTTI
-		        ,	CMGRP_CD
                 )
                 VALUES
                 (
@@ -80,25 +68,16 @@
                 ,	#{upId}
                 ,   #{loginUserId}
                 ,   NOW()
-                ,	NULL
-		        ,	#{loginUserId}
-		        ,	FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
-		        ,	#{loginCmgrpCd}
                 );
     </insert>
 
     <delete id="delete" parameterType="map">
         DELETE  FROM EDUCATION
         WHERE   ID = #{id}
-        <if test="loginCmgrpCd != null">
-        AND	   CMGRP_CD	   = #{loginCmgrpCd}
-        </if>;
+        ;
 
         DELETE  FROM EDUCATION
         WHERE   UP_ID = #{id}
-        <if test = "loginCmgrpCd != null">
-        AND	   CMGRP_CD	   = #{loginCmgrpCd};
-        </if>
     </delete>
 
     <update id="fileDelete" parameterType="map">
@@ -107,12 +86,6 @@
     			<if test ="trainingFileUrl != null">TRAINING_FILE_URL = NULL,</if>
     			<if test ="videoUrl != null">VIDEO_URL = NULL,</if>
     			UPDATE_DATE     = NOW()
-		        ,   TRLG_KEY_VAL		= NULL
-		        ,	LT_CHPR_ID		=	#{loginUserId}
-		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
         WHERE   ID = #{id}
-        <if test = "loginCmgrpCd != null">
-        AND	   CMGRP_CD	   = #{loginCmgrpCd}
-        </if>
     </update>
 </mapper>

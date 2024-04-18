@@ -25,9 +25,6 @@
         <if test="roleId != null">
         AND     ROLE_ID LIKE '%' + #{roleId} + '%'
         </if>
-        <if test="cmgrpCd != null">
-        AND     A.CMGRP_CD = #{cmgrpCd}
-        </if>
         ORDER   BY
                 A.USER_ID
     </select>
@@ -41,9 +38,6 @@
         <if test="roleNm != null">
         AND     A.ROLE_NM   LIKE '%' + #{roleNm} + '%'
         </if>
-        <if test="cmgrpCd != null">
-        AND     A.CMGRP_CD         = #{cmgrpCd}
-        </if>
         ORDER   BY
                 A.ROLE_ID
     </select>
@@ -52,9 +46,6 @@
         MERGE   INTO USER_INFO  A
         USING   (SELECT 'A' AS A) B
         ON      A.USER_ID       = #{userId}
-        <if test="cmgrpCd != null">
-        AND     A.CMGRP_CD         = #{cmgrpCd}
-        </if>
         WHEN    MATCHED THEN
                 UPDATE
                 SET
@@ -65,12 +56,6 @@
                 </if>
                 ,   UPDATE_BY   = #{loginUserId}
                 ,   UPDATE_DATE     = NOW()
-                <if test="cmgrpCd != null">
-		        ,	CMGRP_CD         = #{cmgrpCd}
-		        </if>
-		        ,   TRLG_KEY_VAL		= NULL
-		        ,	LT_CHPR_ID		=	#{loginUserId}
-		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
         WHEN    NOT MATCHED THEN
                 INSERT
                 (
@@ -83,12 +68,6 @@
                 ,   ROLE_ID
                 ,   CREATE_BY
                 ,   CREATE_DATE
-                <if test="cmgrpCd != null">
-		        ,	CMGRP_CD
-		        </if>
-                ,	TRLG_KEY_VAL
-		        ,	LT_CHPR_ID
-		        ,	LT_CH_DTTI
                 )
                 VALUES
                 (
@@ -101,198 +80,20 @@
                 ,   #{role}
                 ,   #{loginUserId}
                 ,   NOW()
-                <if test="cmgrpCd != null">
-		        ,	#{cmgrpCd}
-		        </if>
-                ,	NULL
-		        ,	#{loginUserId}
-		        ,	FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
                 );
     </insert>
-    
     
     <select id="searchUserCount" parameterType="map" resultType="ParamMap">
         SELECT  
                 COUNT(*) CNT
         FROM    USER_INFO
         WHERE   USER_ID = #{userId}
-        <if test="cmgrpCd != null">
-        AND     CMGRP_CD         = #{cmgrpCd}
-        </if>
     </select>
     
     <delete id="deleteUserRole" parameterType="map">
         DELETE  FROM USER_INFO
         WHERE   USER_ID  =  #{userId}
         AND     USER_NAME = #{userName}
-        <if test="cmgrpCd != null">
-        AND     CMGRP_CD         = #{cmgrpCd}
-        </if>
     </delete>
     
-   <!--  <select id="searchRole" parameterType="map" resultType="ParamMap">
-        SELECT  
-                A.ROLE_ID
-		,       A.ROLE_NM
-		,       A.USE_YN
-		FROM    ROLE    A 
-		WHERE   A.USE_YN    =  'Y'
-		<if test="roleNm != null">
-		AND     A.ROLE_NM   LIKE '%' + #{roleNm} + '%'
-		</if>
-		ORDER   BY
-		        A.ROLE_ID
-    </select>
-    <select id="searchRoleMenu" parameterType="map" resultType="ParamMap">
-        SELECT  
-                CASE WHEN A.ROLE_ID IS NULL THEN '0' ELSE '1' END    CHK
-		,       A.ROLE_ID
-		,       B.MENU_ID
-		,       B.MENU_NM
-		,       B.UPPR_MENU_ID
-		,       (
-		            SELECT  MENU_NM FROM MENU WHERE MENU_ID = B.UPPR_MENU_ID
-		        )   UPPR_MENU_NM
-		FROM    MENU        B 
-		        LEFT OUTER JOIN
-		        ROLE_PRIV   A 
-		        ON  B.MENU_ID   = A.MENU_ID
-		        AND     A.ROLE_ID       = #{roleId}
-		WHERE   B.USE_YN        = 'Y'
-		AND     B.UPPR_MENU_ID IS NOT NULL
-		ORDER   BY
-		        B.SORT_NO
-    </select>
-    <select id="searchUserPriv" parameterType="map" resultType="ParamMap">
-        SELECT  
-		        A.USER_ID   
-		,       A.USER_NAME    
-		,       A.DEPT_CODE
-		,       A.DEPT_NAME
-		,       A.ROLE_ID
-		,       (SELECT ROLE_NM FROM ROLE WHERE ROLE_ID = A.ROLE_ID) ROLE_NM
-		,       A.ACCESS_IP
-		FROM    USER_INFO   A 
-		ORDER   BY
-		        A.DEPT_CODE
-		,       A.USER_ID
-    </select>
-    <select id="searchRoleCount" parameterType="map" resultType="ParamMap">
-        SELECT  
-                COUNT(*) CNT
-        FROM    ROLE
-        WHERE   ROLE_ID = #{popRoleId}
-    </select>
-    
-    <select id="searchUserCount" parameterType="map" resultType="ParamMap">
-        SELECT  
-                COUNT(*) CNT
-        FROM    USER_INFO
-        WHERE   USER_ID = #{userId}
-    </select>
-    롤 저장
-    <insert id="saveRole" parameterType="map">
-        MERGE   INTO ROLE A
-		USING   (SELECT 'A' AS A) B
-		ON      A.ROLE_ID   = #{popRoleId}
-		WHEN    MATCHED THEN
-		        UPDATE
-		        SET
-		            ROLE_NM     = #{popRoleName}
-		        ,   USE_YN      = #{popRoleYn}
-		        ,   UPDATE_BY   = #{loginUserId}
-		        ,   UPDATE_DATE     = NOW()
-		        ,   TRLG_KEY_VAL		= NULL
-		        ,	LT_CHPR_ID		=	#{loginUserId}
-		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
-		WHEN    NOT MATCHED THEN
-		        INSERT
-		        (
-		            ROLE_ID
-		        ,   ROLE_NM
-		      ,   USE_YN
-		        ,   CREATE_BY
-		        ,   CREATE_DATE
-		        )
-		        VALUES
-		        (
-		            #{popRoleId}
-		        ,   #{popRoleName}
-		      ,   #{popRoleYn}
-		        ,   #{loginUserId}
-		        ,   NOW()
-		        );
-    </insert>
-    <insert id="saveRoleMenu" parameterType="map">
-        MERGE INTO ROLE_PRIV A
-        USING (SELECT 'A' AS A) B
-        ON  A.ROLE_ID = #{roleId} AND A.MENU_ID = #{menuId}
-        WHEN    MATCHED AND #{chk} = '0' THEN
-                DELETE
-        WHEN    NOT MATCHED THEN
-                INSERT
-                (
-                    ROLE_ID
-                ,   MENU_ID
-                ,   CREATE_BY
-                ,   CREATE_DATE
-                )
-                VALUES
-                (
-                    #{roleId}
-                ,   #{menuId}
-                ,   #{loginUserId}
-                ,   NOW()
-                );
-    </insert>
-    <insert id="saveUserRole" parameterType="map">
-        MERGE   INTO USER_INFO  A
-		USING   (SELECT 'A' AS A) B
-		ON      A.USER_ID       = #{userId}
-		WHEN    MATCHED THEN
-		        UPDATE
-		        SET
-		            ACCESS_IP   = #{accessIp}
-		        ,   ROLE_ID     = #{role}
-		        ,   UPDATE_BY   = #{loginUserId}
-		        ,   UPDATE_DATE     = NOW()
-		        ,   TRLG_KEY_VAL		= NULL
-		        ,	LT_CHPR_ID		=	#{loginUserId}
-		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')  
-		WHEN    NOT MATCHED THEN
-		        INSERT
-		        (
-		            USER_ID
-		        ,   USER_NAME
-		        ,   DEPT_CODE
-		        ,   DEPT_NAME
-		        ,   ACCESS_IP
-		        ,   ROLE_ID
-		        ,   CREATE_BY
-		        ,   CREATE_DATE
-		        )
-		        VALUES
-		        (
-		            #{userId}
-		        ,   #{userName}
-		        ,   #{deptCode}
-		        ,   #{deptName}
-		        ,   #{accessIp}
-		        ,   #{role}
-		        ,   #{loginUserId}
-		        ,   NOW()
-		        );
-    </insert>
-    
-    <delete id="deleteRole" parameterType="map">
-        DELETE  FROM ROLE
-        WHERE   USE_YN  =  'Y'
-        AND     ROLE_ID = #{roleId}
-    </delete>
-    
-     <delete id="deleteUserRole" parameterType="map">
-        DELETE  FROM USER_INFO
-        WHERE   USER_ID  =  #{userId}
-        AND     USER_NAME = #{userName}
-    </delete> -->
 </mapper>

@@ -13,9 +13,6 @@
         ,       A.USE_YN
         FROM    FAQ     A 
         WHERE	1 = 1
-        <if test="cmgrpCd != null">
-		AND		A.CMGRP_CD 		= #{cmgrpCd} 
-		</if>
         ORDER   BY
                 A.SORT_NO
     </select>
@@ -23,24 +20,15 @@
         MERGE INTO FAQ  A
         USING (SELECT 'A' AS A) B
         ON  A.FAQ_ID = #{faqId}
-        <if test="cmgrpCd != null">
-		AND		A.CMGRP_CD 		= #{cmgrpCd} 
-		</if>
         WHEN    MATCHED THEN
                 UPDATE
                 SET
                     QUESTION        = #{question}
                 ,   ANSWER          = #{answer}
-                ,   SORT_NO         = #{sortNo}
+                ,   SORT_NO         = FN_TO_NUMBER(#{sortNo})
                 ,   USE_YN          = #{useYn}
                 ,   UPDATE_BY       = #{loginUserId}
                 ,   UPDATE_DATE     = NOW()
-		        ,   TRLG_KEY_VAL		= NULL
-		        ,	LT_CHPR_ID		=	#{loginUserId}
-		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
-		        <if test="cmgrpCd != null">
-				AND		CMGRP_CD 		= #{cmgrpCd} 
-				</if> 
         WHEN    NOT MATCHED THEN
                 INSERT
                 (
@@ -50,36 +38,21 @@
                 ,   USE_YN          
                 ,   CREATE_BY       
                 ,   CREATE_DATE     
-                ,	TRLG_KEY_VAL
-		        ,	LT_CHPR_ID
-		        ,	LT_CH_DTTI
-		        <if test="cmgrpCd != null">
-				,	CMGRP_CD
-				</if>
                 )
                 VALUES
                 (
                     #{question}
                 ,   #{answer}
-                ,   #{sortNo}
+                ,   FN_TO_NUMBER(#{sortNo})
                 ,   #{useYn}
                 ,   #{loginUserId}
                 ,   NOW()
-                ,	NULL
-		        ,	#{loginUserId}
-		        ,	FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS')
-		        <if test="cmgrpCd != null">
-				,	#{cmgrpCd} 
-				</if>
                 );
     </insert>
     
     <delete id="delete" parameterType="map">
         DELETE FROM FAQ
         WHERE FAQ_ID = #{faqId}
-        <if test="cmgrpCd != null">
-		AND	CMGRP_CD = #{cmgrpCd} 
-		</if>
     </delete>
     
 </mapper>

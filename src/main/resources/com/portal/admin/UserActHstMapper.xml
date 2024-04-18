@@ -26,9 +26,6 @@
         <if test="event != null">
         AND     A.EVENT LIKE '%' + #{event} + '%'
         </if>
-        <if test="cmgrpCd != null">
-		AND		A.CMGRP_CD 		= #{cmgrpCd} 
-		</if>
         ORDER   BY
                 A.ACT_DATE DESC
     </select>
@@ -43,9 +40,6 @@
         <if test="userName != null">
         WHERE   A.USER_NAME  LIKE '%' + #{userName} + '%'
         </if>
-        <if test="cmgrpCd != null">
-		AND		A.CMGRP_CD 		= #{cmgrpCd} 
-		</if>
         ORDER   BY
                 A.USER_ID
     </select>
@@ -59,9 +53,6 @@
         <if test="startYmd != null and endYmd != null">
         AND     ACT_YMD BETWEEN #{startYmd} AND #{endYmd}
         </if>
-        <if test="cmgrpCd != null">
-		AND		A.CMGRP_CD 		= #{cmgrpCd} 
-		</if>
         ORDER   BY
                 A.ACT_DATE DESC
     </select>
@@ -74,9 +65,6 @@
         FROM	ROLE_PRIV
         WHERE  	ROLE_ID	=	#{roleId}
         AND		MENU_ID	= 	#{menuId}
-        <if test="cmgrpCd != null">
-		AND		CMGRP_CD 		= #{cmgrpCd} 
-		</if>
     </select>
 
 
@@ -87,18 +75,12 @@
             EVENT,
             IP,
             ACT_YMD
-            <if test="cmgrpCd != null">
-			,CMGRP_CD 
-			</if>
         )VALUES(
             #{loginUserId},
             NOW(),
             #{event},
             #{ip},
             FN_TO_CHAR(NOW(), 'YYYYMMDD')
-            <if test="cmgrpCd != null">
-			,#{cmgrpCd} 
-			</if>
         )
     </insert>
 </mapper>

@@ -28,9 +28,6 @@
         ON      A.UPPR_CODE = B.UPPR_CODE
         WHERE   VAL1 IS NOT NULL
         AND     A.CONFIG_YN = 'Y'
-        <if test="cmgrpCd != null">
-        AND     A.CMGRP_CD = #{cmgrpCd}
-        </if>
 		ORDER   BY
 		        CASE WHEN A.UPPR_CODE = 'SERVER ID' THEN 1
                      WHEN A.UPPR_CODE = 'UMS_SEND_TEL_NO' THEN 2
@@ -53,9 +50,6 @@
         ON      A.UPPR_CODE = B.UPPR_CODE
         WHERE   VAL1 IS NOT NULL
         AND     A.CONFIG_YN = 'Y'
-        <if test="cmgrpCd != null">
-        AND     A.CMGRP_CD         = #{cmgrpCd}
-        </if>
         group by A.UPPR_CODE_NAME, A.UPPR_CODE
         ORDER   BY
                 CASE WHEN A.UPPR_CODE = 'SERVER ID' THEN 1
@@ -76,9 +70,6 @@
 	   WHERE   UPPR_CODE   = #{upprCode}
 	   AND     CODE        = #{code}
 	   AND     USE_YN      = 'Y'
-	   <if test="cmgrpCd != null">
-        AND     CMGRP_CD         = #{cmgrpCd}
-        </if>
 	</select>
 
     <update id="save" parameterType="map">
@@ -87,14 +78,8 @@
                 VAL2        = #{val2}
         ,       UPDATE_BY   = #{loginUserId}
         ,       UPDATE_DATE     = NOW()
-		        ,   TRLG_KEY_VAL		= NULL
-		        ,	LT_CHPR_ID		=	#{loginUserId}
-		        ,	LT_CH_DTTI		= FN_TO_CHAR(NOW(),'YYYYMMDDHHMISSMS') 
         WHERE   UPPR_CODE   = #{upprCode}
         AND     CODE        = #{code}
-        <if test="cmgrpCd != null">
-        AND     CMGRP_CD         = #{cmgrpCd}
-        </if>
     </update>
 
     <select id="dbConn" resultType="ParamMap">
@@ -115,21 +100,12 @@
 		</if>				
 		<if test='type=="job" and date!="all"'>
 		WHERE CREATE_DATE between CONCAT(#{date},' 00:00:00') and CONCAT(#{date},' 23:59:59')
-			<if test="cmgrpCd != null">
-	        AND     CMGRP_CD         = #{cmgrpCd}
-	        </if>
 		</if>
 		<if test='type=="process" and date!="all"'>
 		WHERE IF_DATE between CONCAT(#{date},' 00:00:00') and CONCAT(#{date},' 23:59:59')
-			<if test="cmgrpCd != null">
-	        AND     CMGRP_CD         = #{cmgrpCd}
-	        </if>
 		</if>
 		<if test='type=="robot" and date!="all"'>
 		WHERE IF_DATE between CONCAT(#{date},' 00:00:00') and CONCAT(#{date},' 23:59:59')
-			<if test="cmgrpCd != null">
-	        AND     CMGRP_CD         = #{cmgrpCd}
-	        </if>
 		</if>	
 	</select>
 
@@ -137,23 +113,14 @@
 		<if test='type=="job"'>
 		INSERT INTO JOB(${header})
 		VALUES (${columns})
-		<if test="cmgrpCd != null">
-        WHERE     CMGRP_CD         = #{cmgrpCd}
-        </if>
 		</if>
 		<if test='type=="process"'>
 		INSERT INTO RELEASES(${header})
 		VALUES (${columns})
-		<if test="cmgrpCd != null">
-        WHERE     CMGRP_CD         = #{cmgrpCd}
-        </if>
 		</if>
 		<if test='type=="robot"'>
 		INSERT INTO ROBOTS(${header})
 		VALUES (${columns})
-		<if test="cmgrpCd != null">
-        WHERE     CMGRP_CD         = #{cmgrpCd}
-        </if>
 		</if>
 	</insert>
 </mapper>

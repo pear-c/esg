@@ -25,11 +25,6 @@
 			<section id="search">
 				<form class="searchSet">
 					<div class="row">
-					<div class="item">
-							<span class="labl">그룹사명</span> <select id="cmgrpCd" name=""
-								class="select">
-							</select>
-						</div>
 						<input class="btnSearch" id="searchBtn" type="submit" value="조회">
 					</div>
 				</form>
@@ -61,12 +56,6 @@
 										<col style="width: /" />
 									</colgroup>
 									<tbody>
-										<tr>
-											<th scope="row">그룹사명</th>
-											<td><select id="popParamCmgrpCd" name=""
-												class="select checkFormat selectIsNull" style="width: 100%">
-											</select></td>
-										</tr>
 										<tr>
 											<th scope="row">질문</th>
 											<td><textarea name="" id="popParamQuestion"

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.portal.admin.dao.CodeDao">
+<mapper namespace="com.portal.template.dao.Template1Dao">
 
 	<select id="searchUpperCode" parameterType="map" resultType="ParamMap">
 	    SELECT
@@ -184,6 +184,7 @@
 	<delete id="deleteUpperCode2" parameterType="map">
 		DELETE FROM CODE
 		WHERE  UPPR_CODE = #{upprCode}
+		;
 	</delete>
 
 	<delete id="deleteCode" parameterType="map">

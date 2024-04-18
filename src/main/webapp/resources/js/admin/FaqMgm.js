@@ -62,7 +62,6 @@ function fnSave() {
 		if($("#hiddenFaqId").val() != ''){
             paramData.faqId = $("#hiddenFaqId").val();
         }
-        paramData.cmgrpCd = $("#popParamCmgrpCd").val();
         paramData.question = $("#popParamQuestion").val();
         paramData.answer = $("#popParamAnswer").val();
         paramData.sortNo = $("#popParamSortNo").val();
@@ -152,7 +151,6 @@ function fnGridDBClick(rowIdx) {
     $("#popParamAnswer").val(firstGrid.getList()[rowIdx]['ANSWER'])
     $("#popParamSortNo").val(firstGrid.getList()[rowIdx]['SORT_NO'])
     $("#popParamUseYn").val(firstGrid.getList()[rowIdx]['USE_YN'])
-    $("#popParamCmgrpCd").val(firstGrid.getList()[rowIdx]['CMGRP_CD'])
     $("#hiddenFaqId").val(firstGrid.getList()[rowIdx]['FAQ_ID'])
 
     $("#updateBtn").html('수정');
@@ -210,9 +208,7 @@ function fnInitComp() {
 
 	//콤보(Select box) 바인딩 설정
     var combo = [
-			{id: "cmgrpCd", upprCode: "CMGRP_CD", isAll: false}
-        ,	{id: "popParamUseYn", upprCode: "YN", isAll: false}
-        ,	{id: "popParamCmgrpCd", upprCode: "CMGRP_CD", isAll: false}
+			{id: "popParamUseYn", upprCode: "YN", isAll: false}
     ];
     gfnInitComboBind(combo);
 
@@ -241,7 +237,6 @@ function fnInitComp() {
     //* checkFormat 클래스 : 필수 입력
     // isUpper : 대문자만 허용
     var arrObj = [
-		{id : 'popParamCmgrpCd', numberFormat: false, dataLength: 0, checkFormat: true, isUpper: false},
         {id : 'popParamQuestion', numberFormat: false, dataLength: 0, checkFormat: true, isUpper: false},
         {id : 'popParamAnswer', numberFormat: false, dataLength: 0, checkFormat: true, isUpper: false},
         {id : 'popParamUseYn', numberFormat: false, dataLength: 0, checkFormat: true, isUpper: false},
@@ -281,7 +276,6 @@ function fnInitGrid(){
             {key: "USE_YN", label: "사용", width:100, align:"center"},
             {key: "SORT_NO", label: "순서", width:98, align:"center"},
             {key: "FAQ_ID", label: "FAQ ID", width:0},
-            {key: "CMGRP_CD", label: "CMGRP CD", width:0}
         ]
 
     });

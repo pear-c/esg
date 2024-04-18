@@ -35,11 +35,6 @@
 		<section id="search">
 			<form class="searchSet">
 				<div class="row">
-				<div class="item">
-							<span class="labl">그룹사명</span> <select id="cmgrpCd" name=""
-								class="select">
-							</select>
-						</div>
 					<div class="item">
 						<span class="labl">사번</span> <input class="inpt" type="text"
 							id="userId" placeholder="사번을 입력하세요.">
@@ -88,12 +83,6 @@
 								<col style="width: /" />
 							</colgroup>
 							<tbody>
-								<tr>
-									<th scope="row">그룹사명</th>
-										<td colspan="2"><select id="popParamCmgrpCd" name=""
-											class="select checkFormat selectIsNull" style="width: 100%">
-										</select></td>
-								</tr>
 								<tr>
 									<th scope="row">사번</th>
 									<td colspan="2"><input type="text" id="popUserId" name="" />

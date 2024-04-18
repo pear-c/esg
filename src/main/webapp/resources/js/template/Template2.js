@@ -30,7 +30,7 @@ function fnSearch() {
     if (fnPreSearch()) {
         var data = gfnGetInputParam();
 
-        gfnTransation("/Message/Search",data,"POST",fnSearchCallback)
+        gfnTransation("/Template2/Search",data,"POST",fnSearchCallback)
     }
 
 }
@@ -42,20 +42,20 @@ function fnSearchCallback(data) {
     var resultMap = data.resData.search;
     
     //ag grid 데이터 업데이트
-	gridApi.setGridOption('rowData', resultMap);
+//	gridApi.setGridOption('rowData', resultMap);
 	
-//    fnInitGrid();
-//    firstGrid.setData(resultMap);
-//    if (resultMap.length <= 0) {
-//        gfnSetNoDataMsg('firstGrid');
-//    }
-//    else {
-//        rowIndex = gfnGetTrsDataRowPos(firstGrid, trsData);
-//        trsData = {};
-//
-//        gfnSelectFocus('firstGrid', rowIndex-1, rowIndex);
-//        firstGrid.focus(rowIndex);
-//    }
+    fnInitGrid();
+    firstGrid.setData(resultMap);
+    if (resultMap.length <= 0) {
+        gfnSetNoDataMsg('firstGrid');
+    }
+    else {
+        rowIndex = gfnGetTrsDataRowPos(firstGrid, trsData);
+        trsData = {};
+
+        gfnSelectFocus('firstGrid', rowIndex-1, rowIndex);
+        firstGrid.focus(rowIndex);
+    }
 
 }
 
@@ -86,7 +86,7 @@ function fnSave() {
         gMsgData.msgCon = $("#popParamMsgCon").val();
         gMsgData.useYn = $("#popParamUseYn").val();
         gMsgData.action = tAction;
-        gfnTransation("/Message/Save", gMsgData, "POST",fnSaveCallback);
+        gfnTransation("/Template2/Save", gMsgData, "POST",fnSaveCallback);
     }
 }
 
@@ -119,7 +119,7 @@ function fnDelete() {
 
     gMsgData.msgId = $("#hiddenMsgId").val();
 
-    gfnTransation("/Message/Delete", gMsgData, "Post", fnDeleteCallback);
+    gfnTransation("/Template2/Delete", gMsgData, "Post", fnDeleteCallback);
 }
 
 /********************************
@@ -233,8 +233,8 @@ function fnInit() {
     fnInitComp();
 
     //그리드 초기화
-    fnInitAgGrid()
-//    fnInitGrid();
+//    fnInitAgGrid()
+    fnInitGrid();
 }
 
 /********************************

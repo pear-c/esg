@@ -121,7 +121,6 @@ function fnSave() {
         		trsData = {};
         		trsData.MENU_ID = $("#popParamUpperMenuId").val()
 				
-				paramData.cmgrpCd = $("#popParamCmgrpCd").val();
         		paramData.menuId = $("#popParamUpperMenuId").val()
         		paramData.menuNm = $("#popParamUpperMenuName").val()
         		paramData.sortNo = $("#popParamUpperMenuSortNo").val()
@@ -135,7 +134,6 @@ function fnSave() {
         	trsData = {};
         	trsData.MENU_ID = $("#popParamUpperMenuId").val()
 			
-			paramData.cmgrpCd = $("#popParamCmgrpCd").val();
         	paramData.menuId = $("#popParamUpperMenuId").val()
         	paramData.menuNm = $("#popParamUpperMenuName").val()
         	paramData.sortNo = $("#popParamUpperMenuSortNo").val()
@@ -310,7 +308,6 @@ function fnMenuAdd() {
  ********************************/
 function fnGridDBClick(rowIdx) {
     gFnAllClear();
-    $("#popParamCmgrpCd").val(firstGrid.getList()[rowIdx]['CMGRP_CD']);
     $("#popParamUpperMenuId").val(firstGrid.getList()[rowIdx]['MENU_ID']);
     $("#popParamUpperMenuName").val(firstGrid.getList()[rowIdx]['MENU_NM']);
     $("#popParamUpperMenuSortNo").val(firstGrid.getList()[rowIdx]['SORT_NO']);
@@ -466,9 +463,7 @@ function fnInitComp() {
 
 	//콤보(Select box) 바인딩 설정
     var combo = [
-		{id: "cmgrpCd", upprCode: "CMGRP_CD", isAll: false}
-	 ,	{id: "popParamCmgrpCd", upprCode: "CMGRP_CD", isAll: false}
-     ,  {id: "popParamUpperMenuUseYn", upprCode: "YN", isAll: false}
+		{id: "popParamUpperMenuUseYn", upprCode: "YN", isAll: false}
      ,  {id: "popParamMenuUseYn", upprCode: "YN", isAll: false}
     ];
     gfnInitComboBind(combo);
@@ -525,7 +520,6 @@ function fnInitComp() {
     var arrObj = [
         {id : 'menuName', numberFormat: false, dataLength: 10, checkFormat: false, isUpper: false},
 		
-		{id : 'popParamCmgrpCd', numberFormat: false, dataLength: 0, checkFormat: true, isUpper: false},
         {id : 'popParamUpperMenuId', numberFormat: false, dataLength: 6, checkFormat: true, isUpper: true},
         {id : 'popParamUpperMenuName', numberFormat: false, dataLength: 30, checkFormat: true, isUpper: false},
         {id : 'popParamUpperMenuUseYn', numberFormat: false, dataLength: 0, checkFormat: true, isUpper: false},
@@ -575,8 +569,7 @@ function fnInitGrid1(){
         	{key: "MENU_ID", label: "상위메뉴 ID", width:125, size :10, align:"center"},
             {key: "MENU_NM", label: "상위메뉴명", width:125, size :10},
             {key: "USE_YN", label: "사용", width:73, align:"center"},
-            {key: "SORT_NO", label: "순번", width:70, size :10, align:"center"},
-            {key: "CMGRP_CD", label: "CMGRP CD", width:0}
+            {key: "SORT_NO", label: "순번", width:70, size :10, align:"center"}
         ]
 
     });

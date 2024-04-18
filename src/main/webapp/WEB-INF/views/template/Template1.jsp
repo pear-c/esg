@@ -187,5 +187,5 @@
 
 <script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/jquery-ui.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/datepicker-ko.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/admin/Code.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/template/Template1.js"></script>
 </html>

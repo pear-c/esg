@@ -494,6 +494,7 @@ function fnInitComp() {
 
 function fnInitSetting(){
 
+	/*
     gfnTransation("/Main/SearchUserJobInfo",null,"POST",fnUserJobInfo)
 
     gfnTransation("/Main/SearchProcPerform",null,"POST",fnProcPerform)
@@ -517,6 +518,7 @@ function fnInitSetting(){
     gfnTransation("/Main/SearchBanner",null,"POST",fnBanner)
 
     gfnTransation("/Main/SearchBotStoreSummary",null,"POST",fnBotStoreSummary)
+    */
 }
 
 function fnChartSetting(data){

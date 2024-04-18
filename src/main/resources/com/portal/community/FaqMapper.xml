@@ -13,17 +13,12 @@
 		    ,       A.SORT_NO
 		    ,       A.USE_YN
 	        ,	    ROW_NUMBER() OVER (ORDER BY SORT_NO) RID
-	        ,		A.CMGRP_CD
 		    FROM    FAQ     A 
 		    WHERE   A.USE_YN	= 'Y'
-		    <if test="loginCmgrpCd != null">
-    AND	   CMGRP_CD	   = #{loginCmgrpCd}
-    </if>
 		)
 		SELECT
 		       * 
 		  FROM WW
-		  WHERE  CMGRP_CD	   = #{loginCmgrpCd}
 	     ORDER BY RID
         <!-- OFFSET ${startPage} ROWS FETCH NEXT 5 ROWS ONLY -->
     </select>
@@ -37,20 +32,13 @@
 		    ,       A.SORT_NO
 		    ,       A.USE_YN
 	        ,	    ROW_NUMBER() OVER (ORDER BY SORT_NO) RID
-	        ,		A.CMGRP_CD
 		    FROM    FAQ     A 
 		    WHERE   A.USE_YN	= 'Y'
-		    <if test="loginCmgrpCd != null">
-    AND	   CMGRP_CD	   = #{loginCmgrpCd}
-    </if>
 		)
 		SELECT
 		       * 
 		  FROM WW
 	     WHERE FAQ_ID = #{faqId}
-	     <if test="loginCmgrpCd != null">
-     AND	   CMGRP_CD	   = #{loginCmgrpCd}
-     </if>
     </select>
     
     

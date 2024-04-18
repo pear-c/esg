@@ -26,11 +26,6 @@
 				<form class="searchSet">
 					<div class="row">
 						<div class="item">
-							<span class="labl">그룹사명</span> <select id="cmgrpCd" name=""
-								class="select">
-							</select>
-						</div>
-						<div class="item">
 							<span class="labl">활동일자</span>
 							<div class="inptDt">
 								<label for="startDt" class="blind">시작일</label> <input
