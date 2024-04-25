@@ -1,0 +1,15 @@
+@charset "utf-8";
+/****************************************/
+/* Name: BNK부산은행 업무자동화포털
+/* Author: 김민숙, 김서린
+/* Update: 2023-10-10
+/****************************************/
+
+@import url("fonts.css"); /* 웹폰트 */
+@import url("../js/library/bootstrap/bootstrap.min.css"); /* 부트스트랩 */
+@import url("../js/library/bootstrap/datepicker.min.css"); /* 부트스트랩 데이트피커 */
+@import url("../js/library/bootstrap-select/css/bootstrap-select.min.css"); /* 부트스트랩 셀렉트 */
+@import url("../js/library/swiper/swiper-bundle.min.css"); /* 스와이퍼 슬라이드 */
+@import url("base.css"); /* 초기화 */
+@import url("layout.css"); /* 레이아웃 */
+@import url("contents.css"); /* 컨텐츠 */

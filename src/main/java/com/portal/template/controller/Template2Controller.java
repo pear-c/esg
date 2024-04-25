@@ -50,7 +50,7 @@ public class Template2Controller {
 	}
 	
 	/**
-	 * 메세지 조회
+	 * 조회
 	 * @param locale
 	 * @param model
 	 * @param request
@@ -73,7 +73,7 @@ public class Template2Controller {
 	}
 	 
 	/**
-	 * 메세지 저장
+	 * 저장
 	 * @param locale
 	 * @param model
 	 * @param request
@@ -98,7 +98,7 @@ public class Template2Controller {
 	}
 	 
 	/**
-	 * 메세지 삭제
+	 * 삭제
 	 * @param locale
 	 * @param model
 	 * @param request

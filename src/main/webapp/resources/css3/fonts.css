@@ -1,0 +1,42 @@
+@charset "utf-8"; 
+
+/****************************************/
+/* Name: BNK부산은행 업무자동화포털
+/* Part: FONTS STYLE
+/* Author: 김민숙, 김서린
+/* Update: 2023-10-06
+/****************************************/
+
+/* SpoqaHanSansNeo */
+@font-face {font-family:'SUIT';font-weight:100;src:url('../fonts3/SUIT-100.woff2') format('woff2');}
+@font-face {font-family:'SUIT';font-weight:200;src:url('../fonts3/SUIT-200.woff2') format('woff2');}
+@font-face {font-family:'SUIT';font-weight:300;src:url('../fonts3/SUIT-300.woff2') format('woff2');}
+@font-face {font-family:'SUIT';font-weight:400;src:url('../fonts3/SUIT-400.woff2') format('woff2');}
+@font-face {font-family:'SUIT';font-weight:500;src:url('../fonts3/SUIT-500.woff2') format('woff2');}
+@font-face {font-family:'SUIT';font-weight:600;src:url('../fonts3/SUIT-600.woff2') format('woff2');}
+@font-face {font-family:'SUIT';font-weight:700;src:url('../fonts3/SUIT-700.woff2') format('woff2');}
+@font-face {font-family:'SUIT';font-weight:800;src:url('../fonts3/SUIT-800.woff2') format('woff2');}
+@font-face {font-family:'SUIT';font-weight:900;src:url('../fonts3/SUIT-900.woff2') format('woff2');}
+
+/* SCoreDream */
+@font-face {font-family:'S-Core';font-weight:100;src:url('../fonts3/S-Core-100.woff2') format('woff2');}
+@font-face {font-family:'S-Core';font-weight:200;src:url('../fonts3/S-Core-200.woff2') format('woff2');}
+@font-face {font-family:'S-Core';font-weight:300;src:url('../fonts3/S-Core-300.woff2') format('woff2');}
+@font-face {font-family:'S-Core';font-weight:400;src:url('../fonts3/S-Core-400.woff2') format('woff2');}
+@font-face {font-family:'S-Core';font-weight:500;src:url('../fonts3/S-Core-500.woff2') format('woff2');}
+@font-face {font-family:'S-Core';font-weight:600;src:url('../fonts3/S-Core-600.woff2') format('woff2');}
+@font-face {font-family:'S-Core';font-weight:700;src:url('../fonts3/S-Core-700.woff2') format('woff2');}
+@font-face {font-family:'S-Core';font-weight:800;src:url('../fonts3/S-Core-800.woff2') format('woff2');}
+@font-face {font-family:'S-Core';font-weight:900;src:url('../fonts3/S-Core-900.woff2') format('woff2');}
+
+/* Poppins*/
+@font-face {font-family:'Poppins';font-weight:300;src:url('../fonts3/Poppins-300.woff2') format('woff2');}
+@font-face {font-family:'Poppins';font-weight:400;src:url('../fonts3/Poppins-400.woff2') format('woff2');}
+@font-face {font-family:'Poppins';font-weight:500;src:url('../fonts3/Poppins-500.woff2') format('woff2');}
+@font-face {font-family:'Poppins';font-weight:600;src:url('../fonts3/Poppins-600.woff2') format('woff2');}
+@font-face {font-family:'Poppins';font-weight:700;src:url('../fonts3/Poppins-700.woff2') format('woff2');}
+
+/****************************************/
+/* Part: FONTS STYLE
+/* Update: 2023-10-06
+/****************************************/ 

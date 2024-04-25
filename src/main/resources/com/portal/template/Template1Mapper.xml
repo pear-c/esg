@@ -4,6 +4,7 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.portal.template.dao.Template1Dao">
 
+	<!-- 상위코드 조회 -->
 	<select id="searchUpperCode" parameterType="map" resultType="ParamMap">
 	    SELECT
 		        A.UPPR_CODE
@@ -22,6 +23,8 @@
 		ORDER   BY
 		        A.UPPR_CODE
 	</select>
+	
+	<!-- 상위코드 건수 조회 -->
 	<select id="searchUpperCodeCount" parameterType="map" resultType="ParamMap">
 	    SELECT
 		        COUNT(*)  CNT
@@ -31,6 +34,8 @@
 		AND 	A.USE_YN = #{useYn}
 		</if>
 	</select>
+	
+	<!-- 코드 조회 -->
 	<select id="searchCode" parameterType="map" resultType="ParamMap">
 	    SELECT
 		        A.CODE
@@ -61,6 +66,7 @@
 		        A.UPPR_CODE
 		,       A.SORT_NO
 	</select>
+	
 	<!-- 화면별 콤보(Select Box) 바이딩을 위한 조회 -->
 	<select id="searchCodeBind" parameterType="map" resultType="ParamMap">
 	    SELECT
@@ -133,6 +139,8 @@
 		        ,   NOW()
 		        );
 	</insert>
+	
+	<!-- 코드 저장 -->
 	<insert id="saveCode" parameterType="map">
 		MERGE INTO CODE A
 		USING (SELECT 'A' AS A) B
@@ -177,16 +185,19 @@
 		        );
 	</insert>
 
+	<!-- 상위코드 삭제 -->
 	<delete id="deleteUpperCode" parameterType="map">
 		DELETE FROM UPPR_CODE
 		WHERE  UPPR_CODE = #{upprCode}
 	</delete>
+	
 	<delete id="deleteUpperCode2" parameterType="map">
 		DELETE FROM CODE
 		WHERE  UPPR_CODE = #{upprCode}
 		;
 	</delete>
-
+	
+	<!-- 코드 삭제 -->
 	<delete id="deleteCode" parameterType="map">
 		DELETE FROM CODE
 		WHERE  UPPR_CODE = #{upprCode}

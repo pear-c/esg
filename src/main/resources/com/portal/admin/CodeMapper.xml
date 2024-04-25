@@ -74,6 +74,15 @@
 		FROM    V_CODE    A 
 		WHERE   A.UPPR_CODE = #{upprCode}
 		AND     A.USE_YN    = 'Y'
+		<if test="val1 != null">
+		AND		A.VAL1 		= #{val1}
+		</if>
+		<if test="val2 != null">
+		AND		A.VAL2 		= #{val2}
+		</if>
+		<if test="val3 != null">
+		AND		A.VAL3 		= #{val3}
+		</if>
 		ORDER   BY
 		        A.SORT_NO
 

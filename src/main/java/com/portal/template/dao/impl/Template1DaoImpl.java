@@ -29,8 +29,8 @@ public class Template1DaoImpl extends EgovAbstractMapper implements Template1Dao
 	@Override
 	public List<Map<String, Object>> searchUpperCode(Map<String, Object> data) {
 
-		Template1Dao template1Dao = (Template1Dao) sqlSession.getMapper(Template1Dao.class);
-		return template1Dao.searchUpperCode(data);
+		Template1Dao dao = (Template1Dao) sqlSession.getMapper(Template1Dao.class);
+		return dao.searchUpperCode(data);
 	}
 
 	/**
@@ -38,8 +38,8 @@ public class Template1DaoImpl extends EgovAbstractMapper implements Template1Dao
 	 */
 	@Override
 	public List<Map<String, Object>> searchCode(Map<String, Object> data) {
-		Template1Dao template1Dao = (Template1Dao) sqlSession.getMapper(Template1Dao.class);
-		return template1Dao.searchCode(data);
+		Template1Dao dao = (Template1Dao) sqlSession.getMapper(Template1Dao.class);
+		return dao.searchCode(data);
 	}
 
 	/**
@@ -47,8 +47,8 @@ public class Template1DaoImpl extends EgovAbstractMapper implements Template1Dao
 	 */
 	@Override
 	public List<Map<String, Object>> searchCodeBind(Map<String, Object> data) {
-		Template1Dao template1Dao = (Template1Dao) sqlSession.getMapper(Template1Dao.class);
-		return template1Dao.searchCodeBind(data);
+		Template1Dao dao = (Template1Dao) sqlSession.getMapper(Template1Dao.class);
+		return dao.searchCodeBind(data);
 	}
 
 	/**
@@ -56,8 +56,8 @@ public class Template1DaoImpl extends EgovAbstractMapper implements Template1Dao
 	 */
 	@Override
 	public int saveUpperCode(Map<String, Object> data) {
-		Template1Dao template1Dao = (Template1Dao) sqlSession.getMapper(Template1Dao.class);
-		return template1Dao.saveUpperCode(data);
+		Template1Dao dao = (Template1Dao) sqlSession.getMapper(Template1Dao.class);
+		return dao.saveUpperCode(data);
 	}
 
 	/**
@@ -65,8 +65,8 @@ public class Template1DaoImpl extends EgovAbstractMapper implements Template1Dao
 	 */
 	@Override
 	public int saveCode(Map<String, Object> data) {
-		Template1Dao template1Dao = (Template1Dao) sqlSession.getMapper(Template1Dao.class);
-		return template1Dao.saveCode(data);
+		Template1Dao dao = (Template1Dao) sqlSession.getMapper(Template1Dao.class);
+		return dao.saveCode(data);
 	}
 
 	/**
@@ -74,8 +74,8 @@ public class Template1DaoImpl extends EgovAbstractMapper implements Template1Dao
 	 */
 	@Override
 	public int deleteUpperCode(Map<String, Object> data) {
-		Template1Dao template1Dao = (Template1Dao) sqlSession.getMapper(Template1Dao.class);
-		return template1Dao.deleteUpperCode(data);
+		Template1Dao dao = (Template1Dao) sqlSession.getMapper(Template1Dao.class);
+		return dao.deleteUpperCode(data);
 	}
 
 	/**
@@ -83,8 +83,8 @@ public class Template1DaoImpl extends EgovAbstractMapper implements Template1Dao
 	 */
 	@Override
 	public int deleteUpperCode2(Map<String, Object> data) {
-		Template1Dao template1Dao = (Template1Dao) sqlSession.getMapper(Template1Dao.class);
-		return template1Dao.deleteUpperCode2(data);
+		Template1Dao dao = (Template1Dao) sqlSession.getMapper(Template1Dao.class);
+		return dao.deleteUpperCode2(data);
 	}
 
 	/**
@@ -92,8 +92,8 @@ public class Template1DaoImpl extends EgovAbstractMapper implements Template1Dao
 	 */
 	@Override
 	public int deleteCode(Map<String, Object> data) {
-		Template1Dao template1Dao = (Template1Dao) sqlSession.getMapper(Template1Dao.class);
-		return template1Dao.deleteCode(data);
+		Template1Dao dao = (Template1Dao) sqlSession.getMapper(Template1Dao.class);
+		return dao.deleteCode(data);
 	}
 
 	/**
@@ -101,8 +101,8 @@ public class Template1DaoImpl extends EgovAbstractMapper implements Template1Dao
 	 */
 	@Override
 	public Map<String, Object> searchUpperCodeCount(Map<String, Object> data) {
-		Template1Dao template1Dao = (Template1Dao) sqlSession.getMapper(Template1Dao.class);
-		return template1Dao.searchUpperCodeCount(data);
+		Template1Dao dao = (Template1Dao) sqlSession.getMapper(Template1Dao.class);
+		return dao.searchUpperCodeCount(data);
 	}
 
 	/**
@@ -110,8 +110,8 @@ public class Template1DaoImpl extends EgovAbstractMapper implements Template1Dao
 	 */
 	@Override
 	public Map<String, Object> searchCodeCount(Map<String, Object> data) {
-		Template1Dao template1Dao = (Template1Dao) sqlSession.getMapper(Template1Dao.class);
-		return template1Dao.searchCodeCount(data);
+		Template1Dao dao = (Template1Dao) sqlSession.getMapper(Template1Dao.class);
+		return dao.searchCodeCount(data);
 	}
 
 	/**
@@ -119,8 +119,8 @@ public class Template1DaoImpl extends EgovAbstractMapper implements Template1Dao
 	 */
 	@Override
 	public Map<String, Object> searchCodeCount2(Map<String, Object> data) {
-		Template1Dao template1Dao = (Template1Dao) sqlSession.getMapper(Template1Dao.class);
-		return template1Dao.searchCodeCount2(data);
+		Template1Dao dao = (Template1Dao) sqlSession.getMapper(Template1Dao.class);
+		return dao.searchCodeCount2(data);
 	}
 	
 	/**
@@ -128,7 +128,7 @@ public class Template1DaoImpl extends EgovAbstractMapper implements Template1Dao
 	 */
 	@Override
 	public int updateVal1(Map<String, Object> data) {
-		Template1Dao template1Dao = (Template1Dao) sqlSession.getMapper(Template1Dao.class);
-		return template1Dao.updateVal1(data);
+		Template1Dao dao = (Template1Dao) sqlSession.getMapper(Template1Dao.class);
+		return dao.updateVal1(data);
 	}
 }

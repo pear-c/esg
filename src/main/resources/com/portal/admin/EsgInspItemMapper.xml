@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.portal.admin.dao.EsgInspItemDao">
+
+	<!-- 조회 -->
+    <select id="search" parameterType="map" resultType="ParamMap">
+        SELECT	
+				A.ESG_DOMAIN 
+		,		FN_CODE_NAME('ESG_DOMAIN', A.ESG_DOMAIN) ESG_DOMAIN_NAME
+		,		A.ESG_CTGRY 
+		,		FN_CODE_NAME('ESG_CTGRY', A.ESG_CTGRY) ESG_CTGRY_NAME
+		,		A.ESG_CLASSIFICATION_NO 
+		,		A.DAGNSS_ITM 
+		,		A.DAGNSS_ITM_DESC
+		,		A.BASIC_ADVANCE 
+		,		FN_CODE_NAME('BASIC_ADVANCE', A.BASIC_ADVANCE) BASIC_ADVANCE_NAME
+		,		A.APLCN_METHOD 
+		,		FN_CODE_NAME('APLCN_METHOD', A.APLCN_METHOD) APLCN_METHOD_NAME
+		,		A.IS_ATTACH_FILES 
+		,		A.USE_YN 
+		,		A.SORT_NO
+		FROM 	ESG_DAGNSS_ITM A 
+		WHERE 	1 = 1
+		<if test="esgDomain != null">
+		AND 	A.ESG_DOMAIN	= #{esgDomain}
+		</if>
+		<if test="esgCtgry != null">
+		AND		A.ESG_CTGRY		= #{esgCtgry}
+		</if>
+		ORDER	BY
+				A.SORT_NO
+        
+    </select>
+    
+    <!-- 저장 -->
+    <insert id="save"  parameterType="map">
+        MERGE 	INTO ESG_DAGNSS_ITM A
+		USING 	(SELECT 'A' AS A) B
+		ON 		A.ESG_DOMAIN	= #{esgDomain}
+		AND 	A.ESG_CTGRY 	= #{esgCtgry}
+		AND 	A.ESG_CLASSIFICATION_NO = #{esgClassificationNo}
+		WHEN 	NOT MATCHED THEN
+		INSERT 
+		(
+			ESG_DOMAIN
+		,	ESG_CTGRY
+		,	ESG_CLASSIFICATION_NO
+		,	DAGNSS_ITM
+		,	DAGNSS_ITM_DESC
+		,	APLCN_METHOD
+		,	BASIC_ADVANCE
+		,	IS_ATTACH_FILES
+		,	USE_YN
+		,	SORT_NO
+		)
+		VALUES
+		(
+			#{esgDomain}
+		,	#{esgCtgry}
+		,	#{esgClassificationNo}
+		,	#{dagnssItm}
+		,	#{dagnssItmDesc}
+		,	#{aplcnMethod}
+		,	#{basicAdvance}
+		,	#{isAttachFiles}
+		,	#{useYn}
+		,	#{sortNo}
+		)
+		WHEN 	MATCHED THEN
+		UPDATE
+		SET
+			DAGNSS_ITM              = #{dagnssItm}
+		,	DAGNSS_ITM_DESC         = #{dagnssItmDesc}
+		,	APLCN_METHOD            = #{aplcnMethod}
+		,	BASIC_ADVANCE           = #{basicAdvance}
+		,	IS_ATTACH_FILES         = #{isAttachFiles}
+		,	USE_YN                  = #{useYn}
+		,	SORT_NO					= #{sortNo}
+		;
+
+    </insert>
+    
+    <!-- 삭제 -->
+    <delete id="delete" parameterType="map">
+        DELETE	FROM ESG_DAGNSS_ITM
+        WHERE	ESG_DOMAIN	= #{esgDomain}
+		AND 	ESG_CTGRY 	= #{esgCtgry}
+		AND 	ESG_CLASSIFICATION_NO = #{esgClassificationNo}
+    </delete>
+</mapper>

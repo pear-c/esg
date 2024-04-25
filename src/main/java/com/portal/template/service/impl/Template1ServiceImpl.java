@@ -17,11 +17,11 @@ import com.portal.template.service.Template1Service;
 public class Template1ServiceImpl extends EgovAbstractServiceImpl implements Template1Service {
 
 
-	Template1Dao template1Dao;
+	Template1Dao dao;
 
 	@Autowired
-	public Template1ServiceImpl(@Qualifier("template1Dao") Template1Dao template1Dao) {
-			this.template1Dao = template1Dao;
+	public Template1ServiceImpl(@Qualifier("template1Dao") Template1Dao dao) {
+			this.dao = dao;
 	}
 
 	/**
@@ -29,7 +29,7 @@ public class Template1ServiceImpl extends EgovAbstractServiceImpl implements Tem
 	 */
 	@Override
 	public List<Map<String, Object>> searchUpperCode(Map<String, Object> data) {
-		return template1Dao.searchUpperCode(data);
+		return dao.searchUpperCode(data);
 	}
 
 	/**
@@ -37,7 +37,7 @@ public class Template1ServiceImpl extends EgovAbstractServiceImpl implements Tem
 	 */
 	@Override
 	public List<Map<String, Object>> searchCode(Map<String, Object> data) {
-		return template1Dao.searchCode(data);
+		return dao.searchCode(data);
 	}
 
 	/**
@@ -55,14 +55,14 @@ public class Template1ServiceImpl extends EgovAbstractServiceImpl implements Tem
 		if ("INSERT".equals(action)) {
 
 			//중복건수
-			cnt = Integer.parseInt(template1Dao.searchUpperCodeCount(data).get("CNT").toString());
+			cnt = Integer.parseInt(dao.searchUpperCodeCount(data).get("CNT").toString());
 
 			//중복 오류
 			if (cnt > 0 ) {
 				msgId = "10009";			//기존에 동일 자료가 있습니다.
 			}
 			else {
-				cnt = template1Dao.saveUpperCode(data);
+				cnt = dao.saveUpperCode(data);
 
 				//처리 실패
 				if (0 == cnt) {
@@ -73,7 +73,7 @@ public class Template1ServiceImpl extends EgovAbstractServiceImpl implements Tem
 		else {
 
 			//정상처리 여부 체크
-			cnt = template1Dao.saveUpperCode(data);
+			cnt = dao.saveUpperCode(data);
 			if (0 == cnt) {
 				msgId = "10014";		//수정실패 되었습니다.
 			}
@@ -100,14 +100,14 @@ public class Template1ServiceImpl extends EgovAbstractServiceImpl implements Tem
 		if ("INSERT".equals(action)) {
 
 			//중복 체크
-			cnt = Integer.parseInt(template1Dao.searchCodeCount(data).get("CNT").toString());
+			cnt = Integer.parseInt(dao.searchCodeCount(data).get("CNT").toString());
 
 			//중복 오류
 			if (cnt > 0) {
 				msgId = "10009";			//기존에 동일 자료가 있습니다.
 			}
 			else {
-				cnt = template1Dao.saveCode(data);
+				cnt = dao.saveCode(data);
 
 				//처리 실패
 				if (0 == cnt) {
@@ -119,7 +119,7 @@ public class Template1ServiceImpl extends EgovAbstractServiceImpl implements Tem
 		//수정
 		else {
 			//처리 실패
-			cnt = template1Dao.saveCode(data);
+			cnt = dao.saveCode(data);
 			if (0 == cnt) {
 				msgId = "10014";			//수정실패 되었습니다.
 			}
@@ -142,21 +142,21 @@ public class Template1ServiceImpl extends EgovAbstractServiceImpl implements Tem
 		String msgId = "";
 
 		//하위코드 존재 여부 체크
-		Map<String, Object> codeCnt = template1Dao.searchCodeCount2(data);
+		Map<String, Object> codeCnt = dao.searchCodeCount2(data);
 		if (Integer.parseInt(codeCnt.get("CNT").toString()) > 0) {
-			cnt = template1Dao.deleteUpperCode2(data);
+			cnt = dao.deleteUpperCode2(data);
 			if (0 == cnt) {
 				msgId = "10015";			//삭제처리 실패되었습니다.
 			}
 			else {
-				cnt = template1Dao.deleteUpperCode(data);
+				cnt = dao.deleteUpperCode(data);
 				if (0 == cnt) {
 					msgId = "10015";			//삭제처리 실패되었습니다.
 				}
 			}
 		}
 		else {
-			cnt = template1Dao.deleteUpperCode(data);
+			cnt = dao.deleteUpperCode(data);
 			if (0 == cnt) {
 				msgId = "10015";			//삭제처리 실패되었습니다.
 			}
@@ -178,7 +178,7 @@ public class Template1ServiceImpl extends EgovAbstractServiceImpl implements Tem
 		String msgId = "";
 
 		//정상처리 여부 체크
-		cnt = template1Dao.deleteCode(data);
+		cnt = dao.deleteCode(data);
 		if (0 == cnt) {
 			msgId = "10015";			//삭제처리 실패되었습니다.
 		}
@@ -194,7 +194,7 @@ public class Template1ServiceImpl extends EgovAbstractServiceImpl implements Tem
 	 */
 	@Override
 	public int searchUpperCodeCount(Map<String, Object> data) {
-		return Integer.parseInt(template1Dao.searchUpperCodeCount(data).get("CNT").toString());
+		return Integer.parseInt(dao.searchUpperCodeCount(data).get("CNT").toString());
 	}
 
 	/**
@@ -202,7 +202,7 @@ public class Template1ServiceImpl extends EgovAbstractServiceImpl implements Tem
 	 */
 	@Override
 	public int searchCodeCount(Map<String, Object> data) {
-		return Integer.parseInt(template1Dao.searchCodeCount(data).get("CNT").toString());
+		return Integer.parseInt(dao.searchCodeCount(data).get("CNT").toString());
 	}
 	
 	/**
@@ -210,7 +210,7 @@ public class Template1ServiceImpl extends EgovAbstractServiceImpl implements Tem
 	 */
 	@Override
 	public int updateVal1(Map<String, Object> data) {
-		return template1Dao.updateVal1(data);
+		return dao.updateVal1(data);
 	}
 
 }

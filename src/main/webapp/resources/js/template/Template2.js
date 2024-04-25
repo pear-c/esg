@@ -77,16 +77,18 @@ function fnPreSave() {
  ********************************/
 function fnSave() {
     if(fnPreSave()) {
+		var paramData = new Object();
+		
         trsData = {};
         trsData.MSG_ID = $("#hiddenMsgId").val();
 
-        gMsgData = new Object();
+        paramData = new Object();
 		
-        gMsgData.msgId = $("#hiddenMsgId").val();
-        gMsgData.msgCon = $("#popParamMsgCon").val();
-        gMsgData.useYn = $("#popParamUseYn").val();
-        gMsgData.action = tAction;
-        gfnTransation("/Template2/Save", gMsgData, "POST",fnSaveCallback);
+        paramData.msgId = $("#hiddenMsgId").val();
+        paramData.msgCon = $("#popParamMsgCon").val();
+        paramData.useYn = $("#popParamUseYn").val();
+        paramData.action = tAction;
+        gfnTransation("/Template2/Save", paramData, "POST",fnSaveCallback);
     }
 }
 
@@ -115,11 +117,11 @@ function fnPreDelete() {
  * 삭제 처리
  ********************************/
 function fnDelete() {
-    gMsgData = new Object();
+    var paramData = new Object();
 
-    gMsgData.msgId = $("#hiddenMsgId").val();
+    paramData.msgId = $("#hiddenMsgId").val();
 
-    gfnTransation("/Template2/Delete", gMsgData, "Post", fnDeleteCallback);
+    gfnTransation("/Template2/Delete", paramData, "Post", fnDeleteCallback);
 }
 
 /********************************

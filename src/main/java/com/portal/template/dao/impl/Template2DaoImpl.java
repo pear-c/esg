@@ -28,8 +28,8 @@ public class Template2DaoImpl extends EgovAbstractMapper implements Template2Dao
 	 */
 	@Override
 	public int delete(Map<String, Object> data) {
-		Template2Dao template2Dao = (Template2Dao)sqlSession.getMapper(Template2Dao.class);
-		return template2Dao.delete(data);
+		Template2Dao dao = (Template2Dao)sqlSession.getMapper(Template2Dao.class);
+		return dao.delete(data);
 	}
 
 	/**
@@ -37,8 +37,8 @@ public class Template2DaoImpl extends EgovAbstractMapper implements Template2Dao
 	 */
 	@Override
 	public int save(Map<String, Object> data) {
-		Template2Dao template2Dao = (Template2Dao)sqlSession.getMapper(Template2Dao.class);
-		return template2Dao.save(data);
+		Template2Dao dao = (Template2Dao)sqlSession.getMapper(Template2Dao.class);
+		return dao.save(data);
 	}
 
 	/**
@@ -46,8 +46,8 @@ public class Template2DaoImpl extends EgovAbstractMapper implements Template2Dao
 	 */
 	@Override
 	public List<Map<String, Object>> search(Map<String, Object> data) {
-		Template2Dao template2Dao = (Template2Dao)sqlSession.getMapper(Template2Dao.class);
-		return template2Dao.search(data);
+		Template2Dao dao = (Template2Dao)sqlSession.getMapper(Template2Dao.class);
+		return dao.search(data);
 	}
 
 }
