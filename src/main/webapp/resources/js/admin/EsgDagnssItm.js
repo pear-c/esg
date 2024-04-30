@@ -1,10 +1,6 @@
 //-------------------------------------------------------------------------------
 //전역변수 영역("g" prefix 활용)
 //-------------------------------------------------------------------------------
-var gGlovalVariable = 0;                              // 파일 리스트 번호
-var gMsgData;
-
-
 var firstGrid;
 var rowIndex;
 var trsData = {};
@@ -30,7 +26,7 @@ function fnSearch() {
     if (fnPreSearch()) {
         var data = gfnGetInputParam();
 
-        gfnTransation("/EsgInspItem/Search",data,"POST",fnSearchCallback)
+        gfnTransation("/EsgDagnssItm/Search",data,"POST",fnSearchCallback)
     }
 
 }
@@ -66,7 +62,7 @@ function fnSearchCallback(data) {
  ********************************/
 function fnPreSave() {
    //필수 입력 체크
-    if (!gFnInputCheck())
+    if (!gfnInputCheck())
         return false;
 
     return true;
@@ -93,7 +89,7 @@ function fnSave() {
         paramData.useYn = $("#popUseYn").val();
         paramData.sortNo = $("#popSortNo").val();
         paramData.action = tAction;
-        gfnTransation("/EsgInspItem/Save", paramData, "POST",fnSaveCallback);
+        gfnTransation("/EsgDagnssItm/Save", paramData, "POST",fnSaveCallback);
     }
 }
 
@@ -128,7 +124,7 @@ function fnDelete() {
     paramData.esgCtgry = $("#popEsgCtgry").val();
     paramData.esgClassificationNo = $("#popEsgClassificationNo").val();
 
-    gfnTransation("/EsgInspItem/Delete", paramData, "Post", fnDeleteCallback);
+    gfnTransation("/EsgDagnssItm/Delete", paramData, "Post", fnDeleteCallback);
 }
 
 /********************************
@@ -145,7 +141,7 @@ function fnDeleteCallback(data) {
  * 추가 버튼 이벤트 핸들러
  ********************************/
 function fnInsertBtn() {
-    gFnAllClear();
+    gfnAllClear();
 
 	//버튼 제어
     $("#msgSave").val("저장");
@@ -169,7 +165,7 @@ function fnInsertBtn() {
  * 그리드 Double Click 이벤트 핸들러
  ********************************/
 function fnGridDBClick(rowIdx) {
-    gFnAllClear();
+    gfnAllClear();
 
     $("#popEsgDomain").val(firstGrid.getList()[rowIdx]['ESG_DOMAIN'])
     $("#popEsgCtgry").val(firstGrid.getList()[rowIdx]['ESG_CTGRY'])
@@ -244,7 +240,6 @@ function fnInit() {
     fnInitComp();
 
     //그리드 초기화
-//    fnInitAgGrid()
     fnInitGrid();
 }
 

@@ -1,12 +1,13 @@
 //-------------------------------------------------------------------------------
-//전역변수 영역("g" prefix 활용)
+//전역변수 영역
 //-------------------------------------------------------------------------------
+//Page에서 사용하는 그리드의 객체를 담는 변수
 var firstGrid;
+//그리드의 현재 로우 인덱스를 담는 변수
 var rowIndex;
+//그리드의 현재 로우 인덱스를 찾기 위한 그리드의 Unique 한 컬럼을 담는 객체
 var trsData = {};
 
-var gridOptions;
-var gridApi;
 //-------------------------------------------------------------------------------
 // 공통 함수영역
 //-------------------------------------------------------------------------------
@@ -26,7 +27,7 @@ function fnSearch() {
     if (fnPreSearch()) {
         var data = gfnGetInputParam();
 
-        gfnTransation("/Message/Search",data,"POST",fnSearchCallback)
+        gfnTransation("/Template3/Search",data,"POST",fnSearchCallback)
     }
 
 }
@@ -35,23 +36,20 @@ function fnSearch() {
  * 조회 콜백
  ********************************/
 function fnSearchCallback(data) {
-    var resultMap = data.resData.search;
+    var resultMap = data.resData.resultMap;
     
-    //ag grid 데이터 업데이트
-	gridApi.setGridOption('rowData', resultMap);
-	
-//    fnInitGrid();
-//    firstGrid.setData(resultMap);
-//    if (resultMap.length <= 0) {
-//        gfnSetNoDataMsg('firstGrid');
-//    }
-//    else {
-//        rowIndex = gfnGetTrsDataRowPos(firstGrid, trsData);
-//        trsData = {};
-//
-//        gfnSelectFocus('firstGrid', rowIndex-1, rowIndex);
-//        firstGrid.focus(rowIndex);
-//    }
+    fnInitGrid();
+    firstGrid.setData(resultMap);
+    if (resultMap.length <= 0) {
+        gfnSetNoDataMsg('firstGrid');
+    }
+    else {
+        rowIndex = gfnGetTrsDataRowPos(firstGrid, trsData);
+        trsData = {};
+
+        gfnSelectFocus('firstGrid', rowIndex-1, rowIndex);
+        firstGrid.focus(rowIndex);
+    }
 
 }
 
@@ -73,6 +71,8 @@ function fnPreSave() {
  ********************************/
 function fnSave() {
     if(fnPreSave()) {
+		var paramData = new Object();
+		
         trsData = {};
         trsData.MSG_ID = $("#hiddenMsgId").val();
 
@@ -82,7 +82,7 @@ function fnSave() {
         paramData.msgCon = $("#popParamMsgCon").val();
         paramData.useYn = $("#popParamUseYn").val();
         paramData.action = tAction;
-        gfnTransation("/Message/Save", paramData, "POST",fnSaveCallback);
+        gfnTransation("/Template3/Save", paramData, "POST",fnSaveCallback);
     }
 }
 
@@ -111,11 +111,11 @@ function fnPreDelete() {
  * 삭제 처리
  ********************************/
 function fnDelete() {
-    paramData = new Object();
+    var paramData = new Object();
 
     paramData.msgId = $("#hiddenMsgId").val();
 
-    gfnTransation("/Message/Delete", paramData, "Post", fnDeleteCallback);
+    gfnTransation("/Template3/Delete", paramData, "Post", fnDeleteCallback);
 }
 
 /********************************
@@ -131,15 +131,15 @@ function fnDeleteCallback(data) {
 /********************************
  * 추가 버튼 이벤트 핸들러
  ********************************/
-function fnInsertBtn() {
+function fnAdd() {
     gfnAllClear();
 
-    $("#msgSave").val("저장");
-	$("#msgSave").show();
+    $("#btnSave").val("저장");
+	$("#btnSave").show();
     $("#hiddenMsgId").val('')
     $("#popParamMsgCon").val('')
     $("#popParamUseYn option:eq(0)").prop("selected", true);
-    $("#msgDel").css("display","none");
+    $("#btnDelete").css("display","none");
     $("#layPop01").css("display","block");
     tAction = "INSERT";
 }
@@ -154,12 +154,12 @@ function fnGridDBClick(rowIdx) {
     $("#popParamMsgCon").val(firstGrid.getList()[rowIdx]['MSG_CONTENTS'])
     $("#popParamUseYn").val(firstGrid.getList()[rowIdx]['USE_YN'])
     $("#popParamUseYn").change();
-	$("#msgSave").val("수정");
+	$("#btnSave").val("수정");
 	if(updateRole == '0'){
-	$("#msgSave").hide();
+	$("#btnSave").hide();
 	}
 	if(deleteRole == '1'){
-    $("#msgDel").css("display","inline-block");
+    $("#btnDelete").css("display","inline-block");
 	}
     $("#layPop01").css("display","block");
     tAction = "UPDATE";
@@ -172,12 +172,12 @@ function fnAdGridDBClick(params) {
     $("#popParamMsgCon").val(params.MSG_CONTENTS)
     $("#popParamUseYn").val(params.USE_YN)
     $("#popParamUseYn").change();
-	$("#msgSave").val("수정");
+	$("#btnSave").val("수정");
 	if(updateRole == '0'){
-	$("#msgSave").hide();
+	$("#btnSave").hide();
 	}
 	if(deleteRole == '1'){
-    $("#msgDel").css("display","inline-block");
+    $("#btnDelete").css("display","inline-block");
 	}
     $("#layPop01").css("display","block");
     tAction = "UPDATE";
@@ -229,8 +229,7 @@ function fnInit() {
     fnInitComp();
 
     //그리드 초기화
-    fnInitAgGrid()
-//    fnInitGrid();
+    fnInitGrid();
 }
 
 /********************************
@@ -239,15 +238,15 @@ function fnInit() {
 function fnInitComp() {
 
 	if(createRole == '0'){
-		$("#insertBtn").hide()
+		$("#btnAdd").hide()
 	}
 
 	if(updateRole == '0'){
-		$("#msgSave").hide()
+		$("#btnSave").hide()
 	}
 
 	if(deleteRole == '0'){
-		$("#msgDel").hide()
+		$("#btnDelete").hide()
 	}
 
     //콤보(Select box) 바인딩 설정
@@ -259,15 +258,15 @@ function fnInitComp() {
     //공통 버튼 이벤트 핸들러 추가
     $("#searchBtn").click(function(e){ fnSearch();  e.preventDefault();});
 
-    $("#insertBtn").click(function(){
-        fnInsertBtn();
+    $("#btnAdd").click(function(){
+        fnAdd();
      });
 
-    $("#msgSave").click(function(){
+    $("#btnSave").click(function(){
        fnSave();
     })
 
-    $("#msgDel").click(function(){
+    $("#btnDelete").click(function(){
        fnPreDelete();
     })
 
@@ -303,17 +302,19 @@ function fnInitGrid(){
 
     firstGrid.setConfig({
         target: $('[data-ax5grid="firstGrid"]'),
-        showLineNumber: true,
+        showLineNumber: false,
         lineNumberColumnWidth: tLineNumberWidth,
         sortable: true,
+        //showRowSelector: true,
+        //multipleSelect: false,
         header:{
             align: "center",
+            display: false,
             columnHeight: tHeaderColumnHeight,
-
         }
         ,
         body:{
-            columnHeight: tBodyColumnHeight,
+            columnHeight: tBodyColumnHeight * 2,
             onClick: function(){
                 gfnSelectFocus('firstGrid', rowIndex, this.dindex);
                 rowIndex = this.dindex;
@@ -326,9 +327,13 @@ function fnInitGrid(){
         }
         ,
         columns:[
-            {key: "MSG_ID", label: "메세지ID", width:179, align:"center"},
-            {key: "MSG_CONTENTS", label: "메세지명", width:960, align:"left"},
-            {key: "USE_YN", label: "사용여부", width:159, align:"center"}
+            {key: "SQ_NO", label: "순번", width:100, align:"center"},
+            {key: "INSPECTION_CRITERIA", label: "점검기준", width:600, align:"left"},
+            {key: "SCORE", label: "점수", width:80, align:"center"},
+            {key: "CHECK", label: "CHECK", width:80, align:"center",
+                formatter: function() {return '<input type="checkbox" name="chk_info">a';}
+                
+            }
         ]
 
     });
@@ -336,33 +341,3 @@ function fnInitGrid(){
      $("div[data-ax5grid-panel='aside-header'] span[data-ax5grid-cellholder]").text('No')
 }
 
-/********************************
- * AG 그리드 초기화
- ********************************/
-function fnInitAgGrid(rowData){
-	// 통합 설정 객체, 아주 많은 속성들이 제공됨(일단 몇개만)
-        gridOptions = {
-            rowData: rowData,
-            columnDefs: [                            // 컬럼 정의
-                { field: "MSG_ID", headerName: "메세지ID" },
-                { field: "MSG_CONTENTS", headerName: "메세지명" },
-                { field: "USE_YN", headerName: "사용여부" }
-            ],
-            autoSizeStrategy: {                    // 자동사이즈정책
-                type: 'fitGridWidth',              // 그리드넓이기준으로
-                defaultMinWidth: 150               // 컬럼 최소사이즈
-            },
-            onRowClicked: function (params) {
-			   	rowIndex = params.node.rowIndex;
-			},
-            onRowDoubleClicked: function (params) {
-			   	rowIndex = params.node.rowIndex;
-			   	fnAdGridDBClick(params.data)
-			},
-            rowHeight: 45                          // row 높이지정
-        };
-
-        const gridDiv = document.querySelector('#myGrid');
-        //  new agGrid.Grid(gridDiv, gridOptions);  // deprecated
-        gridApi = agGrid.createGrid(gridDiv, gridOptions);
-}

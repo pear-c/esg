@@ -38676,8 +38676,8 @@ class AgRichSelect extends AgPickerField {
         // do not create the picker every time to save state
         return this.listComponent;
     }
-    setSearchStringCreator(searchStringFn) {
-        this.searchStringCreator = searchStringFn;
+    setSearchStringCreator(searchStringfn) {
+        this.searchStringCreator = searchStringfn;
     }
     setValueList(params) {
         const { valueList, refresh } = params;

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.portal.admin.dao.EsgInspCriteriaApplyPlanDao">
+	
+	<!-- 조회 -->
+	<select id="search" parameterType="map" resultType="ParamMap">
+	   select 
+	           a.esg_classification_no
+	   ,       a.step_cnt
+	   ,       a.score
+	   from    esg_inspection_criteria_apply_plan  a
+	   where   1 = 1
+	   and     a.esg_classification_no     = #{esgClassificationNo}
+	   order   by
+	           a.esg_classification_no
+	   ,       a.step_cnt
+	</select>
+
+	<!-- 중복 체크용 -->
+	<select id="searchCount" parameterType="map" resultType="ParamMap">
+	   select  count(*) cnt
+	   from    esg_inspection_criteria_apply_plan
+	   where   esg_classification_no   = #{esgClassificationNo}
+	   and     step_cnt                = fn_to_number(#{stepCnt})
+	</select>
+	
+	<!-- 저장 -->
+	<insert id="save" parameterType="map">
+	   merge   into esg_inspection_criteria_apply_plan a
+	   using   (select 'a' a) b
+	   on      a.esg_classification_no = #{esgClassificationNo}
+	   and     a.step_cnt              = fn_to_number(#{stepCnt})
+	   when    not matched then
+	           insert
+	           (
+	               esg_classification_no
+	           ,   step_cnt
+	           ,   score
+	           )
+	           values
+	           (   
+	               #{esgClassificationNo}
+	           ,   fn_to_number(#{stepCnt})
+	           ,   fn_to_number(#{score})
+	           )
+	   when    matched then
+	           update
+	           set
+	               score   = fn_to_number(#{score})
+	   ;
+	</insert>
+
+	<!-- 삭제 -->
+	<delete id="delete" parameterType="map">
+	   delete  from esg_inspection_criteria_apply_plan
+	   where   esg_classification_no   = #{esgClassificationNo}
+	   and     step_cnt                = fn_to_number(#{stepCnt})
+	</delete>
+</mapper>

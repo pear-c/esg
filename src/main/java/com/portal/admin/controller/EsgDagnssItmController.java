@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.portal.admin.service.EsgInspItemService;
+import com.portal.admin.service.EsgDagnssItmService;
 import com.portal.admin.service.UserActHstService;
 import com.portal.common.AJaxResVO;
 import com.portal.common.Common;
@@ -25,11 +25,11 @@ import com.portal.common.Common;
  * ESG 항목 관리 Controller
  */
 @Controller
-@RequestMapping("/EsgInspItem")
-public class EsgInspItemController {
+@RequestMapping("/EsgDagnssItm")
+public class EsgDagnssItmController {
 	
 	@Autowired
-	EsgInspItemService esgInspItemService;
+	EsgDagnssItmService esgDagnssItmService;
 	
 	@Autowired
 	UserActHstService userActHstService;
@@ -60,16 +60,16 @@ public class EsgInspItemController {
 	 */
 	@RequestMapping(value = "/Search", method = {RequestMethod.GET, RequestMethod.POST}) 
 	public @ResponseBody AJaxResVO Search(Locale locale, Model model, HttpServletRequest request, HttpServletResponse response) throws IOException {
-			AJaxResVO res = new AJaxResVO();
-			if(Common.seesionCheck(request)) {
-				response.sendError(503);			
-			}else {	
-			  Map<String, Object> data = Common.setDataParam(request);
-			  List<Map<String, Object>> searchMap = esgInspItemService.search(data);
-			  res.setSuccess(AJaxResVO.SUCCESS_Y); 
-			  res.addAttribute("search", searchMap);
+		AJaxResVO res = new AJaxResVO();
+		if(Common.seesionCheck(request)) {
+			response.sendError(503);			
+		}else {	
+			Map<String, Object> data = Common.setDataParam(request);
+			List<Map<String, Object>> searchMap = esgDagnssItmService.search(data);
+			res.setSuccess(AJaxResVO.SUCCESS_Y); 
+			res.addAttribute("search", searchMap);
 		}
-		  return res; 
+		return res; 
 	}
 	 
 	/**
@@ -89,7 +89,7 @@ public class EsgInspItemController {
 			response.sendError(503);			
 		}else {	
 			Map<String, Object> data = Common.setDataParam(request);
-			Map<String, Object> result = esgInspItemService.save(data);
+			Map<String, Object> result = esgDagnssItmService.save(data);
 		  		  
 			res.setSuccess(result.get("SUCC_YN").toString());
 			res.addAttribute("message", result.get("MSG").toString());
@@ -113,7 +113,7 @@ public class EsgInspItemController {
 			response.sendError(503);			
 		}else {	
 			Map<String, Object> data = Common.setDataParam(request);
-			Map<String, Object> result = esgInspItemService.delete(data);
+			Map<String, Object> result = esgDagnssItmService.delete(data);
 	  		  
 			res.setSuccess(result.get("SUCC_YN").toString());
 			res.addAttribute("message", result.get("MSG").toString());

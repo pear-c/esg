@@ -146,5 +146,5 @@
 
 <script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/jquery-ui.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/datepicker-ko.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/admin/EsgInspItem.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/admin/EsgDagnssItm.js"></script>
 </html>

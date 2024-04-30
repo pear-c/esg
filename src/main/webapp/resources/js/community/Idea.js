@@ -262,7 +262,7 @@ function fnNoticeView2(){
 function fnSearchDetailCallback(data) {
     resultMap = data.resData.resultMap;
 
-    gFnInputClear();
+    gfnInputClear();
 
     $("#noticTitle").text(resultMap.TITLE);
     $("#noticUserName").text(resultMap.USER_NAME);
@@ -458,7 +458,7 @@ function fnUpdateCallback(data) {
  *********************************************/
 function fnPreInsert() {
 	//공통 체크 사항
-    if (!gFnBBSInputCheck()){
+    if (!gfnBBSInputCheck()){
     	return false;
     }
  	return true;
@@ -782,7 +782,7 @@ function datepickerSetting(){
 //-------------------------------------------------------------------------------
 $(function(){
 
-	gFnInit();
+	gfnInit();
 
 	//컴포넌트 데이터 초기화, 이벤트 핸들러 설정 및 그리드 초기화
 	fnInit();
@@ -850,7 +850,7 @@ function fnEventInit(){
 
 		$("#imagePath").attr('src','')
 		files.clear();
-		gFnInputClear();
+		gfnInputClear();
 		fileNullCheck = [];
 
 		$(".mainPage").attr("style","display: none")
@@ -864,7 +864,7 @@ function fnEventInit(){
 	    $("#imagePath").attr('src','')
 
 		files.clear();
-		gFnInputClear();
+		gfnInputClear();
 
 		fnSearch();
 

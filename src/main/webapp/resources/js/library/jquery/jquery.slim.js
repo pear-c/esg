@@ -5123,7 +5123,7 @@ function safeActiveElement() {
 }
 
 function on( elem, types, selector, data, fn, one ) {
-	var origFn, type;
+	var origfn, type;
 
 	// Types can be a map of types/handlers
 	if ( typeof types === "object" ) {
@@ -5167,16 +5167,16 @@ function on( elem, types, selector, data, fn, one ) {
 	}
 
 	if ( one === 1 ) {
-		origFn = fn;
+		origfn = fn;
 		fn = function( event ) {
 
 			// Can use an empty set, since event contains the info
 			jQuery().off( event );
-			return origFn.apply( this, arguments );
+			return origfn.apply( this, arguments );
 		};
 
-		// Use same guid so caller can remove using origFn
-		fn.guid = origFn.guid || ( origFn.guid = jQuery.guid++ );
+		// Use same guid so caller can remove using origfn
+		fn.guid = origfn.guid || ( origfn.guid = jQuery.guid++ );
 	}
 	return elem.each( function() {
 		jQuery.event.add( this, types, fn, data, selector );

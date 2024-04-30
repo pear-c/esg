@@ -55,7 +55,7 @@ function sessionCallback(data){
 /**
 * 이벤트 초기세팅
 */
-function gFnInit(){
+function gfnInit(){
 
     /**
     * IE 전용
@@ -184,7 +184,7 @@ function gFnInit(){
 /**
 * 입력박스 및 셀렉트 박스를 초기화
 */
-function gFnInputClear(){
+function gfnInputClear(){
     $("textarea.clearFormat").val('');
     $("input[type=text].clearFormat").val('');
     $("input[type=file].clearFormat").val('');
@@ -202,7 +202,7 @@ function gFnInputClear(){
 /**
 * 필수 입력값의 outline을 초기화
 */
-function gFnAllClear(){
+function gfnAllClear(){
     $("input.checkFormat").css("outline","")
     $("textarea.checkFormat").css("outline","")
     $("select.checkFormat").css("outline","")
@@ -212,7 +212,7 @@ function gFnAllClear(){
 /**
 * 셀렉트 박스 초기화
 */
-function gFnSelectIsNull(){
+function gfnSelectIsNull(){
 
     if($("select.selectIsNull").length > 0){
         for(var i=0;i<$("select.selectIsNull").length;i++){
@@ -224,7 +224,7 @@ function gFnSelectIsNull(){
 /**
 * 필수 입력값을 체크
 */
-function gFnInputCheck(){
+function gfnInputCheck(){
 
     $("input.checkFormat").css("outline","")
     $("textarea.checkFormat").css("outline","")
@@ -294,7 +294,7 @@ function gFnInputCheck(){
 /**
 * 필수 입력값을 체크
 */
-function gFnBBSInputCheck(){
+function gfnBBSInputCheck(){
 
     $("input.checkFormat").css("outline","")
     $("textarea.checkFormat").css("outline","")
@@ -357,7 +357,7 @@ function gFnBBSInputCheck(){
 /**
 * 필수 입력값을 체크
 */
-function gFnInputCheckOneBon(){
+function gfnInputCheckOneBon(){
 
     $("input.checkFormat").css("outline","")
     $("textarea.checkFormat").css("outline","")
@@ -430,15 +430,12 @@ function gFnInputCheckOneBon(){
 function menuHref(menuUrl,menuId){
 
     var form = document.createElement('form');
-
     var objs = document.createElement('input');
 
     objs.setAttribute('type','hidden');
-
     objs.setAttribute('name','menuId');
-
     objs.setAttribute('value',menuId);
-
+    
     form.appendChild(objs);
 
     form.setAttribute('method','post');
@@ -843,7 +840,7 @@ function gfnSetInitComp(arrObj){
     }
 
     // 동적으로 class 부여 및 사용자 정의 부여에 의한 이벤트 등록
-    gFnInit();
+    gfnInit();
 }
 
 /**
@@ -1716,3 +1713,4 @@ function gfnRobotType(type){
 
 	return result;
 }
+

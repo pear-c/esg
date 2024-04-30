@@ -8,13 +8,13 @@ import org.egovframe.rte.psl.dataaccess.EgovAbstractMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.portal.admin.dao.EsgInspItemDao;
+import com.portal.admin.dao.EsgDagnssItmDao;
 
 /**
  * ESG 항목 관리 DAO Implement
  */
-@Repository("esgInspItemDao")
-public class EsgInspItemDaoImpl extends EgovAbstractMapper implements EsgInspItemDao {
+@Repository("esgDagnssItmDao")
+public class EsgDagnssitmDaoImpl extends EgovAbstractMapper implements EsgDagnssItmDao {
 
 	private SqlSession sqlSession;
 
@@ -28,7 +28,7 @@ public class EsgInspItemDaoImpl extends EgovAbstractMapper implements EsgInspIte
 	 */
 	@Override
 	public int delete(Map<String, Object> data) {
-		EsgInspItemDao dao = (EsgInspItemDao)sqlSession.getMapper(EsgInspItemDao.class);
+		EsgDagnssItmDao dao = (EsgDagnssItmDao)sqlSession.getMapper(EsgDagnssItmDao.class);
 		return dao.delete(data);
 	}
 
@@ -37,7 +37,7 @@ public class EsgInspItemDaoImpl extends EgovAbstractMapper implements EsgInspIte
 	 */
 	@Override
 	public int save(Map<String, Object> data) {
-		EsgInspItemDao dao = (EsgInspItemDao)sqlSession.getMapper(EsgInspItemDao.class);
+		EsgDagnssItmDao dao = (EsgDagnssItmDao)sqlSession.getMapper(EsgDagnssItmDao.class);
 		return dao.save(data);
 	}
 
@@ -46,7 +46,7 @@ public class EsgInspItemDaoImpl extends EgovAbstractMapper implements EsgInspIte
 	 */
 	@Override
 	public List<Map<String, Object>> search(Map<String, Object> data) {
-		EsgInspItemDao dao = (EsgInspItemDao)sqlSession.getMapper(EsgInspItemDao.class);
+		EsgDagnssItmDao dao = (EsgDagnssItmDao)sqlSession.getMapper(EsgDagnssItmDao.class);
 		return dao.search(data);
 	}
 

@@ -1,18 +1,17 @@
 package com.portal.admin.service;
 
-import java.util.*;
+import java.util.List;
 import java.util.Map;
 
+
 /**
- * 점검 기준 관리 Service Interface
+ * ESG 항목 관리 Service Interface
  */
-public interface EsgInspCriteriaService {
-	//점검 기준 조회
+public interface EsgDagnssItmService {
+	//메세지 조회
 	public List<Map<String, Object>> search(Map<String, Object> data);
-	//점검 기준 저장
+	//메세지 저장
 	public Map<String, Object> save(Map<String, Object> data);
-	//점검 기준 삭제
+	//메세지 삭제
 	public Map<String, Object> delete(Map<String, Object> data);
-	//점검 기준 건수 조회
-	public int searchCount(Map<String, Object> data);
 }

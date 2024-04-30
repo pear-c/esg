@@ -1,8 +1,6 @@
 //-------------------------------------------------------------------------------
 //전역변수 영역("g" prefix 활용)
 //-------------------------------------------------------------------------------
-var gGlovalVariable = 0;                              // 파일 리스트 번호
-
 var firstGrid;
 var secondGrid;
 
@@ -231,7 +229,7 @@ function fnNoticePageMove(page){
 function fnSearchDetailCallback(data) {
     resultMap = data.resData.resultMap;
 
-    gFnInputClear();
+    gfnInputClear();
 
     $("#noticTitle").text(resultMap.TITLE);
     $("#noticUserName").text(resultMap.USER_NAME);
@@ -381,7 +379,7 @@ function fnUpdateCallback(data) {
  *********************************************/
 function fnPreInsert() {
 	//공통 체크 사항
-    if (!gFnBBSInputCheck()){
+    if (!gfnBBSInputCheck()){
     	return false;
     }
  	return true;
@@ -917,7 +915,7 @@ function fnInitComp() {
 
 		$("#imagePath").attr('src','')
 		files.clear();
-		gFnInputClear();
+		gfnInputClear();
 		fileUploadCnt = 0;
 		fileTotalCnt = 0;
 		fileNullCheck = [];
@@ -947,7 +945,7 @@ function fnInitComp() {
 	    $("#imagePath").attr('src','')
 
 		files.clear();
-		gFnInputClear();
+		gfnInputClear();
 
 		fnSearch();
 

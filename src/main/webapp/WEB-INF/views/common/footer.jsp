@@ -2,5 +2,5 @@
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
-<footer class="footer"><div class="inner">ⓒ ONEOONE Inc. All Rights Reserved.</div></footer>
+<footer class="footer"><div class="inner">ⓒ IAMZRoad Inc. All Rights Reserved.</div></footer>
 </html>

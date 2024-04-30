@@ -1,8 +1,6 @@
 //-------------------------------------------------------------------------------
 //전역변수 영역("g" prefix 활용)
 //-------------------------------------------------------------------------------
-var gGlovalVariable = 0;                              // 파일 리스트 번호
-
 var firstGrid;
 
 //-------------------------------------------------------------------------------
@@ -46,7 +44,7 @@ function fnSearchCallback(data) {
  ********************************/
 function fnPreSave() {
 	//공통 체크 사항
-    if (!gFnInputCheck())
+    if (!gfnInputCheck())
     	return false;
 
  	return true;
@@ -126,7 +124,7 @@ function fnDeleteCallback(data) {
  * 추가 버튼 이벤트 핸들러
  ********************************/
 function fnPopParamAdd() {
-	gFnAllClear();
+	gfnAllClear();
     $("#popParamQuestion").val('')
     $("#popParamAnswer").val('')
     $("#popParamSortNo").val('')
@@ -145,7 +143,7 @@ function fnPopParamAdd() {
  * 그리드 Body 더블클릭 이벤트 핸들러
  ********************************/
 function fnGridDBClick(rowIdx) {
-    gFnAllClear();
+    gfnAllClear();
 
     $("#popParamQuestion").val(firstGrid.getList()[rowIdx]['QUESTION'])
     $("#popParamAnswer").val(firstGrid.getList()[rowIdx]['ANSWER'])

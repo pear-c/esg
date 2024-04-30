@@ -9,21 +9,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.portal.admin.dao.EsgInspItemDao;
-import com.portal.admin.service.EsgInspItemService;
+import com.portal.admin.dao.EsgInspCriteriaApplyPlanDao;
+import com.portal.admin.service.EsgInspCriteriaApplyPlanService;
 import com.portal.common.MessageUtil;
 
-/**
- * ESG 항목 관리 Service Implement
- */
-@Service("esgInspItemService")
-public class EsgInspItemServiceImpl extends EgovAbstractServiceImpl implements EsgInspItemService{
+@Service("esgInspCriteriaApplyPlan")
+public class EsgInspCriteriaApplyPlanServiceImpl extends EgovAbstractServiceImpl implements EsgInspCriteriaApplyPlanService {
 
-	EsgInspItemDao dao;
+
+	EsgInspCriteriaApplyPlanDao dao;
 
 	@Autowired
-	public EsgInspItemServiceImpl(@Qualifier("esgInspItemDao") EsgInspItemDao dao) {
-		this.dao = dao;
+	public EsgInspCriteriaApplyPlanServiceImpl(@Qualifier("esgInspCriteriaApplyPlanDao") EsgInspCriteriaApplyPlanDao dao) {
+			this.dao = dao;
 	}
 
 	/**
@@ -34,12 +32,12 @@ public class EsgInspItemServiceImpl extends EgovAbstractServiceImpl implements E
 		return dao.search(data);
 	}
 
+
 	/**
 	 * 저장
 	 */
 	@Override
 	public Map<String, Object> save(Map<String, Object> data) {
-		// TODO Auto-generated method stub
 		Map<String, Object> result = new HashMap<String, Object>();
 		String action = (String)data.get("action");
 		int cnt;
@@ -48,11 +46,22 @@ public class EsgInspItemServiceImpl extends EgovAbstractServiceImpl implements E
 
 		//추가
 		if ("INSERT".equals(action)) {
-			cnt = dao.save(data);
 
-			//처리 실패
-			if (0 == cnt) {
-				msgId = "10013";		//등록처리 실패하였습니다.
+			//중복 체크
+			cnt = Integer.parseInt(dao.searchCount(data).get("CNT").toString());
+
+			//중복 오류
+			if (cnt > 0) {
+				msgId = "10009";			//기존에 동일 자료가 있습니다.
+			}
+			else {
+				cnt = dao.save(data);
+
+				//처리 실패
+				if (0 == cnt) {
+					msgId = "10013";		//등록처리 실패하였습니다.
+
+				}
 			}
 		}
 		//수정
@@ -68,7 +77,9 @@ public class EsgInspItemServiceImpl extends EgovAbstractServiceImpl implements E
 		result.put("MSG",("".equals(msgId) ? "" : MessageUtil.getMessage(msgId)));
 
 		return result;
+
 	}
+
 
 	/**
 	 * 삭제
@@ -76,20 +87,26 @@ public class EsgInspItemServiceImpl extends EgovAbstractServiceImpl implements E
 	@Override
 	public Map<String, Object> delete(Map<String, Object> data) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		String action = (String)data.get("action");
 		int cnt;
+		String msgId = "";
 
-		String msgId	= "";
-
-		//처리 실패
+		//정상처리 여부 체크
 		cnt = dao.delete(data);
 		if (0 == cnt) {
-			msgId = "10014";			//삭제 처리 실패 하였습니다.
+			msgId = "10015";			//삭제처리 실패되었습니다.
 		}
 
 		result.put("SUCC_YN", ("".equals(msgId) ? "Y" : "N"));
 		result.put("MSG",("".equals(msgId) ? "" : MessageUtil.getMessage(msgId)));
 
-		return result;
+		return result;		//삭제처리 완료되었습니다.
+	}
+
+	/**
+	 * 건수 조회
+	 */
+	@Override
+	public int searchCount(Map<String, Object> data) {
+		return Integer.parseInt(dao.searchCount(data).get("CNT").toString());
 	}
 }

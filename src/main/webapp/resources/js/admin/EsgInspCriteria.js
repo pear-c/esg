@@ -1,23 +1,12 @@
 //-------------------------------------------------------------------------------
 //전역변수 영역("g" prefix 활용)
 //-------------------------------------------------------------------------------
-var gGlovalVariable = 0;                              // 파일 리스트 번호
-
 var firstGrid;
 var secondGrid;
 var rowIndex = 0;
 var rowIndex2 = 0;
 
 var resultMap;
-
-var firstGridWidth;
-var firstGridHeight;
-var secondGridWidth;
-var secondGridHeight;
-
-//그리드 데이터 조회 없을 경우 문자 표시 위치 설정용 변수
-var firstLPad, secondLPad;
-var firstTPad, secondTPad;
 
 var trsData = {};
 
@@ -40,7 +29,7 @@ function fnSearch() {
 
         var paramData = gfnGetInputParam();
 
-        gfnTransation("/Template1/SearchUpperCode",paramData,"POST",fnSearchCallback)
+        gfnTransation("/EsgInspCriteria/SearchEsgDagnssItm",paramData,"POST",fnSearchCallback)
 
     }
 }
@@ -73,15 +62,13 @@ function fnSearchCallback(data) {
  ********************************/
 function fnSearch2(index) {
 
-    $("#hiddenUpperCode").val(firstGrid.getList()[index]['UPPR_CODE']);
-
-    $("#hiddenUpperCodeName").val(firstGrid.getList()[index]['UPPR_CODE_NAME']);
+    $("#hiddenEsgClassificationNo").val(firstGrid.getList()[index]['ESG_CLASSIFICATION_NO']);
 
     var paramData = new Object();
 
-    paramData.upprCode = firstGrid.getList()[index]['UPPR_CODE']
+    paramData.esgClassificationNo = firstGrid.getList()[index]['ESG_CLASSIFICATION_NO']
 
-    gfnTransation("/Template1/SearchCode",paramData,"POST",fnSearch2Callback)
+    gfnTransation("/EsgInspCriteria/Search",paramData,"POST",fnSearch2Callback)
 }
 
 /********************************
@@ -104,61 +91,11 @@ function fnSearch2Callback(data) {
 }
 
 /********************************
- * 상위코드 저장 처리전 사전 체크
- ********************************/
-function fnPreSave() {
-    //필수 입력 체크
-    if (!gFnInputCheck())
-        return false;
-
-    return true;
-}
-
-/********************************
- * 상위 코드 저장 처리
- ********************************/
-function fnSave() {
-    if (fnPreSave()) {
-        var paramData = new Object();
-
-        trsData = {};
-        trsData.UPPR_CODE = $("#popParamUpperCode").val();
-
-        paramData.upprCode = $("#popParamUpperCode").val()
-        paramData.upprCodeName = $("#popParamUpperCodeName").val()
-        paramData.configYn = $("#popParamConfigYn").val()
-        paramData.inputYn = $("#popParamInputYn").val()
-        paramData.useYn = $("#popParamCodeUseYn").val()
-        paramData.action = tAction;
-        gfnTransation("/Template1/SaveUpperCode",paramData,"POST",fnSaveCallback)
-    }
-}
-
-/********************************
- * 상위 코드 저장 콜백
- ********************************/
-function fnSaveCallback(data) {
-
-    $("#layPop01").css("display","none");
-    if(data.success == 'Y'){
-
-         $("#hiddenUpperCode").val('');
-
-         secondGrid.setData([]);
-
-         fnSearch();
-    }else{
-        gfnPopMsg.alert(data.resData.message);
-    }
-}
-
-
-/********************************
- * 상세 코드 저장 처리
+ * 점검 기준 저장 처리
  ********************************/
 function fnPreSave2() {
     //필수 입력 체크
-    if (!gFnInputCheck())
+    if (!gfnInputCheck())
         return false;
 
     return true;
@@ -172,22 +109,18 @@ function fnSave2() {
         var paramData = new Object();
 
         trsData = {};
-        trsData.CODE = $("#popParamCode").val();
+        trsData.sqNo = $("#popSqNo").val();
 	
-        paramData.upprCode =  $("#hiddenUpperCode").val();
-        paramData.code = $("#popParamCode").val()
-        paramData.codeName = $("#popParamCodeName").val()
-        paramData.val1 = $("#popParamVal1").val()
-        paramData.val2 = $("#popParamVal2").val()
-        paramData.sortNo = $("#popParamSortNo").val()
-        paramData.useYn = $("#popParamCodeUseYn2").val()
+        paramData.esgClassificationNo =  $("#hiddenEsgClassificationNo").val();
+        paramData.sqNo = $("#popSqNo").val()
+        paramData.inspectionCriteria = $("#popInspectionCriteria").val()
         paramData.action = tAction;
-        gfnTransation("/Template1/SaveCode",paramData,"POST",fnSave2Callback)
+        gfnTransation("/EsgInspCriteria/Save",paramData,"POST",fnSave2Callback)
     }
 }
 
 /********************************
- * 상세 코드 저장 콜백
+ * 점검 기준 저장 콜백
  ********************************/
 function fnSave2Callback(data) {
 
@@ -196,9 +129,9 @@ function fnSave2Callback(data) {
 
           var paramData = new Object();
 
-          paramData.upprCode = $("#hiddenUpperCode").val();
+          paramData.esgClassificationNo = $("#hiddenEsgClassificationNo").val();
 
-         gfnTransation("/Template1/SearchCode",paramData,"POST",fnSearch2Callback)
+         gfnTransation("/EsgInspCriteria/Search",paramData,"POST",fnSearch2Callback)
     }else{
         gfnPopMsg.alert(data.resData.message);
     }
@@ -206,54 +139,24 @@ function fnSave2Callback(data) {
 
 
 /********************************
- * 상위코드 삭제 처리전 사전 체크
- ********************************/
-function fnPreDelete() {
-    var cnt = secondGrid.getList().length;
-    var msgId = '10002';      //삭제 하시겠습니까?
-
-    if (cnt > 0) {
-        msgId = '10022';    //하위 데이터가 존재 합니다. \n그래도 삭제하시겠습니까?
-    }
-
-    gfnPopMsg.confirm(gfnGetMessage(msgId), fnDelete);
-}
-
-/********************************
- * 상위코드 삭제 처리
- ********************************/
-function fnDelete() {
-    var paramData = new Object();
-    paramData.upprCode =  $("#popParamUpperCode").val();
-    gfnTransation("/Template1/DeleteUpperCode",paramData,"POST",fnDeleteCallback)
-}
-
-/********************************
- * 상위코드 삭제 처리 콜백
- ********************************/
-function fnDeleteCallback(data) {
-    fnSaveCallback(data);
-}
-
-/********************************
- * 상세 코드 삭제 처리전 사전 체크
+ * 점검 기준 삭제 처리전 사전 체크
  ********************************/
 function fnPreDelete2() {
     gfnPopMsg.confirm(gfnGetMessage(10002), fnDelete2);
 }
 
 /********************************
- * 상세 코드 삭제 처리
+ * 점검 기준 삭제 처리
  ********************************/
 function fnDelete2() {
     var paramData = new Object();
-    paramData.upprCode =  $("#hiddenUpperCode").val();
-    paramData.code =  $("#popParamCode").val();
-    gfnTransation("/Template1/DeleteCode",paramData,"POST",fnDelete2Callback)
+    paramData.esgClassificationNo =  $("#hiddenEsgClassificationNo").val();
+    paramData.sqNo =  $("#popSqNo").val();
+    gfnTransation("/EsgInspCriteria/Delete",paramData,"POST",fnDelete2Callback)
 }
 
 /********************************
- * 상세코드 삭제 처리 콜백
+ * 점검 기준 삭제 처리 콜백
  ********************************/
 function fnDelete2Callback(data) {
     fnSave2Callback(data);
@@ -264,48 +167,19 @@ function fnDelete2Callback(data) {
 // ::: 자유롭게 작성 하되 fn Prefix와 함께 Camel 케이스 표기법으로 작성
 //-------------------------------------------------------------------------------
 
-
-/********************************
- * 상위코드 추가 버튼 이벤트 핸들러
- ********************************/
-function fnAdd() {
-    gFnAllClear();
-
-    $("#popParamUpperCode").val('');
-    $("#popParamUpperCodeName").val('');
-
-    $("#popParamConfigYn option:eq(1)").prop("selected", true);
-    $("#popParamInputYn option:eq(1)").prop("selected", true);
-    $("#popParamCodeUseYn option:eq(0)").prop("selected", true);
-
-    $("#popParamUpperCode").removeAttr('readonly');
-    $("#popParamSave").html('저장');
-	$("#popParamSave").show();
-
-    $("#popParamDelete").css("display","none");
-    $("#layPop01").css("display","block");
-    tAction = "INSERT";
-}
-
 /********************************
  * 상세코드 추가 버튼 이벤트 핸들러
  ********************************/
 function fnAdd2() {
 
-    if($("#hiddenUpperCode").val() != ''){
-        gFnAllClear();
+    if($("#hiddenEsgClassificationNo").val() != ''){
+        gfnAllClear();
 
-        $("#popParamCode").val('')
-        $("#popParamCodeName").val('');
-        $('#popParamCodeName').val('');
-        $('#popParamSortNo').val('');
-        $('#popParamVal1').val('');
-        $('#popParamVal2').val('');
+        $("#popSqNo").val('')
+        $("#popInspectionCriteria").val('');
 
-        $("#popParamUpperCode2").val($("#hiddenUpperCode").val());
-        $("#popParamUpperCodeName2").val($("#hiddenUpperCodeName").val());
-        $("#popParamCodeUseYn2 option:eq(0)").prop("selected", true);
-        $("#popParamCode").removeAttr('readonly');
+        $("#popEsgClassificationNo").val($("#hiddenEsgClassificationNo").val());
+        $("#popSqNo").removeAttr('readonly');
 		$("#popParamSave2").html('저장');
 		$("#popParamSave2").show();
 
@@ -315,31 +189,6 @@ function fnAdd2() {
     }
 }
 
-/********************************
- * 상위코드 그리드 DB Click 이벤트 핸들러
- ********************************/
-function fnGridDBClick(rowIdx) {
-    gFnAllClear();
-    var rowData = firstGrid.getList()[rowIdx];
-	
-    $("#popParamUpperCode").val(rowData['UPPR_CODE']);
-    $("#popParamUpperCodeName").val(rowData['UPPR_CODE_NAME']);
-    $("#popParamConfigYn").val(rowData['CONFIG_YN']);
-    $("#popParamInputYn").val(rowData['INPUT_YN']);
-    $("#popParamCodeUseYn").val(rowData['USE_YN']);
-
-	$("#popParamSave").html('수정');
-	if(updateRole == '0'){
-	$("#popParamSave").hide();
-	}
-	if(deleteRole == '1'){
-    $("#popParamDelete").css("display","inline-block");
-	}
-    $("#popParamUpperCode").attr('readonly','readonly');
-
-    $("#layPop01").css("display","block");
-    tAction = "UPDATE";
-}
 
 /********************************
  * 상위코드 그리드 Click 이벤트 핸들러
@@ -352,17 +201,13 @@ function fnGridClick(rowIdx) {
  * 상세코드 그리드 Doublic Click 이벤트 핸들러
  ********************************/
 function fnGrid2DBClick(rowIdx) {
-    gFnAllClear();
+    gfnAllClear();
     var rowData = secondGrid.getList()[rowIdx];
 
-    $("#hiddenUpperCode").val(firstGrid.getList()[rowIndex]['UPPR_CODE']);
-    $("#popParamUpperCodeName2").val(firstGrid.getList()[rowIndex]['UPPR_CODE_NAME']);
-    $("#popParamCode").val(rowData['CODE']);
-    $("#popParamCodeName").val(rowData['CODE_NAME']);
-    $("#popParamVal1").val(rowData['VAL1']);
-    $("#popParamVal2").val(rowData['VAL2']);
-    $("#popParamSortNo").val(rowData['SORT_NO']);
-    $("#popParamCodeUseYn2").val(rowData['USE_YN']);
+    $("#hiddenEsgClassificationNo").val(firstGrid.getList()[rowIndex]['ESG_CLASSIFICATION_NO']);
+    $("#popEsgClassificationNo").val(firstGrid.getList()[rowIndex]['ESG_CLASSIFICATION_NO']);
+    $("#popSqNo").val(rowData['SQ_NO']);
+    $("#popInspectionCriteria").val(rowData['INSPECTION_CRITERIA']);
 
 	$("#popParamSave2").html('수정');
 	if(updateRole == '0'){
@@ -480,38 +325,22 @@ function fnInitComp() {
 
     //콤보(Select box) 바인딩 설정
     var combo = [
-	 	{id: "popParamCodeUseYn", upprCode: "YN", isAll: false}
-     ,  {id: "popParamCodeUseYn2", upprCode: "YN", isAll: false}
-     ,  {id: "popParamConfigYn", upprCode: "YN", isAll: false}
-     ,  {id: "popParamInputYn", upprCode: "YN", isAll: false}
     ];
     gfnInitComboBind(combo);
 
     //공통 버튼 이벤트 핸들러 추가
     $("#searchBtn").click(function(e){ fnSearch();  e.preventDefault();});
 
-    $("#upperCodeAdd").click(function(){
-        fnAdd();
-    });
-
-    $("#codeAdd").click(function(){
+    $("#addBtn2").click(function(){
         fnAdd2();
     });
 
-    //상위코드 저장
-    $("#popParamSave").click(function(){
-        fnSave();
-    });
-
-    //상세 코드 저장
+    //점검 기준 저장
     $("#popParamSave2").click(function(){
         fnSave2();
 
     });
 
-    $("#popParamDelete").click(function(){
-        fnPreDelete();
-    });
 
     $("#popParamDelete2").click(function(){
         fnPreDelete2();
@@ -544,13 +373,8 @@ function fnInitComp() {
     //* checkFormat 클래스 : 필수 입력
     // isUpper : 대문자만 허용
     var arrObj = [
-        {id : 'upperCodeName', numberFormat: false, dataLength: 30, checkFormat: false, isUpper: false},
-        {id : 'popParamUpperCode', numberFormat: false, dataLength: 20, checkFormat: true, isUpper: true},
-        {id : 'popParamUpperCodeName', numberFormat: false, dataLength: 30, checkFormat: true, isUpper: false},
-        {id : 'popParamUpperCode2', numberFormat: false, dataLength: 0, checkFormat: true, isUpper: false},
-        {id : 'popParamCode', numberFormat: false, dataLength: 20, checkFormat: true, isUpper: false},
-        {id : 'popParamCodeName', numberFormat: false, dataLength: 30, checkFormat: true, isUpper: false},
-        {id : 'popParamSortNo', numberFormat: true, dataLength: 3, checkFormat: false, isUpper: false}
+        {id : 'popSqNo', numberFormat: true, dataLength: 3, checkFormat: true, isUpper: false},
+        {id : 'popInspectionCriteria', numberFormat: false, dataLength: 2000, checkFormat: false, isUpper: false}
     ];
     gfnSetInitComp(arrObj);
 }
@@ -589,21 +413,12 @@ function fnInitGrid1(){
                 gfnSelectFocus('first-grid', rowIndex, this.dindex);
                 rowIndex = this.dindex;
                 fnGridClick(this.dindex);
-            },
-            onDBLClick: function(){
-                gfnSelectFocus('first-grid', rowIndex, this.dindex);
-                rowIndex = this.dindex;
-                fnGridDBClick(this.dindex);
             }
         }
         ,
         columns:[
-            {key: "UPPR_CODE", label: "상위코드", width:178, align:"left", size :10},
-            {key: "UPPR_CODE_NAME", label: "상위코드명", width:260, align:"left"},
-            {key: "CONFIG_YN", label: "환경설정", width:80, align:"center"},
-            {key: "INPUT_YN", label: "입력설정", width:80, align:"center"},
-            {key: "USE_YN", label: "사용", width:80, align:"center"}
-
+            {key: "ESG_CLASSIFICATION_NO", label: "분류 번호", width:120, align:"center", size :10},
+            {key: "DAGNSS_ITM", label: "진단 항목", width:450, align:"left"}
         ]
 
     });
@@ -640,12 +455,8 @@ function fnInitGrid2(){
         }
         ,
         columns:[
-            {key: "CODE", label: "코드", width:100, size :10, align:"left"},
-            {key: "CODE_NAME", label: "코드명", width:160, align:"left"},
-            {key: "VAL1", label: "VAL1", width:80, align:"center"},
-            {key: "VAL2", label: "VAL2", width:118, align:"center"},
-            {key: "USE_YN", label: "사용유무", width:80, align:"center"},
-            {key: "SORT_NO", label: "순번", width:80, align:"center"}
+            {key: "SQ_NO", label: "순번", width:80, size :10, align:"center"},
+            {key: "INSPECTION_CRITERIA", label: "점검 기준", width:520, align:"left"}
         ]
 
     });

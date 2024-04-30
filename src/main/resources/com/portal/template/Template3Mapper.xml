@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.portal.template.dao.Template3Dao">
+
+	<!-- 조회 -->
+    <select id="search" parameterType="map" resultType="ParamMap">
+        select  
+                case when b.aplcn_method = 'A' then ''
+                     else '요건'
+                end ||
+                fn_to_char(a.sq_no) ||
+                case when b.aplcn_method = 'A' then '단계'
+                     else ''
+                end     as  sq_no
+        ,       a.inspection_criteria 
+        ,       c.score
+        ,       ''  as check_val       
+        from    esg_inspection_criteria a
+                inner join
+                esg_dagnss_itm          b
+                on  a.esg_classification_no = b.esg_classification_no
+                inner join 
+		        esg_inspection_criteria_apply_plan c
+		        on  a.esg_classification_no     = c.esg_classification_no 
+		        and a.sq_no                     = c.step_cnt 
+        where   1 = 1
+        and     a.esg_classification_no     = 'P-1-1'
+        order   by
+                a.sq_no
+    </select>
+    
+    <!-- 저장 -->
+    <insert id="save"  parameterType="map">
+        
+    </insert>
+    
+    <!-- 삭제 -->
+    <delete id="delete" parameterType="map">
+        
+    </delete>
+</mapper>

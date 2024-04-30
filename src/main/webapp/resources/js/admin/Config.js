@@ -1,8 +1,6 @@
 //-------------------------------------------------------------------------------
 //전역변수 영역("g" prefix 활용)
 //-------------------------------------------------------------------------------
-var gGlovalVariable = 0;                              // 파일 리스트 번호
-
 var firstGrid;
 var resultMap
 var ck;
@@ -401,7 +399,7 @@ function fnUserDefine() {
  * 상위코드 그리드 DB Click 이벤트 핸들러
  ********************************/
 function fnGridDBClick(rowIdx) {
-    gFnAllClear();
+    gfnAllClear();
 
     var rowData = resultMap[rowIdx];//firstGrid.getList()[rowIdx];
 

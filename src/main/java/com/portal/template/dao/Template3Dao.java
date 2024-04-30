@@ -1,17 +1,17 @@
-package com.portal.admin.dao;
+package com.portal.template.dao;
 
 import java.util.*;
 import java.util.Map;
 
 
 /**
- * ESG 항목 관리 DAO Interface
+ * ??? 관리 DAO Interface
  */
-public interface EsgInspItemDao {
-	//메세지 조회
+public interface Template3Dao {
+	//조회
 	public List<Map<String, Object>> search(Map<String, Object> data);
-	//메세지 저장
+	//저장
 	public int save(Map<String, Object> data);
-	//메세지 삭제
+	//삭제
 	public int delete(Map<String, Object> data);
 }

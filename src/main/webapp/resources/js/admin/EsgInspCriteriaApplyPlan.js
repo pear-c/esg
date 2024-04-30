@@ -1,13 +1,13 @@
 //-------------------------------------------------------------------------------
-//전역변수 영역
+//전역변수 영역("g" prefix 활용)
 //-------------------------------------------------------------------------------
-//Page에서 사용하는 그리드의 객체를 담는 변수
 var firstGrid;
 var secondGrid;
-//그리드의 현재 로우 인덱스를 담는 변수
 var rowIndex = 0;
 var rowIndex2 = 0;
-//그리드의 현재 로우 인덱스를 찾기 위한 그리드의 Unique 한 컬럼을 담는 객체
+
+var resultMap;
+
 var trsData = {};
 
 //-------------------------------------------------------------------------------
@@ -29,7 +29,7 @@ function fnSearch() {
 
         var paramData = gfnGetInputParam();
 
-        gfnTransation("/Template1/SearchUpperCode",paramData,"POST",fnSearchCallback)
+        gfnTransation("/EsgInspCriteriaApplyPlan/SearchEsgDagnssItm",paramData,"POST",fnSearchCallback)
 
     }
 }
@@ -58,19 +58,17 @@ function fnSearchCallback(data) {
 
 
 /********************************
- * 디테일 조회
+ * 조회
  ********************************/
 function fnSearch2(index) {
 
-    $("#hiddenUpperCode").val(firstGrid.getList()[index]['UPPR_CODE']);
-
-    $("#hiddenUpperCodeName").val(firstGrid.getList()[index]['UPPR_CODE_NAME']);
+    $("#hiddenEsgClassificationNo").val(firstGrid.getList()[index]['ESG_CLASSIFICATION_NO']);
 
     var paramData = new Object();
 
-    paramData.upprCode = firstGrid.getList()[index]['UPPR_CODE']
+    paramData.esgClassificationNo = firstGrid.getList()[index]['ESG_CLASSIFICATION_NO']
 
-    gfnTransation("/Template1/SearchCode",paramData,"POST",fnSearch2Callback)
+    gfnTransation("/EsgInspCriteriaApplyPlan/Search",paramData,"POST",fnSearch2Callback)
 }
 
 /********************************
@@ -92,58 +90,10 @@ function fnSearch2Callback(data) {
 
 }
 
-/********************************
- * 상위코드 저장 처리전 사전 체크
- ********************************/
-function fnPreSave() {
-    //필수 입력 체크
-    if (!gfnInputCheck())
-        return false;
-
-    return true;
-}
-
-/********************************
- * 상위 코드 저장 처리
- ********************************/
-function fnSave() {
-    if (fnPreSave()) {
-        var paramData = new Object();
-
-        trsData = {};
-        trsData.UPPR_CODE = $("#popParamUpperCode").val();
-
-        paramData.upprCode = $("#popParamUpperCode").val()
-        paramData.upprCodeName = $("#popParamUpperCodeName").val()
-        paramData.configYn = $("#popParamConfigYn").val()
-        paramData.inputYn = $("#popParamInputYn").val()
-        paramData.useYn = $("#popParamCodeUseYn").val()
-        paramData.action = tAction;
-        gfnTransation("/Template1/SaveUpperCode",paramData,"POST",fnSaveCallback)
-    }
-}
-
-/********************************
- * 상위 코드 저장 콜백
- ********************************/
-function fnSaveCallback(data) {
-
-    $("#layPop01").css("display","none");
-    if(data.success == 'Y'){
-
-         $("#hiddenUpperCode").val('');
-
-         secondGrid.setData([]);
-
-         fnSearch();
-    }else{
-        gfnPopMsg.alert(data.resData.message);
-    }
-}
 
 
 /********************************
- * 상세 코드 저장 처리
+ * 저장 사전 체크
  ********************************/
 function fnPreSave2() {
     //필수 입력 체크
@@ -154,24 +104,20 @@ function fnPreSave2() {
 }
 
 /********************************
- * 상위 코드 저장 처리
+ * 저장 처리
  ********************************/
 function fnSave2() {
     if (fnPreSave2()) {
         var paramData = new Object();
 
         trsData = {};
-        trsData.CODE = $("#popParamCode").val();
+        trsData.STEP_CNT = $("#popStepCnt").val();
 	
-        paramData.upprCode =  $("#hiddenUpperCode").val();
-        paramData.code = $("#popParamCode").val()
-        paramData.codeName = $("#popParamCodeName").val()
-        paramData.val1 = $("#popParamVal1").val()
-        paramData.val2 = $("#popParamVal2").val()
-        paramData.sortNo = $("#popParamSortNo").val()
-        paramData.useYn = $("#popParamCodeUseYn2").val()
+        paramData.esgClassificationNo =  $("#hiddenEsgClassificationNo").val();
+        paramData.stepCnt = $("#popStepCnt").val()
+        paramData.score = $("#popScore").val()
         paramData.action = tAction;
-        gfnTransation("/Template1/SaveCode",paramData,"POST",fnSave2Callback)
+        gfnTransation("/EsgInspCriteriaApplyPlan/Save",paramData,"POST",fnSave2Callback)
     }
 }
 
@@ -185,44 +131,15 @@ function fnSave2Callback(data) {
 
           var paramData = new Object();
 
-          paramData.upprCode = $("#hiddenUpperCode").val();
+          paramData.esgClassificationNo = $("#hiddenEsgClassificationNo").val();
 
-         gfnTransation("/Template1/SearchCode",paramData,"POST",fnSearch2Callback)
+         gfnTransation("/EsgInspCriteriaApplyPlan/Search",paramData,"POST",fnSearch2Callback)
     }else{
         gfnPopMsg.alert(data.resData.message);
     }
 }
 
 
-/********************************
- * 상위코드 삭제 처리전 사전 체크
- ********************************/
-function fnPreDelete() {
-    var cnt = secondGrid.getList().length;
-    var msgId = '10002';      //삭제 하시겠습니까?
-
-    if (cnt > 0) {
-        msgId = '10022';    //하위 데이터가 존재 합니다. \n그래도 삭제하시겠습니까?
-    }
-
-    gfnPopMsg.confirm(gfnGetMessage(msgId), fnDelete);
-}
-
-/********************************
- * 상위코드 삭제 처리
- ********************************/
-function fnDelete() {
-    var paramData = new Object();
-    paramData.upprCode =  $("#popParamUpperCode").val();
-    gfnTransation("/Template1/DeleteUpperCode",paramData,"POST",fnDeleteCallback)
-}
-
-/********************************
- * 상위코드 삭제 처리 콜백
- ********************************/
-function fnDeleteCallback(data) {
-    fnSaveCallback(data);
-}
 
 /********************************
  * 상세 코드 삭제 처리전 사전 체크
@@ -236,9 +153,9 @@ function fnPreDelete2() {
  ********************************/
 function fnDelete2() {
     var paramData = new Object();
-    paramData.upprCode =  $("#hiddenUpperCode").val();
-    paramData.code =  $("#popParamCode").val();
-    gfnTransation("/Template1/DeleteCode",paramData,"POST",fnDelete2Callback)
+    paramData.esgClassificationNo =  $("#hiddenEsgClassificationNo").val();
+    paramData.stepCnt =  $("#popStepCnt").val();
+    gfnTransation("/EsgInspCriteriaApplyPlan/Delete",paramData,"POST",fnDelete2Callback)
 }
 
 /********************************
@@ -254,84 +171,32 @@ function fnDelete2Callback(data) {
 //-------------------------------------------------------------------------------
 
 
-/********************************
- * 상위코드 추가 버튼 이벤트 핸들러
- ********************************/
-function fnAdd() {
-    gfnAllClear();
-
-    $("#popParamUpperCode").val('');
-    $("#popParamUpperCodeName").val('');
-
-    $("#popParamConfigYn option:eq(1)").prop("selected", true);
-    $("#popParamInputYn option:eq(1)").prop("selected", true);
-    $("#popParamCodeUseYn option:eq(0)").prop("selected", true);
-
-    $("#popParamUpperCode").removeAttr('readonly');
-    $("#btnSave").html('저장');
-	$("#btnSave").show();
-
-    $("#btnDelete").css("display","none");
-    $("#layPop01").css("display","block");
-    tAction = "INSERT";
-}
 
 /********************************
  * 상세코드 추가 버튼 이벤트 핸들러
  ********************************/
 function fnAdd2() {
 
-    if($("#hiddenUpperCode").val() != ''){
+    if($("#hiddenEsgClassificationNo").val() != ''){
         gfnAllClear();
 
-        $("#popParamCode").val('')
-        $("#popParamCodeName").val('');
-        $('#popParamCodeName').val('');
-        $('#popParamSortNo').val('');
-        $('#popParamVal1').val('');
-        $('#popParamVal2').val('');
+        $("#popStepCnt").val('')
+        $("#popScore").val('');
 
-        $("#popParamUpperCode2").val($("#hiddenUpperCode").val());
-        $("#popParamUpperCodeName2").val($("#hiddenUpperCodeName").val());
-        $("#popParamCodeUseYn2 option:eq(0)").prop("selected", true);
-        $("#popParamCode").removeAttr('readonly');
-		$("#btnSave2").html('저장');
-		$("#btnSave2").show();
+        $("#popEsgClassificationNo").val($("#hiddenEsgClassificationNo").val());
+        $("#popStepCnt").removeAttr('readonly');
+		$("#popParamSave2").html('저장');
+		$("#popParamSave2").show();
 
-        $("#btnDelete2").css("display","none");
+        $("#popParamDelete2").css("display","none");
         $("#layPop02").css("display","block");
         tAction = "INSERT";
     }
 }
 
-/********************************
- * 상위코드 그리드 DB Click 이벤트 핸들러
- ********************************/
-function fnGridDBClick(rowIdx) {
-    gfnAllClear();
-    var rowData = firstGrid.getList()[rowIdx];
-	
-    $("#popParamUpperCode").val(rowData['UPPR_CODE']);
-    $("#popParamUpperCodeName").val(rowData['UPPR_CODE_NAME']);
-    $("#popParamConfigYn").val(rowData['CONFIG_YN']);
-    $("#popParamInputYn").val(rowData['INPUT_YN']);
-    $("#popParamCodeUseYn").val(rowData['USE_YN']);
-
-	$("#btnSave").html('수정');
-	if(updateRole == '0'){
-	$("#btnSave").hide();
-	}
-	if(deleteRole == '1'){
-    $("#btnDelete").css("display","inline-block");
-	}
-    $("#popParamUpperCode").attr('readonly','readonly');
-
-    $("#layPop01").css("display","block");
-    tAction = "UPDATE";
-}
 
 /********************************
- * 상위코드 그리드 Click 이벤트 핸들러
+ * 진단 항목 그리드 Click 이벤트 핸들러
  ********************************/
 function fnGridClick(rowIdx) {
     fnSearch2(rowIdx);
@@ -344,22 +209,18 @@ function fnGrid2DBClick(rowIdx) {
     gfnAllClear();
     var rowData = secondGrid.getList()[rowIdx];
 
-    $("#hiddenUpperCode").val(firstGrid.getList()[rowIndex]['UPPR_CODE']);
-    $("#popParamUpperCodeName2").val(firstGrid.getList()[rowIndex]['UPPR_CODE_NAME']);
-    $("#popParamCode").val(rowData['CODE']);
-    $("#popParamCodeName").val(rowData['CODE_NAME']);
-    $("#popParamVal1").val(rowData['VAL1']);
-    $("#popParamVal2").val(rowData['VAL2']);
-    $("#popParamSortNo").val(rowData['SORT_NO']);
-    $("#popParamCodeUseYn2").val(rowData['USE_YN']);
+    $("#hiddenEsgClassificationNo").val(firstGrid.getList()[rowIndex]['ESG_CLASSIFICATION_NO']);
+    $("#popEsgClassificationNo").val(firstGrid.getList()[rowIndex]['ESG_CLASSIFICATION_NO']);
+    $("#popStepCnt").val(rowData['STEP_CNT']);
+    $("#popScore").val(rowData['SCORE']);
 
-	$("#btnSave2").html('수정');
+	$("#popParamSave2").html('수정');
 	if(updateRole == '0'){
-	$("#btnSave2").hide();
+	$("#popParamSave2").hide();
 	}
 
 	if(deleteRole == '1'){
-    $("#btnDelete2").css("display","inline-block");
+    $("#popParamDelete2").css("display","inline-block");
 	}
     $("#popParamCode").attr('readonly','readonly');
 
@@ -453,56 +314,40 @@ function fnInit() {
 function fnInitComp() {
 
 	if(createRole == '0'){
-		$("#btnAdd").hide()
-		$("#btnAdd2").hide();
+		$("#upperCodeAdd").hide()
+		$("#codeAdd").hide();
 	}
 
 	if(updateRole == '0'){
-		$("#btnSave").hide()
-		$("#btnSave2").hide()
+		$("#popParamSave").hide()
+		$("#popParamSave2").hide()
 	}
 
 	if(deleteRole == '0'){
-		$("#btnDelete").hide()
-		$("#btnDelete2").hide();
+		$("#popParamDelete").hide()
+		$("#popParamDelete2").hide();
 	}
 
     //콤보(Select box) 바인딩 설정
     var combo = [
-	 	{id: "popParamCodeUseYn", upprCode: "YN", isAll: false}
-     ,  {id: "popParamCodeUseYn2", upprCode: "YN", isAll: false}
-     ,  {id: "popParamConfigYn", upprCode: "YN", isAll: false}
-     ,  {id: "popParamInputYn", upprCode: "YN", isAll: false}
     ];
     gfnInitComboBind(combo);
 
     //공통 버튼 이벤트 핸들러 추가
     $("#searchBtn").click(function(e){ fnSearch();  e.preventDefault();});
 
-    $("#btnAdd").click(function(){
-        fnAdd();
-    });
-
-    $("#btnAdd2").click(function(){
+    $("#codeAdd").click(function(){
         fnAdd2();
     });
 
-    //상위코드 저장
-    $("#btnSave").click(function(){
-        fnSave();
-    });
-
-    //상세 코드 저장
-    $("#btnSave2").click(function(){
+    //저장
+    $("#popParamSave2").click(function(){
         fnSave2();
 
     });
 
-    $("#btnDelete").click(function(){
-        fnPreDelete();
-    });
 
-    $("#btnDelete2").click(function(){
+    $("#popParamDelete2").click(function(){
         fnPreDelete2();
     });
 
@@ -533,13 +378,8 @@ function fnInitComp() {
     //* checkFormat 클래스 : 필수 입력
     // isUpper : 대문자만 허용
     var arrObj = [
-        {id : 'upperCodeName', numberFormat: false, dataLength: 30, checkFormat: false, isUpper: false},
-        {id : 'popParamUpperCode', numberFormat: false, dataLength: 20, checkFormat: true, isUpper: true},
-        {id : 'popParamUpperCodeName', numberFormat: false, dataLength: 30, checkFormat: true, isUpper: false},
-        {id : 'popParamUpperCode2', numberFormat: false, dataLength: 0, checkFormat: true, isUpper: false},
-        {id : 'popParamCode', numberFormat: false, dataLength: 20, checkFormat: true, isUpper: false},
-        {id : 'popParamCodeName', numberFormat: false, dataLength: 30, checkFormat: true, isUpper: false},
-        {id : 'popParamSortNo', numberFormat: true, dataLength: 3, checkFormat: false, isUpper: false}
+        {id : 'popStepCnt', numberFormat: true, dataLength: 3, checkFormat: true, isUpper: false},
+        {id : 'popScore', numberFormat: true, dataLength: 3, checkFormat: false, isUpper: false}
     ];
     gfnSetInitComp(arrObj);
 }
@@ -578,21 +418,12 @@ function fnInitGrid1(){
                 gfnSelectFocus('first-grid', rowIndex, this.dindex);
                 rowIndex = this.dindex;
                 fnGridClick(this.dindex);
-            },
-            onDBLClick: function(){
-                gfnSelectFocus('first-grid', rowIndex, this.dindex);
-                rowIndex = this.dindex;
-                fnGridDBClick(this.dindex);
             }
         }
         ,
         columns:[
-            {key: "UPPR_CODE", label: "상위코드", width:178, align:"left", size :10},
-            {key: "UPPR_CODE_NAME", label: "상위코드명", width:260, align:"left"},
-            {key: "CONFIG_YN", label: "환경설정", width:80, align:"center"},
-            {key: "INPUT_YN", label: "입력설정", width:80, align:"center"},
-            {key: "USE_YN", label: "사용", width:80, align:"center"}
-
+            {key: "ESG_CLASSIFICATION_NO", label: "분류 번호", width:120, align:"center", size :10},
+            {key: "DAGNSS_ITM", label: "진단 항목", width:450, align:"left"}
         ]
 
     });
@@ -629,12 +460,8 @@ function fnInitGrid2(){
         }
         ,
         columns:[
-            {key: "CODE", label: "코드", width:100, size :10, align:"left"},
-            {key: "CODE_NAME", label: "코드명", width:160, align:"left"},
-            {key: "VAL1", label: "VAL1", width:80, align:"center"},
-            {key: "VAL2", label: "VAL2", width:118, align:"center"},
-            {key: "USE_YN", label: "사용유무", width:80, align:"center"},
-            {key: "SORT_NO", label: "순번", width:80, align:"center"}
+            {key: "STEP_CNT", label: "단계및충족 건수", width:180, size :10, align:"center"},
+            {key: "SCORE", label: "점수", width:80, align:"center"}
         ]
 
     });

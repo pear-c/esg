@@ -48,8 +48,37 @@
 					</div>
 					<div class="grid_wrapper" style="position: relative">
 						<div id="firstGrid" tabIndex="0" data-ax5grid="firstGrid"
-							data-ax5grid-config="{}" style="font-size: 20px; height: 100%;"></div>
-<!-- 						<div id="myGrid" style="font-size: 20px; height: 100%;" class="ag-theme-quartz-dark"></div> -->
+							data-ax5grid-config="{}" style="font-size: 20px; height: 80%;"></div>
+							<table>
+							 <tr>
+							     <td>
+							     a
+							     </td>
+							     <td>
+							     b
+							     </td>
+							     <td>
+							     c
+							     </td>
+							     <td>
+							     <label><input type="radio" name="aaa" value="1">d</label>
+							     </td>
+							 </tr>
+							 <tr>
+							     <td>
+							     a
+							     </td>
+							     <td>
+							     b
+							     </td>
+							     <td>
+							     c
+							     </td>
+							     <td>
+							     <label><input type="radio" name="aaa" value="2">d</label>
+							     </td>
+							 </tr>
+							</table>
 					</div>
 					<!--- 레이어 팝업 (메세지 추가) -->
 					<div class="layPop" id="layPop01">
@@ -98,5 +127,5 @@
 
 <script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/jquery-ui.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/datepicker-ko.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/template/Template2.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/template/Template3.js"></script>
 </html>

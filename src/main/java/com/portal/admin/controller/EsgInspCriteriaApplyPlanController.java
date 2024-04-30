@@ -16,21 +16,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.portal.admin.service.EsgInspCriteriaService;
 import com.portal.admin.service.EsgDagnssItmService;
+import com.portal.admin.service.EsgInspCriteriaApplyPlanService;
 import com.portal.admin.service.UserActHstService;
 import com.portal.common.AJaxResVO;
 import com.portal.common.Common;
 
 /**
- * 점검 기준 관리 Controller
+ * 점검 기준 적용 방안 관리 Controller
  */
 @Controller
-@RequestMapping("/EsgInspCriteria")
-public class EsgInspCriteriaController {
+@RequestMapping("/EsgInspCriteriaApplyPlan")
+public class EsgInspCriteriaApplyPlanController {
 
 	@Autowired
-	EsgInspCriteriaService esgInspCriteriaService;
+	EsgInspCriteriaApplyPlanService esgInspCriteriaApplyPlanService;
 
 	@Autowired
 	EsgDagnssItmService esgDagnssItmService;
@@ -54,7 +54,7 @@ public class EsgInspCriteriaController {
 	}
 
 	/**
-	 * 점검 항목 조회
+	 * 진단 항목 조회
 	 * @param locale
 	 * @param model
 	 * @param request
@@ -63,7 +63,8 @@ public class EsgInspCriteriaController {
 	 * @throws IOException
 	 */
 	@RequestMapping(value = "/SearchEsgDagnssItm", method = {RequestMethod.GET, RequestMethod.POST})
-	public @ResponseBody AJaxResVO SearchEsgDagnssItm(Locale locale, Model model, HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public @ResponseBody AJaxResVO SearchUpperCode(Locale locale, Model model, HttpServletRequest request, HttpServletResponse response) throws IOException {
+
 		AJaxResVO res = new AJaxResVO();
 		if(Common.seesionCheck(request)) {
 			response.sendError(503);			
@@ -77,7 +78,7 @@ public class EsgInspCriteriaController {
 	}
 
 	/**
-	 * 점검 기준 조회
+	 * 적용 방안 조회
 	 * @param locale
 	 * @param model
 	 * @param request
@@ -86,7 +87,7 @@ public class EsgInspCriteriaController {
 	 * @throws IOException
 	 */
 	@RequestMapping(value = "/Search", method = {RequestMethod.GET, RequestMethod.POST})
-	public @ResponseBody AJaxResVO SearchEsgInspCriteria(Locale locale, Model model, HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public @ResponseBody AJaxResVO SearchCode(Locale locale, Model model, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		AJaxResVO res = new AJaxResVO();
 
@@ -98,7 +99,7 @@ public class EsgInspCriteriaController {
 
 			Map<String, Object> data = Common.setDataParam(request);
 
-			List<Map<String,Object>> resultMap = esgInspCriteriaService.search(data);
+			List<Map<String,Object>> resultMap = esgInspCriteriaApplyPlanService.search(data);
 
 			res.setSuccess(AJaxResVO.SUCCESS_Y);
 			res.addAttribute("resultMap", resultMap);
@@ -108,7 +109,7 @@ public class EsgInspCriteriaController {
 
 
 	/**
-	 * 점검 기준 저장
+	 * 점검 기준 적용 방안 저장
 	 * @param locale
 	 * @param model
 	 * @param request
@@ -127,11 +128,9 @@ public class EsgInspCriteriaController {
 
 		}else {
 
-		//View Parameter set from Request
-
 			Map<String, Object> data = Common.setDataParam(request);
 
-			Map<String, Object> result = esgInspCriteriaService.save(data);
+			Map<String, Object> result = esgInspCriteriaApplyPlanService.save(data);
 
 			res.setSuccess(result.get("SUCC_YN").toString());
 			res.addAttribute("message", result.get("MSG").toString());
@@ -139,9 +138,8 @@ public class EsgInspCriteriaController {
 		return res;
 	}
 
-
 	/**
-	 * 점검 기준 삭제
+	 * 삭제
 	 * @param locale
 	 * @param model
 	 * @param request
@@ -150,7 +148,7 @@ public class EsgInspCriteriaController {
 	 * @throws IOException
 	 */
 	@RequestMapping(value = "/Delete", method = {RequestMethod.GET, RequestMethod.POST})
-	public @ResponseBody AJaxResVO DeleteEsgInspCriteria(Locale locale, Model model, HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public @ResponseBody AJaxResVO DeleteCode(Locale locale, Model model, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		AJaxResVO res = new AJaxResVO();
 
@@ -162,7 +160,7 @@ public class EsgInspCriteriaController {
 
 			Map<String, Object> data = Common.setDataParam(request);
 
-			Map<String, Object> result = esgInspCriteriaService.delete(data);
+			Map<String, Object> result = esgInspCriteriaApplyPlanService.delete(data);
 
 			res.setSuccess(result.get("SUCC_YN").toString());
 			res.addAttribute("message", result.get("MSG").toString());

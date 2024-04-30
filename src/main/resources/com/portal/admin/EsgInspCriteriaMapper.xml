@@ -3,212 +3,61 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.portal.admin.dao.EsgInspCriteriaDao">
-
-	<!-- 상위코드 조회 -->
-	<select id="searchUpperCode" parameterType="map" resultType="ParamMap">
-	    SELECT
-		        A.UPPR_CODE
-		,       A.UPPR_CODE_NAME
-		,       A.CONFIG_YN
-		,		A.INPUT_YN
-		,       A.USE_YN
-		From    UPPR_CODE   A 
-		WHERE	1 = 1
-		<if test= "upperCodeName != null">
-		AND     A.UPPR_CODE_NAME LIKE '%' + #{upperCodeName} + '%'
-		</if>
-		<if test= "inputYn != null">
-		AND     A.INPUT_YN = #{inputYn}
-		</if>
-		ORDER   BY
-		        A.UPPR_CODE
-	</select>
-	
-	<!-- 상위코드 건수 조회 -->
-	<select id="searchUpperCodeCount" parameterType="map" resultType="ParamMap">
-	    SELECT
-		        COUNT(*)  CNT
-		FROM    UPPR_CODE   A 
-		WHERE   A.UPPR_CODE = #{upprCode}
-		<if test="useYn != null">
-		AND 	A.USE_YN = #{useYn}
-		</if>
-	</select>
-	
-	<!-- 코드 조회 -->
-	<select id="searchCode" parameterType="map" resultType="ParamMap">
-	    SELECT
-		        A.CODE
-		,       A.CODE_NAME
-		,       A.VAL1
-		,       A.VAL2
-		,       A.VAL3
-		,       A.SORT_NO
-		,		A.USE_YN
-		FROM    CODE    A 
-		WHERE   A.UPPR_CODE = #{upprCode}
-		<if test="useYn != null">
-		AND 	A.USE_YN = #{useYn}
-		</if>
-		<if test="val1 != null">
-		AND     A.VAL1    = #{val1}
-		</if>
-		<if test="val2 != null">
-        AND     A.VAL2    LIKE '%' + #{val2} + '%'
+    
+    <!-- 점검 기준 조회 -->
+    <select id="search" parameterType="map" resultType="ParamMap">
+        select 
+                a.esg_classification_no
+        ,       a.sq_no
+        ,       a.inspection_criteria
+        from    esg_inspection_criteria a
+        where   1 = 1
+        <if test="esgClassificationNo != null">
+        and     a.esg_classification_no = #{esgClassificationNo}
         </if>
-        <if test="code != null">
-        AND     A.CODE    = #{code}
-        </if>
-        <if test="codeName != null">
-        AND     A.CODE_NAME   LIKE '%' + #{codeName}+ '%'
-        </if>
-		ORDER   BY
-		        A.UPPR_CODE
-		,       A.SORT_NO
-	</select>
-	
-	<!-- 화면별 콤보(Select Box) 바이딩을 위한 조회 -->
-	<select id="searchCodeBind" parameterType="map" resultType="ParamMap">
-	    SELECT
-		        A.CODE
-		,       A.CODE_NAME
-		,       A.VAL1
-		,       A.VAL2
-		,       A.VAL3
-		,       A.SORT_NO
-		,		A.USE_YN
-		FROM    V_CODE    A 
-		WHERE   A.UPPR_CODE = #{upprCode}
-		AND     A.USE_YN    = 'Y'
-		ORDER   BY
-		        A.SORT_NO
+        order   by
+                a.esg_classification_no
+        ,       a.sq_no
+    </select>
+    
+    <!-- 점검 기준 중복 체크용 -->
+    <select id="searchCount" parameterType="map" resultType="ParamMap">
+        select  count(*) cnt
+        from    esg_inspection_criteria    a
+        where   a.esg_classification_no    = #{esgClassificationNo}
+        and     a.sq_no                    = fn_to_number(#{sqNo})
+    </select>
 
-	</select>
+    <!-- 점검 기준 저장 -->
+    <insert id="save" parameterType="map">
+        merge   into esg_inspection_criteria    a
+        using   (select 'a' as a)     b
+        on      a.esg_classification_no = #{esgClassificationNo}
+        and     a.sq_no                 = fn_to_number(#{sqNo})
+        when    not matched then
+                insert
+                (
+                    esg_classification_no
+                ,   sq_no
+                ,   inspection_criteria
+                )
+                values
+                (
+                    #{esgClassificationNo}
+                ,   fn_to_number(#{sqNo})
+                ,   #{inspectionCriteria}
+                )
+        when    matched then
+                update
+                set
+                    inspection_criteria = #{inspectionCriteria}
+        ;
+    </insert>
 
-	<!-- 코드 중복 체크용 -->
-	<select id="searchCodeCount" parameterType="map" resultType="ParamMap">
-	    SELECT
-		        COUNT(*)  CNT
-		FROM    CODE    A 
-		WHERE   A.UPPR_CODE = #{upprCode}
-		AND     A.CODE      = #{code}
-		<if test="useYn != null">
-		AND 	A.USE_YN = #{useYn}
-		</if>
-	</select>
-
-	<select id="searchCodeCount2" parameterType="map" resultType="ParamMap">
-	    SELECT
-		        COUNT(*)  CNT
-		FROM    CODE    A 
-		WHERE   A.UPPR_CODE = #{upprCode}
-	</select>
-
-	<insert id="saveUpperCode" parameterType="map">
-		MERGE INTO UPPR_CODE A
-		USING (SELECT 'A' AS A) B
-		ON    A.UPPR_CODE = #{upprCode}
-		WHEN    MATCHED THEN
-		        UPDATE
-		        SET
-		            UPPR_CODE_NAME  = #{upprCodeName}
-		        ,	INPUT_YN		= #{inputYn}
-		        ,   CONFIG_YN       = #{configYn}
-		        ,   USE_YN          = #{useYn}
-		        ,   UPDATE_BY       = #{loginUserId}
-		        ,   UPDATE_DATE     = NOW()
-		WHEN    NOT MATCHED THEN
-		        INSERT
-		        (
-		            UPPR_CODE
-		        ,   UPPR_CODE_NAME
-		        ,   CONFIG_YN
-		        ,	INPUT_YN
-		        ,   USE_YN
-		        ,   CREATE_BY
-		        ,   CREATE_DATE
-		        )
-		        VALUES
-		        (
-		            #{upprCode}
-		        ,   #{upprCodeName}
-		        ,   #{configYn}
-		        ,	#{inputYn}
-		        ,   #{useYn}
-		        ,   #{loginUserId}
-		        ,   NOW()
-		        );
-	</insert>
-	
-	<!-- 코드 저장 -->
-	<insert id="saveCode" parameterType="map">
-		MERGE INTO CODE A
-		USING (SELECT 'A' AS A) B
-		ON  A.CODE = #{code} AND A.UPPR_CODE = #{upprCode}
-		WHEN    MATCHED THEN
-		        UPDATE
-		        SET
-		            CODE_NAME   = #{codeName}
-		        ,   VAL1        = #{val1}
-		        ,   VAL2        = #{val2}
-		        ,   VAL3        = #{val3}
-		        ,   SORT_NO     = FN_TO_NUMBER(#{sortNo})
-		        ,   USE_YN      = #{useYn}
-		        ,   UPDATE_BY   = #{loginUserId}
-		        ,   UPDATE_DATE     = NOW()
-		WHEN    NOT MATCHED THEN
-		        INSERT
-		        (
-		            CODE
-		        ,   CODE_NAME
-		        ,   UPPR_CODE
-		        ,   VAL1
-		        ,   VAL2
-		        ,   VAL3
-		        ,   SORT_NO
-		        ,   USE_YN
-		        ,   CREATE_BY
-		        ,   CREATE_DATE
-		        )
-		        VALUES
-		        (
-		            #{code}
-		        ,   #{codeName}
-		        ,   #{upprCode}
-		        ,   #{val1}
-		        ,   #{val2}
-		        ,   #{val3}
-		        ,   FN_TO_NUMBER(#{sortNo})
-		        ,   #{useYn}
-		        ,   #{loginUserId}
-		        ,   NOW()
-		        );
-	</insert>
-
-	<!-- 상위코드 삭제 -->
-	<delete id="deleteUpperCode" parameterType="map">
-		DELETE FROM UPPR_CODE
-		WHERE  UPPR_CODE = #{upprCode}
-	</delete>
-	
-	<delete id="deleteUpperCode2" parameterType="map">
-		DELETE FROM CODE
-		WHERE  UPPR_CODE = #{upprCode}
-		;
-	</delete>
-	
-	<!-- 코드 삭제 -->
-	<delete id="deleteCode" parameterType="map">
-		DELETE FROM CODE
-		WHERE  UPPR_CODE = #{upprCode}
-		AND  CODE = #{code}
-	</delete>
-
-	<update id="updateVal1" parameterType="map">
-		UPDATE 	CODE
-		SET		VAL1 = #{val1}
-		WHERE	UPPR_CODE = #{upprCode}
-		AND		CODE = #{code}
-	</update>
-
+    <!-- 점검 기준 삭제 -->
+    <delete id="delete" parameterType="map">
+        delete  from esg_inspection_criteria
+        where   esg_classification_no   = #{esgClassificationNo}
+        and     sq_no                   = fn_to_number(#{sqNo})
+    </delete>
 </mapper>

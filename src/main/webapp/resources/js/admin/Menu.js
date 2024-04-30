@@ -1,8 +1,6 @@
 //-------------------------------------------------------------------------------
 //전역변수 영역("g" prefix 활용)
 //-------------------------------------------------------------------------------
-var gGlovalVariable = 0;                              // 파일 리스트 번호
-
 var firstGrid;
 var secondGrid;
 var rowIndex;
@@ -93,7 +91,7 @@ function fnSearch2Callback(data) {
  ********************************/
 function fnPreSave() {
     //필수 입력 체크
-    if (!gFnInputCheck())
+    if (!gfnInputCheck())
         return false;
 
     return true;
@@ -165,7 +163,7 @@ function fnSaveCallback(data) {
  ********************************/
 function fnPreSaveDetail() {
     //필수 입력 체크
-    if (!gFnInputCheck())
+    if (!gfnInputCheck())
         return false;
 
     return true;
@@ -261,7 +259,7 @@ function fnDelete2() {
  * 상위 메뉴 추가 팝업
  ********************************/
 function fnUpperMenuAdd() {
-    gFnAllClear();
+    gfnAllClear();
 	$("#popParamUpperMenuId").val('');
     $("#popParamUpperMenuName").val('');
     $("#popParamUpperMenuSortNo").val('');
@@ -282,7 +280,7 @@ function fnUpperMenuAdd() {
  ********************************/
 function fnMenuAdd() {
     if($("#hiddenUpperMenu").val() != ''){
-        gFnAllClear();
+        gfnAllClear();
 
         $("#popParamMenuId").val('');
         $("#popParamMenuName").val('');
@@ -307,7 +305,7 @@ function fnMenuAdd() {
  * 상위 메뉴 그리드 Double Click 이벤트 핸들러
  ********************************/
 function fnGridDBClick(rowIdx) {
-    gFnAllClear();
+    gfnAllClear();
     $("#popParamUpperMenuId").val(firstGrid.getList()[rowIdx]['MENU_ID']);
     $("#popParamUpperMenuName").val(firstGrid.getList()[rowIdx]['MENU_NM']);
     $("#popParamUpperMenuSortNo").val(firstGrid.getList()[rowIdx]['SORT_NO']);
@@ -330,7 +328,7 @@ function fnGridDBClick(rowIdx) {
  * 하위 메뉴 그리드 Double Click 이벤트 핸들러
  ********************************/
 function fnGrid2DBClick(rowIdx) {
-    gFnAllClear();
+    gfnAllClear();
     $("#popParamUpperMenuName2").val($("#hiddenUpperMenuName").val())
     $("#popParamMenuId").val(secondGrid.getList()[rowIdx]['MENU_ID']);
     $("#popParamMenuName").val(secondGrid.getList()[rowIdx]['MENU_NM']);

@@ -42733,8 +42733,8 @@ var AgRichSelect = /** @class */ (function (_super) {
         // do not create the picker every time to save state
         return this.listComponent;
     };
-    AgRichSelect.prototype.setSearchStringCreator = function (searchStringFn) {
-        this.searchStringCreator = searchStringFn;
+    AgRichSelect.prototype.setSearchStringCreator = function (searchStringfn) {
+        this.searchStringCreator = searchStringfn;
     };
     AgRichSelect.prototype.setValueList = function (params) {
         var valueList = params.valueList, refresh = params.refresh;

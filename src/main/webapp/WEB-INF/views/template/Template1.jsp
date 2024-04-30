@@ -41,7 +41,7 @@
 						<div class="titleArea">
 							<h2>상위코드</h2>
 							<div class="align_right">
-							<button type="button" id="upperCodeAdd" class="btn add">추가</button>
+							<button type="button" id="btnAdd" class="btn add">추가</button>
 							</div>
 							<!-- 팝업 레이어 열림 -->
 						</div>
@@ -54,7 +54,7 @@
 					<div class="col" style="width: 680px">
 						<div class="titleArea">
 							<h2>상세코드</h2>
-							<div class="align_right"><button type="button" id="codeAdd" class="btn add">추가</button></div>
+							<div class="align_right"><button type="button" id="btnAdd2" class="btn add">추가</button></div>
 							<!-- 팝업 레이어 열림 -->
 						</div>
 						<div class="grid_wrapper" style="position: relative">
@@ -111,8 +111,8 @@
 							</table>
 						</div>
 						<div class="btnWrap txt_center">
-							<button class="btn blue" id="popParamSave" type="button">저장</button>
-							<button class="btn" id="popParamDelete" type="button">삭제</button>
+							<button class="btn blue" id="btnSave" type="button">저장</button>
+							<button class="btn" id="btnDelete" type="button">삭제</button>
 						</div>
 					</div>
 				</div>
@@ -171,10 +171,10 @@
 							</table>
 						</div>
 						<div class="btnWrap txt_center">
-							<button class="btn blue" id="popParamSave2" type="button">저장</button>
-							<button class="btn" id="popParamDelete2" type="button">삭제</button>
-							<input type="hidden" id="hiddenUpperCode"> <input
-								type="hidden" id="hiddenUpperCodeName">
+							<button class="btn blue" id="btnSave2" type="button">저장</button>
+							<button class="btn" id="btnDelete2" type="button">삭제</button>
+							<input type="hidden" id="hiddenUpperCode"> 
+							<input type="hidden" id="hiddenUpperCodeName">
 						</div>
 					</div>
 				</div>

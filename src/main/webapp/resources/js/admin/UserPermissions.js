@@ -1,8 +1,6 @@
 //-------------------------------------------------------------------------------
 //전역변수 영역("g" prefix 활용)
 //-------------------------------------------------------------------------------
-var gGlovalVariable = 0;                              // 파일 리스트 번호
-
 var firstGrid;
 
 var rowIndex = 0;
@@ -15,13 +13,6 @@ var checkList = [];
 var resultList = {};
 var testList;
 
-
-var firstGridWidth, secondGridWidth, sudGridWidth;
-var firstGridHeight, secondGridHeigh, sudGridHeight;
-
-//그리드 데이터 조회 없을 경우 문자 표시 위치 설정용 변수
-var firstLPad, secondLPad, sudLPad;
-var firstTPad, secondTPad, sudTPad;
 var trsData = {};
 
 var updateFlag = 0;
@@ -169,7 +160,7 @@ function fnRoleMenuSaveCallback(data) {
  ********************************/
 function fnPreUpdate() {
     //필수 입력 체크
-    if (!gFnInputCheck())
+    if (!gfnInputCheck())
         return false;
 
     return true;
@@ -248,7 +239,7 @@ function fnRoleDeleteCallback(data) {
  ********************************/
 function fnPreUserPopSave(){
     //필수 입력 체크
-    if (!gFnInputCheck())
+    if (!gfnInputCheck())
     {
         $("#popAccessIp").focus();
         return false;
@@ -358,7 +349,7 @@ function fnUserPopDelete(){
  ********************************/
 function fnPrePopRoleSave(){
     //필수 입력 체크
-    if (!gFnInputCheck())
+    if (!gfnInputCheck())
         return false;
 
     return true;
@@ -388,7 +379,7 @@ function fnPopRoleSave(){
  * 조회 처리
  ********************************/
 function popUserInsert(){
-    gFnAllClear();
+    gfnAllClear();
 
     //롤 Select 바이딩용 데이터 조회
     gfnTransationSync("/UserPermissions/SearchRole",{},"POST",fnSearchRoleComboCallback)
@@ -454,7 +445,7 @@ function fnSearchRoleComboCallback(data) {
  * 조회 처리
  ********************************/
 function popUserUpdate(index){
-    gFnAllClear();
+    gfnAllClear();
 
     //롤 Select 바이딩용 데이터 조회
     gfnTransationSync("/UserPermissions/SearchRole",{},"POST",fnSearchRoleComboCallback)
@@ -499,7 +490,7 @@ function popUserUpdate(index){
  * 조회 처리
  ********************************/
 function popRoleInsert(){
-    gFnAllClear();
+    gfnAllClear();
     $("#popRoleId").val("");
     $("#popRoleName").val("");
     $("#popRoleId").removeAttr('readonly');
@@ -514,7 +505,7 @@ function popRoleInsert(){
  * 조회 처리
  ********************************/
 function popRoleUpdate(index){
-    gFnAllClear();
+    gfnAllClear();
 
     $("#popRoleId").val(firstGrid.getList()[index]['ROLE_ID']);
     $("#popRoleId").attr('readonly','readonly');
@@ -774,13 +765,6 @@ function fnInitGrid(){
 
     $("div[data-ax5grid-panel='aside-header'] span[data-ax5grid-cellholder]").text('No')
 
-
-    firstGridWidth = $("#first").width();
-    firstGridHeight = $("#first").height();
-
-    fisrtLPad = gfnGetLPad(firstGridWidth) + "px";
-
-    fisrtTPad = gfnGetTPad(firstGridHeight) + "px";
 }
 
 /********************************

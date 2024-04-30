@@ -19,17 +19,17 @@ import org.springframework.web.servlet.ModelAndView;
 import com.portal.admin.service.UserActHstService;
 import com.portal.common.AJaxResVO;
 import com.portal.common.Common;
-import com.portal.template.service.Template2Service;
+import com.portal.template.service.Template3Service;
 
 /**
- * 메세지 관리 Controller
+ * ??? 관리 Controller
  */
 @Controller
-@RequestMapping("/Template2")
-public class Template2Controller {
+@RequestMapping("/Template3")
+public class Template3Controller {
 	
 	@Autowired
-	Template2Service template2Service;
+	Template3Service template3Service;
 	
 	@Autowired
 	UserActHstService userActHstService;
@@ -45,6 +45,7 @@ public class Template2Controller {
 	public ModelAndView Login(Locale locale, Model model, HttpServletRequest request, HttpServletResponse response) throws IOException {
 						
 		String menuId = request.getParameter("menuId");
+		String esgClassificationNo = request.getParameter("esgClassificationNo");
 		
 		return Common.sessionCheck(request,locale,model,userActHstService,menuId);	
 	}
@@ -65,7 +66,7 @@ public class Template2Controller {
 				response.sendError(503);			
 			}else {	
 			  Map<String, Object> data = Common.setDataParam(request);
-			  List<Map<String, Object>> resultMap = template2Service.search(data);
+			  List<Map<String, Object>> resultMap = template3Service.search(data);
 			  res.setSuccess(AJaxResVO.SUCCESS_Y); 
 			  res.addAttribute("resultMap", resultMap);
 		}
@@ -89,7 +90,7 @@ public class Template2Controller {
 			response.sendError(503);			
 		}else {	
 			Map<String, Object> data = Common.setDataParam(request);
-			Map<String, Object> result = template2Service.save(data);
+			Map<String, Object> result = template3Service.save(data);
 		  		  
 			res.setSuccess(result.get("SUCC_YN").toString());
 			res.addAttribute("message", result.get("MSG").toString());
@@ -113,7 +114,7 @@ public class Template2Controller {
 			response.sendError(503);			
 		}else {	
 			Map<String, Object> data = Common.setDataParam(request);
-			Map<String, Object> result = template2Service.delete(data);
+			Map<String, Object> result = template3Service.delete(data);
 	  		  
 			res.setSuccess(result.get("SUCC_YN").toString());
 			res.addAttribute("message", result.get("MSG").toString());

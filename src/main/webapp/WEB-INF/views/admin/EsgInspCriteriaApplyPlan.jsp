@@ -41,7 +41,7 @@
 						<div class="titleArea">
 							<h2>분류항목</h2>
 							<!-- <div class="align_right">
-							<button type="button" id="addBtn" class="btn add">추가</button>
+							<button type="button" id="upperCodeAdd" class="btn add">추가</button>
 							</div> -->
 							<!-- 팝업 레이어 열림 -->
 						</div>
@@ -53,8 +53,8 @@
 					</div>
 					<div class="col" style="width: 680px">
 						<div class="titleArea">
-							<h2>점검기준</h2>
-							<div class="align_right"><button type="button" id="addBtn2" class="btn add">추가</button></div>
+							<h2>점검기준 적용방안</h2>
+							<div class="align_right"><button type="button" id="codeAdd" class="btn add">추가</button></div>
 							<!-- 팝업 레이어 열림 -->
 						</div>
 						<div class="grid_wrapper" style="position: relative">
@@ -68,7 +68,7 @@
 				<div class="layPop" id="layPop02">
 					<div class="popCon" style="width: 500px">
 						<div class="titleArea">
-							<h3>점검 기준</h3>
+							<h3>점검 기준 적용 방안</h3>
 							<button type="button" class="btnClose"
 								onclick="document.getElementById('layPop02').style.display='none'">닫기</button>
 						</div>
@@ -85,12 +85,13 @@
 											readonly="readonly" /></td>
 									</tr>
 									<tr>
-										<th scope="row">순번</th>
-										<td><input type="text" id="popSqNo"	name="" /></td>
+										<th scope="row">단계및 충족 건수</th>
+										<td><input type="text" id="popStepCnt"
+											readonly="readonly" name="" /></td>
 									</tr>
 									<tr>
-										<th scope="row">점검 기준</th>
-										<td><input type="text" id="popInspectionCriteria" name="" />
+										<th scope="row">점수</th>
+										<td><input type="text" id="popScore" name="" />
 										</td>
 									</tr>
 								</tbody>
@@ -99,7 +100,7 @@
 						<div class="btnWrap txt_center">
 							<button class="btn blue" id="popParamSave2" type="button">저장</button>
 							<button class="btn" id="popParamDelete2" type="button">삭제</button>
-							<input type="hidden" id="hiddenEsgClassificationNo"> 
+							<input type="hidden" id="hiddenEsgClassificationNo">
 						</div>
 					</div>
 				</div>
@@ -112,5 +113,5 @@
 
 <script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/jquery-ui.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/datepicker-ko.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/admin/EsgInspCriteria.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/admin/EsgInspCriteriaApplyPlan.js"></script>
 </html>

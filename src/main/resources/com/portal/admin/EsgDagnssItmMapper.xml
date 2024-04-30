@@ -2,45 +2,45 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.portal.admin.dao.EsgInspItemDao">
+<mapper namespace="com.portal.admin.dao.EsgDagnssItmDao">
 
 	<!-- 조회 -->
     <select id="search" parameterType="map" resultType="ParamMap">
-        SELECT	
-				A.ESG_DOMAIN 
-		,		FN_CODE_NAME('ESG_DOMAIN', A.ESG_DOMAIN) ESG_DOMAIN_NAME
-		,		A.ESG_CTGRY 
-		,		FN_CODE_NAME('ESG_CTGRY', A.ESG_CTGRY) ESG_CTGRY_NAME
-		,		A.ESG_CLASSIFICATION_NO 
-		,		A.DAGNSS_ITM 
-		,		A.DAGNSS_ITM_DESC
-		,		A.BASIC_ADVANCE 
-		,		FN_CODE_NAME('BASIC_ADVANCE', A.BASIC_ADVANCE) BASIC_ADVANCE_NAME
-		,		A.APLCN_METHOD 
-		,		FN_CODE_NAME('APLCN_METHOD', A.APLCN_METHOD) APLCN_METHOD_NAME
-		,		A.IS_ATTACH_FILES 
-		,		A.USE_YN 
-		,		A.SORT_NO
-		FROM 	ESG_DAGNSS_ITM A 
-		WHERE 	1 = 1
+        select	
+				a.esg_domain 
+		,		fn_code_name('ESG_DOMAIN', a.esg_domain) esg_domain_name
+		,		a.esg_ctgry 
+		,		fn_code_name('ESG_CTGRY', a.esg_ctgry) esg_ctgry_name
+		,		a.esg_classification_no 
+		,		a.dagnss_itm 
+		,		a.dagnss_itm_desc
+		,		a.basic_advance 
+		,		fn_code_name('BASIC_ADVANCE', a.basic_advance) basic_advance_name
+		,		a.aplcn_method 
+		,		fn_code_name('APLCN_METHOD', a.aplcn_method) aplcn_method_name
+		,		a.is_attach_files 
+		,		a.use_yn 
+		,		a.sort_no
+		from 	esg_dagnss_itm a 
+		where 	1 = 1
 		<if test="esgDomain != null">
-		AND 	A.ESG_DOMAIN	= #{esgDomain}
+		and 	a.esg_domain	= #{esgDomain}
 		</if>
 		<if test="esgCtgry != null">
-		AND		A.ESG_CTGRY		= #{esgCtgry}
+		and		a.esg_ctgry		= #{esgCtgry}
+		</if>
+		<if test="dagnssItm != null">
+		and     a.dagnss_itm   like '%' || #{dagnssItm} || '%'
 		</if>
 		ORDER	BY
 				A.SORT_NO
-        
     </select>
     
     <!-- 저장 -->
     <insert id="save"  parameterType="map">
         MERGE 	INTO ESG_DAGNSS_ITM A
 		USING 	(SELECT 'A' AS A) B
-		ON 		A.ESG_DOMAIN	= #{esgDomain}
-		AND 	A.ESG_CTGRY 	= #{esgCtgry}
-		AND 	A.ESG_CLASSIFICATION_NO = #{esgClassificationNo}
+		ON 		A.ESG_CLASSIFICATION_NO = #{esgClassificationNo}
 		WHEN 	NOT MATCHED THEN
 		INSERT 
 		(
@@ -66,18 +66,20 @@
 		,	#{basicAdvance}
 		,	#{isAttachFiles}
 		,	#{useYn}
-		,	#{sortNo}
+		,	fn_to_number(#{sortNo})
 		)
 		WHEN 	MATCHED THEN
 		UPDATE
 		SET
-			DAGNSS_ITM              = #{dagnssItm}
+			ESG_DOMAIN				= #{esgDomain}
+		,	ESG_CTGRY				= #{esgCtgry}
+		,	DAGNSS_ITM              = #{dagnssItm}
 		,	DAGNSS_ITM_DESC         = #{dagnssItmDesc}
 		,	APLCN_METHOD            = #{aplcnMethod}
 		,	BASIC_ADVANCE           = #{basicAdvance}
 		,	IS_ATTACH_FILES         = #{isAttachFiles}
 		,	USE_YN                  = #{useYn}
-		,	SORT_NO					= #{sortNo}
+		,	SORT_NO					= fn_to_number(#{sortNo})
 		;
 
     </insert>
@@ -85,8 +87,6 @@
     <!-- 삭제 -->
     <delete id="delete" parameterType="map">
         DELETE	FROM ESG_DAGNSS_ITM
-        WHERE	ESG_DOMAIN	= #{esgDomain}
-		AND 	ESG_CTGRY 	= #{esgCtgry}
-		AND 	ESG_CLASSIFICATION_NO = #{esgClassificationNo}
+        WHERE	ESG_CLASSIFICATION_NO = #{esgClassificationNo}
     </delete>
 </mapper>

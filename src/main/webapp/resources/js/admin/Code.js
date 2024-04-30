@@ -1,23 +1,12 @@
 //-------------------------------------------------------------------------------
 //전역변수 영역("g" prefix 활용)
 //-------------------------------------------------------------------------------
-var gGlovalVariable = 0;                              // 파일 리스트 번호
-
 var firstGrid;
 var secondGrid;
 var rowIndex = 0;
 var rowIndex2 = 0;
 
 var resultMap;
-
-var firstGridWidth;
-var firstGridHeight;
-var secondGridWidth;
-var secondGridHeight;
-
-//그리드 데이터 조회 없을 경우 문자 표시 위치 설정용 변수
-var firstLPad, secondLPad;
-var firstTPad, secondTPad;
 
 var trsData = {};
 
@@ -109,7 +98,7 @@ function fnSearch2Callback(data) {
  ********************************/
 function fnPreSave() {
     //필수 입력 체크
-    if (!gFnInputCheck())
+    if (!gfnInputCheck())
         return false;
 
     return true;
@@ -159,7 +148,7 @@ function fnSaveCallback(data) {
  ********************************/
 function fnPreSave2() {
     //필수 입력 체크
-    if (!gFnInputCheck())
+    if (!gfnInputCheck())
         return false;
 
     return true;
@@ -270,7 +259,7 @@ function fnDelete2Callback(data) {
  * 상위코드 추가 버튼 이벤트 핸들러
  ********************************/
 function fnAdd() {
-    gFnAllClear();
+    gfnAllClear();
 
     $("#popParamUpperCode").val('');
     $("#popParamUpperCodeName").val('');
@@ -294,7 +283,7 @@ function fnAdd() {
 function fnAdd2() {
 
     if($("#hiddenUpperCode").val() != ''){
-        gFnAllClear();
+        gfnAllClear();
 
         $("#popParamCode").val('')
         $("#popParamCodeName").val('');
@@ -320,7 +309,7 @@ function fnAdd2() {
  * 상위코드 그리드 DB Click 이벤트 핸들러
  ********************************/
 function fnGridDBClick(rowIdx) {
-    gFnAllClear();
+    gfnAllClear();
     var rowData = firstGrid.getList()[rowIdx];
 	
     $("#popParamUpperCode").val(rowData['UPPR_CODE']);
@@ -353,7 +342,7 @@ function fnGridClick(rowIdx) {
  * 상세코드 그리드 Doublic Click 이벤트 핸들러
  ********************************/
 function fnGrid2DBClick(rowIdx) {
-    gFnAllClear();
+    gfnAllClear();
     var rowData = secondGrid.getList()[rowIdx];
 
     $("#hiddenUpperCode").val(firstGrid.getList()[rowIndex]['UPPR_CODE']);
@@ -465,7 +454,7 @@ function fnInit() {
 function fnInitComp() {
 
 	if(createRole == '0'){
-		$("#upperCodeAdd").hide()
+	    $("#upperCodeAdd").hide()
 		$("#codeAdd").hide();
 	}
 

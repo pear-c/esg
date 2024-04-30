@@ -7,7 +7,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<title>RPA업무자동화시스템</title>
+<title>ESG경영 솔루션</title>
 </head>
 <script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/jquery-2.2.4.min.js"></script>
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath }/resources/css/admin_pc.css">
@@ -31,7 +31,6 @@
               <img src="${pageContext.request.contextPath }/resources/img/join.png" /></a></li>-->
             </ul>
          </div>
-       
        </div>
     </li>
   </ul>
@@ -69,7 +68,6 @@ function loginCheck(){
 		login()
     }	
 }
-
 </script>
 </html>
 

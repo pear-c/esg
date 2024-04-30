@@ -1,8 +1,6 @@
 //-------------------------------------------------------------------------------
 //전역변수 영역("g" prefix 활용)
 //-------------------------------------------------------------------------------
-var gGlovalVariable = 0;                              // 파일 리스트 번호
-
 var resultMap
 var pagingCount;
 
@@ -183,7 +181,7 @@ function fnUpdateCallback(data) {
  *********************************************/
 function fnPreInsert() {
 	//공통 체크 사항
-    if (!gFnBBSInputCheck()){
+    if (!gfnBBSInputCheck()){
     	return false;
     }
 

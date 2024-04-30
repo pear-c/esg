@@ -42530,8 +42530,8 @@ class AgRichSelect extends _agPickerField_mjs__WEBPACK_IMPORTED_MODULE_11__["AgP
         // do not create the picker every time to save state
         return this.listComponent;
     }
-    setSearchStringCreator(searchStringFn) {
-        this.searchStringCreator = searchStringFn;
+    setSearchStringCreator(searchStringfn) {
+        this.searchStringCreator = searchStringfn;
     }
     setValueList(params) {
         const { valueList, refresh } = params;
