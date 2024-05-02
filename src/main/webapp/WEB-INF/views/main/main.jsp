@@ -7,7 +7,7 @@
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta charset="UTF-8">
-    <title></title>
+<title>ESG경영 솔루션</title>
 </head>
 <body>
  <!-- mainContent -->

@@ -331,9 +331,9 @@ function fnInitGrid(){
             {key: "INSPECTION_CRITERIA", label: "점검기준", width:600, align:"left"},
             {key: "SCORE", label: "점수", width:80, align:"center"},
             {key: "CHECK", label: "CHECK", width:80, align:"center",
-                formatter: function() {return '<input type="checkbox" name="chk_info">a';}
-                
-            }
+                editor: {
+                    type: "checkbox", config: {height: 17, trueValue: "Y", falseValue: "N"}
+            }}
         ]
 
     });
