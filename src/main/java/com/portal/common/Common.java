@@ -105,12 +105,13 @@ public class Common {
 
 		    userActHstService.save(data);
 
-		    if(!(((String)menuInfo.get("SOURCE_DIV")) == null)) {
-		    	result.setViewName((String)menuInfo.get("MENU_PATH") + (String)menuInfo.get("SOURCE_DIV"));
-		    }
-		    else {
-		    	result.setViewName((String)menuInfo.get("MENU_PATH"));
-		    }
+		    result.setViewName((String)menuInfo.get("MENU_PATH"));
+//		    if(!(((String)menuInfo.get("SOURCE_DIV")) == null)) {
+//		    	result.setViewName((String)menuInfo.get("MENU_PATH") + (String)menuInfo.get("SOURCE_DIV"));
+//		    }
+//		    else {
+//		    	result.setViewName((String)menuInfo.get("MENU_PATH"));
+//		    }
 
 		    data.put("menuId", menuId);
 		    data.put("roleId", session.getAttribute("loginUserRole"));
