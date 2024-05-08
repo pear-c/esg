@@ -1,4 +1,4 @@
-package com.portal.template.service.impl;
+package com.portal.admin.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -9,20 +9,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.portal.admin.dao.Example2Dao;
+import com.portal.admin.service.Example2Service;
 import com.portal.common.MessageUtil;
-import com.portal.template.dao.Template2Dao;
-import com.portal.template.service.Template2Service;
 
 /**
  * ??? 관리 Service Implement
  */
-@Service("template2Service")
-public class Template2ServiceImpl extends EgovAbstractServiceImpl implements Template2Service{
+@Service("example2Service")
+public class Example2ServiceImpl extends EgovAbstractServiceImpl implements Example2Service{
 
-	Template2Dao dao;
+	Example2Dao dao;
 
 	@Autowired
-	public Template2ServiceImpl(@Qualifier("template2Dao") Template2Dao dao) {
+	public Example2ServiceImpl(@Qualifier("example2Dao") Example2Dao dao) {
 		this.dao = dao;
 	}
 

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.portal.admin.dao.Example2Dao">
+
+	<!-- 조회 -->
+    <select id="search" parameterType="map" resultType="ParamMap">
+        select  
+		        a.fld1          --필드1
+		,       a.fld2          --필드2
+		from    example2 a
+		where   1 = 1
+		<if test="fld2 != null">
+		and     a.fld2 like '%' || #{fld2} || '%'
+		</if>
+    </select>
+    
+    <!-- 저장 -->
+    <insert id="save"  parameterType="map">
+        merge   into Example2   a
+        using   (select 'a' as a)   b
+        on      a.fld1  = #{fld1}
+        when    not matched then
+                insert
+                (
+                    fld1
+                ,   fld2
+                )
+                values
+                (
+                    #{fld1}
+                ,   #{fld2}
+                )
+        when    matched then
+                update
+                set
+                    fld2    = #{fld2}
+        ;
+    </insert>
+    
+    <!-- 삭제 -->
+    <delete id="delete" parameterType="map">
+        delete from exampe2
+        where   fld1 = #{fld1}
+    </delete>
+</mapper>

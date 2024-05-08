@@ -1,13 +1,13 @@
-package com.portal.template.service;
+package com.portal.admin.service;
 
 import java.util.List;
 import java.util.Map;
 
 
 /**
- * ??? 관리 Service Interface
+ * jdhfd 관리 Service Interface
  */
-public interface Template2Service {
+public interface ExampleService {
 	//조회
 	public List<Map<String, Object>> search(Map<String, Object> data);
 	//저장

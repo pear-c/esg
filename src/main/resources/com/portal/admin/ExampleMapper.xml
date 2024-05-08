@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.portal.admin.dao.ExampleDao">
+
+	<!-- 조회 -->
+    <select id="search" parameterType="map" resultType="ParamMap">
+        select  
+		        a.user_id
+		,       b.user_name           
+		,       a.co_id
+		,       c.co_nm 
+		from    esg_cnsltnt_co  a
+		        inner join
+		        user_info       b
+		        on  a.user_id   = b.user_id
+		        inner join 
+		        esg_rpt_co      c
+		        on  a.co_id     = c.co_id 
+	    where   1 = 1
+	    <if test="coNm != null">
+	    and     c.co_nm like '%' || #{coNm} || '%'
+	    </if>
+	    order   by
+	            b.user_name
+    </select>
+    
+    <!-- 저장 -->
+    <insert id="save"  parameterType="map">
+        merge   into esg_cnsltnt_co   a
+        using   (select 'a' a)        b
+        on      a.user_id   = #{userId}
+        and     a.co_id     = #{coId}
+        when    not matched then
+                insert
+                (
+                    user_id
+                ,   co_id
+                )
+                values
+                (
+                    #{userId}
+                ,   #{coId}
+                )
+        ;
+    </insert>
+    
+    <!-- 삭제 -->
+    <delete id="delete" parameterType="map">
+        delete from esg_cnsltnt_co
+        where   user_id = #{userId}
+        and     co_id   = #{coId}
+    </delete>
+</mapper>

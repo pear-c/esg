@@ -27,7 +27,7 @@ function fnSearch() {
     if (fnPreSearch()) {
         var data = gfnGetInputParam();
 
-        gfnTransation("/Template2/Search",data,"POST",fnSearchCallback)
+        gfnTransation("/Example2/Search",data,"POST",fnSearchCallback)
     }
 
 }
@@ -74,15 +74,14 @@ function fnSave() {
 		var paramData = new Object();
 		
         trsData = {};
-        trsData.MSG_ID = $("#hiddenMsgId").val();
+        trsData.FLD1 = $("#hiddenFld1").val();
 
         paramData = new Object();
 		
-        paramData.msgId = $("#hiddenMsgId").val();
-        paramData.msgCon = $("#popParamMsgCon").val();
-        paramData.useYn = $("#popParamUseYn").val();
+        paramData.fld1 = $("#popFld1").val();
+        paramData.fld2 = $("#popFld2").val();
         paramData.action = tAction;
-        gfnTransation("/Template2/Save", paramData, "POST",fnSaveCallback);
+        gfnTransation("/Example2/Save", paramData, "POST",fnSaveCallback);
     }
 }
 
@@ -113,9 +112,9 @@ function fnPreDelete() {
 function fnDelete() {
     var paramData = new Object();
 
-    paramData.msgId = $("#hiddenMsgId").val();
+    paramData.fld1 = $("#hiddenFld1").val();
 
-    gfnTransation("/Template2/Delete", paramData, "Post", fnDeleteCallback);
+    gfnTransation("/Example2/Delete", paramData, "Post", fnDeleteCallback);
 }
 
 /********************************
@@ -136,9 +135,8 @@ function fnAdd() {
 
     $("#btnSave").val("저장");
 	$("#btnSave").show();
-    $("#hiddenMsgId").val('')
-    $("#popParamMsgCon").val('')
-    $("#popParamUseYn option:eq(0)").prop("selected", true);
+    $("#hiddenFld1").val('')
+    $("#popFld1").val('')
     $("#btnDelete").css("display","none");
     $("#layPop01").css("display","block");
     tAction = "INSERT";
@@ -150,10 +148,11 @@ function fnAdd() {
 function fnGridDBClick(rowIdx) {
     gfnAllClear();
 
-    $("#hiddenMsgId").val(firstGrid.getList()[rowIdx]['MSG_ID'])
-    $("#popParamMsgCon").val(firstGrid.getList()[rowIdx]['MSG_CONTENTS'])
-    $("#popParamUseYn").val(firstGrid.getList()[rowIdx]['USE_YN'])
-    $("#popParamUseYn").change();
+    $("#hiddenFld1").val(firstGrid.getList()[rowIdx]['FLD1'])
+    $("#popFld1").val(firstGrid.getList()[rowIdx]['FLD1'])
+    $("#popFld2").val(firstGrid.getList()[rowIdx]['FLD2'])
+    
+    
 	$("#btnSave").val("수정");
 	if(updateRole == '0'){
 	$("#btnSave").hide();
@@ -235,7 +234,6 @@ function fnInitComp() {
 
     //콤보(Select box) 바인딩 설정
     var combo = [
-        	{id: "popParamUseYn", upprCode: "YN", isAll: false}
     ];
     gfnInitComboBind(combo);
 
@@ -269,10 +267,9 @@ function fnInitComp() {
     //* checkFormat 클래스 : 필수 입력
     // isUpper : 대문자만 허용
     var arrObj = [
-        {id : 'msgNm', numberFormat: false, dataLength: 30, checkFormat: false, isUpper: false},
-        {id : 'msgId', numberFormat: true, dataLength: 5, checkFormat: false, isUpper: false},
-        {id : 'popParamMsgCon', numberFormat: false, dataLength: 100, checkFormat: true, isUpper: false},
-        {id : 'popParamUseYn', numberFormat: false, dataLength: 0, checkFormat: true, isUpper: false}
+        {id : 'fld2', numberFormat: false, dataLength: 10, checkFormat: false, isUpper: false},
+        {id : 'popFld1', numberFormat: false, dataLength: 10, checkFormat: true, isUpper: false},
+        {id : 'popFld2', numberFormat: false, dataLength: 10, checkFormat: false, isUpper: false}
     ];
     gfnSetInitComp(arrObj);
 }
@@ -309,9 +306,8 @@ function fnInitGrid(){
         }
         ,
         columns:[
-            {key: "MSG_ID", label: "메세지ID", width:179, align:"center"},
-            {key: "MSG_CONTENTS", label: "메세지명", width:960, align:"left"},
-            {key: "USE_YN", label: "사용여부", width:159, align:"center"}
+            {key: "FLD1", label: "필드1", width:100, align:"center"},
+            {key: "FLD2", label: "필드2", width:100, align:"left"}
         ]
 
     });

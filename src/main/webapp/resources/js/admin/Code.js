@@ -114,6 +114,8 @@ function fnSave() {
         trsData = {};
         trsData.UPPR_CODE = $("#popParamUpperCode").val();
 
+        var arrParam = ['popParamUpperCode','popParamUpperCodeName'];
+        var paramData = gfnGetSaveParam(arrParam);
         paramData.upprCode = $("#popParamUpperCode").val()
         paramData.upprCodeName = $("#popParamUpperCodeName").val()
         paramData.configYn = $("#popParamConfigYn").val()

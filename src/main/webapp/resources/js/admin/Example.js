@@ -27,7 +27,7 @@ function fnSearch() {
     if (fnPreSearch()) {
         var data = gfnGetInputParam();
 
-        gfnTransation("/Template2/Search",data,"POST",fnSearchCallback)
+        gfnTransation("/Example/Search",data,"POST",fnSearchCallback)
     }
 
 }
@@ -74,15 +74,15 @@ function fnSave() {
 		var paramData = new Object();
 		
         trsData = {};
-        trsData.MSG_ID = $("#hiddenMsgId").val();
+        trsData.USER_ID = $("#hiddenUserId").val();
+        trsData.CO_ID = $("#hiddenCoId").val();
 
         paramData = new Object();
 		
-        paramData.msgId = $("#hiddenMsgId").val();
-        paramData.msgCon = $("#popParamMsgCon").val();
-        paramData.useYn = $("#popParamUseYn").val();
+        paramData.userId = $("#popUserId").val();
+        paramData.coId = $("#popCoId").val();
         paramData.action = tAction;
-        gfnTransation("/Template2/Save", paramData, "POST",fnSaveCallback);
+        gfnTransation("/Example/Save", paramData, "POST",fnSaveCallback);
     }
 }
 
@@ -113,9 +113,10 @@ function fnPreDelete() {
 function fnDelete() {
     var paramData = new Object();
 
-    paramData.msgId = $("#hiddenMsgId").val();
+    paramData.userId = $("#hiddenUserId").val();
+    paramData.coId = $("#hiddenCoId").val();
 
-    gfnTransation("/Template2/Delete", paramData, "Post", fnDeleteCallback);
+    gfnTransation("/Example/Delete", paramData, "Post", fnDeleteCallback);
 }
 
 /********************************
@@ -136,9 +137,9 @@ function fnAdd() {
 
     $("#btnSave").val("저장");
 	$("#btnSave").show();
-    $("#hiddenMsgId").val('')
+    $("#hiddenUserId").val('')
+    $("#hiddenCoId").val('')
     $("#popParamMsgCon").val('')
-    $("#popParamUseYn option:eq(0)").prop("selected", true);
     $("#btnDelete").css("display","none");
     $("#layPop01").css("display","block");
     tAction = "INSERT";
@@ -150,10 +151,10 @@ function fnAdd() {
 function fnGridDBClick(rowIdx) {
     gfnAllClear();
 
-    $("#hiddenMsgId").val(firstGrid.getList()[rowIdx]['MSG_ID'])
-    $("#popParamMsgCon").val(firstGrid.getList()[rowIdx]['MSG_CONTENTS'])
-    $("#popParamUseYn").val(firstGrid.getList()[rowIdx]['USE_YN'])
-    $("#popParamUseYn").change();
+    $("#hiddenUserId").val(firstGrid.getList()[rowIdx]['USER_ID'])
+    $("#hiddenCoId").val(firstGrid.getList()[rowIdx]['CO_ID'])
+    $("#popUserId").val(firstGrid.getList()[rowIdx]['USER_ID'])
+    $("#popCoId").val(firstGrid.getList()[rowIdx]['CO_ID'])
 	$("#btnSave").val("수정");
 	if(updateRole == '0'){
 	$("#btnSave").hide();
@@ -235,7 +236,6 @@ function fnInitComp() {
 
     //콤보(Select box) 바인딩 설정
     var combo = [
-        	{id: "popParamUseYn", upprCode: "YN", isAll: false}
     ];
     gfnInitComboBind(combo);
 
@@ -269,10 +269,8 @@ function fnInitComp() {
     //* checkFormat 클래스 : 필수 입력
     // isUpper : 대문자만 허용
     var arrObj = [
-        {id : 'msgNm', numberFormat: false, dataLength: 30, checkFormat: false, isUpper: false},
-        {id : 'msgId', numberFormat: true, dataLength: 5, checkFormat: false, isUpper: false},
-        {id : 'popParamMsgCon', numberFormat: false, dataLength: 100, checkFormat: true, isUpper: false},
-        {id : 'popParamUseYn', numberFormat: false, dataLength: 0, checkFormat: true, isUpper: false}
+        {id : 'popUserId', numberFormat: false, dataLength: 30, checkFormat: true, isUpper: false},
+        {id : 'popCoId', numberFormat: false, dataLength: 68, checkFormat: true, isUpper: false}
     ];
     gfnSetInitComp(arrObj);
 }
@@ -309,9 +307,10 @@ function fnInitGrid(){
         }
         ,
         columns:[
-            {key: "MSG_ID", label: "메세지ID", width:179, align:"center"},
-            {key: "MSG_CONTENTS", label: "메세지명", width:960, align:"left"},
-            {key: "USE_YN", label: "사용여부", width:159, align:"center"}
+            {key: "USER_ID", label: "USER_ID", width:0, align:"center"},
+            {key: "USER_NAME", label: "사용자 명", width:120, align:"left"},
+            {key: "CO_ID", label: "CO_ID", width:0, align:"left"},
+            {key: "CO_NM", label: "회사명", width:200, align:"left"}
         ]
 
     });
