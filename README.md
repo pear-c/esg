@@ -13,8 +13,9 @@ ESG란 환경보호(Environment)·사회공헌(Social)·윤리경영(Governance)
 
 ESG 경영에 필요한 정보와 아래의 가이드라인을 모르는 사용자도 자신 기업의 ESG 경영 점수를 쉽게 계산 및 자가진단이 가능하여, 개선 및 컨설팅이 가능해지도록 하기 위함.
 
-
-
 ### <실제 K-ESG 가이드 라인>
 ![EB6E93E4-B5C1-4309-8791-BE3D3599A172](https://github.com/user-attachments/assets/afdf087e-5bb7-44cb-8fb5-a29ca2c1e934)
+
+## Tech Stack
+`Java`
 
