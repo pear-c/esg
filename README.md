@@ -21,5 +21,9 @@ ESG 경영에 필요한 정보와 아래의 가이드라인을 모르는 사용�
 
 ## Result
 <img width="969" alt="image" src="https://github.com/user-attachments/assets/93813403-3185-4c39-9bd2-ecc92a6ed065">
+<img width="1446" alt="image" src="https://github.com/user-attachments/assets/dacb9ea4-bf41-431e-be77-b3eaccb61b3b">
+<img width="1390" alt="image" src="https://github.com/user-attachments/assets/22c6963b-ec42-43c7-a587-0a33461fc08a">
+
+
 
 
