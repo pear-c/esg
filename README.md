@@ -13,3 +13,4 @@ ESG 경영에 필요한 정보와 아래의 가이드라인을 모르는 사용�
 
 
 #### 실제 K-ESG 가이드 라인
+![F331DBBB-D101-441E-991D-5A2DE89C961C](https://github.com/user-attachments/assets/b1e5cbe8-8eac-411b-b3b6-8e739b6f4f59)
