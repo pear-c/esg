@@ -19,3 +19,7 @@ ESG 경영에 필요한 정보와 아래의 가이드라인을 모르는 사용�
 ## Tech Stack
 `Java`, `Spring`, `JavaScript`, `JasperStudio`, `MyBatis`, `PostgreSQL`, `DBeaver`
 
+## Result
+<img width="969" alt="image" src="https://github.com/user-attachments/assets/93813403-3185-4c39-9bd2-ecc92a6ed065">
+
+
