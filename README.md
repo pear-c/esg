@@ -23,9 +23,8 @@ ESG 경영에 필요한 정보와 아래의 가이드라인을 모르는 사용�
 <img width="969" alt="image" src="https://github.com/user-attachments/assets/93813403-3185-4c39-9bd2-ecc92a6ed065">
 <img width="1446" alt="image" src="https://github.com/user-attachments/assets/dacb9ea4-bf41-431e-be77-b3eaccb61b3b">
 <img width="1390" alt="image" src="https://github.com/user-attachments/assets/22c6963b-ec42-43c7-a587-0a33461fc08a">
-![image](https://github.com/user-attachments/assets/e6264728-d536-4fd3-b499-b7761c91de38)
-![image](https://github.com/user-attachments/assets/32dc14c8-16a5-477c-a771-452388c8188f)
-
+<img width="935" alt="KakaoTalk_Photo_2024-09-27-21-05-44" src="https://github.com/user-attachments/assets/4192f340-d5f5-4d14-921d-2e339a5219c9">
+<img width="605" alt="KakaoTalk_Photo_2024-09-27-21-05-48" src="https://github.com/user-attachments/assets/78c647a6-9c97-4e4d-8c89-9784235635fc">
 
 
 
