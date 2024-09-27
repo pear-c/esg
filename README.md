@@ -7,7 +7,7 @@ ESG란 환경보호(Environment)·사회공헌(Social)·윤리경영(Governance)
 
 
 ## 요구사항
-**ESG 경영 진단 항목 및 컨설팅 자동화를 위한 맞춤형 보고서 생성이 가능한 웹 서비스 개발**
+**ESG 경영 진단 항목 및 컨설팅 자동화를 위한 맞춤형 보고서 생성이 가능한 웹 서비스 개발**   
 [20240519_공급망K-ESG_화면_설계(E).pdf](https://github.com/user-attachments/files/17163485/20240519_.K-ESG_._.E.pdf)   
 
 
