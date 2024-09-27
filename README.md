@@ -17,5 +17,5 @@ ESG 경영에 필요한 정보와 아래의 가이드라인을 모르는 사용�
 ![EB6E93E4-B5C1-4309-8791-BE3D3599A172](https://github.com/user-attachments/assets/afdf087e-5bb7-44cb-8fb5-a29ca2c1e934)
 
 ## Tech Stack
-`Java`
+`Java`, `Spring`, `JavaScript`, `JasperStudio`, `MyBatis`, `PostgreSQL`, `DBeaver`
 
