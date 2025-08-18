@@ -1,4 +1,4 @@
-# ESG 경영 솔루션 플랫폼 구축
+# ESG 경영 솔루션 플랫폼 개발
 
 > (주)아이엠지로드 인턴 기간에 참여한 프로젝트 내용입니다.
 
@@ -25,9 +25,6 @@ ESG 경영에 필요한 정보와 아래의 가이드라인을 모르는 사용�
 <img width="1390" alt="image" src="https://github.com/user-attachments/assets/22c6963b-ec42-43c7-a587-0a33461fc08a">
 <img width="935" alt="KakaoTalk_Photo_2024-09-27-21-05-44" src="https://github.com/user-attachments/assets/4192f340-d5f5-4d14-921d-2e339a5219c9">
 <img width="605" alt="KakaoTalk_Photo_2024-09-27-21-05-48" src="https://github.com/user-attachments/assets/78c647a6-9c97-4e4d-8c89-9784235635fc">
-
-**사내 IP 외 DB 접근이 제한되어 있으므로, 리포트 출력 형태는 아래 Repo 참고**   
-https://github.com/pear-c/esgReport
 
 
 
